@@ -1,31 +1,55 @@
 package thecerealkillers.elearning.controller.impl;
 
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import thecerealkillers.elearning.controller.CoursesControllerImpl;
-import thecerealkillers.elearning.model.Course;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = {"classpath:dispatcher-servlet.xml"})
 public class CourseControllerImplIntegrationTest {
 
-//    @Autowired(required = true)
-//    private CoursesController coursesController = new CoursesControllerImpl();
-//
-//    @Test
-//    public void getCourseTest() {
-//        Course course = new Course("titlu", "ceva", "ceva", "altceva", "altceva");
-//        coursesController.createCourse(course);
-//
-//        ResponseEntity<Course> responseEntity = coursesController.getCourse("titlu");
-//
-//        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//        Assert.assertEquals(course, responseEntity.getBody());
-//    }
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    private MockMvc mockMvc;
+
+    @Before
+    public void setUp() throws Exception {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+    public void getCourseTest() throws Exception {
+        mockMvc.perform(post("/courses").content("{ \n" +
+                " \"title\":\"dada\",\n" +
+                " \"about\":\"dada\",\n" +
+                " \"recommendedBackground\":\"dada\",\n" +
+                " \"suggestedReadings\":\"dada\",\n" +
+                " \"courseFormat\":\"dada\" \n" +
+                "}"));
+        ResultActions resultActions = mockMvc.perform(get("/courses/dada").accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(content().string("{ \n" +
+                " \"title\":\"dada\",\n" +
+                " \"about\":\"dada\",\n" +
+                " \"recommendedBackground\":\"dada\",\n" +
+                " \"suggestedReadings\":\"dada\",\n" +
+                " \"courseFormat\":\"dada\" \n" +
+                "}"));
+    }
 }
