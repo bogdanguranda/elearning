@@ -1,0 +1,2 @@
+Diagrama de clase: https://docs.google.com/drawings/d/1ZKSNzvLqM6XTp7OUXxl1GtwqPoipIZe-gHVv9jEp5HU/edit
+Diagrama de interactiune si comunicare (pentru User si Course Management): https://docs.google.com/drawings/d/1RB73EuxTItoENHCkzUy5eDf-2wPdmwrg_ltG0TU1JlM/edit 
