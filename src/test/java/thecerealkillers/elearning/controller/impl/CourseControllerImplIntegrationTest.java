@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath:dispatcher-servlet.xml"})
+@ContextConfiguration(locations = {"classpath:test-dispatcher-servlet.xml"})
 public class CourseControllerImplIntegrationTest {
 
     @Autowired
