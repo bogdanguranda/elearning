@@ -1,8 +1,4 @@
 -- -----------------------------------------------------
--- DATABASE SETUP
--- -----------------------------------------------------
-
--- -----------------------------------------------------
 -- Schema elearning_db
 -- -----------------------------------------------------
 DROP SCHEMA IF EXISTS `elearning_db` ;
@@ -125,6 +121,7 @@ DROP TABLE IF EXISTS `elearning_db`.`user_status` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`user_status` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `active` TINYINT(1) NOT NULL COMMENT '',
+  `signUpTimestamp` TIMESTAMP NULL COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   CONSTRAINT `status_user_username_fk`
     FOREIGN KEY (`username`)
@@ -377,6 +374,25 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`topic_thread` (
   CONSTRAINT `topic_thread_thread_title_fk`
     FOREIGN KEY (`thread`)
     REFERENCES `elearning_db`.`thread` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`session`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`session` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
+  `username` VARCHAR(45) NOT NULL COMMENT '',
+  `token` VARCHAR(45) NULL COMMENT '',
+  `creationTimestamp` TIMESTAMP NULL COMMENT '',
+  PRIMARY KEY (`username`)  COMMENT '',
+  UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
+  CONSTRAINT `session_username_fk`
+    FOREIGN KEY (`username`)
+    REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
