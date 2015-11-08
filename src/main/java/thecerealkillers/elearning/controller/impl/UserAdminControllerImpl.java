@@ -22,7 +22,7 @@ public class UserAdminControllerImpl implements UserAdminController {
     private UserAdminService userAdminService;
 
     @Override
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getAll() {
         List<User> users = userAdminService.getAll();
 
