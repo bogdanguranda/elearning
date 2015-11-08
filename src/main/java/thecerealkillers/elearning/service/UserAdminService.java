@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service;
 
+import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.model.User;
 
 import java.util.List;

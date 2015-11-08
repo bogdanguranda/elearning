@@ -2,13 +2,14 @@ package thecerealkillers.elearning.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.service.CoursesService;
 
 import java.util.List;
 
-@Controller
+@Service
 public class CoursesServiceImpl implements CoursesService {
 
     @Autowired

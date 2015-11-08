@@ -4,6 +4,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.UserAdminDAO;
 import thecerealkillers.elearning.model.User;
 
@@ -14,6 +15,7 @@ import java.util.List;
 /**
  * Created by cuvidk on 11/8/2015.
  */
+@Repository
 public class UserAdminDAOImpl implements UserAdminDAO {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
