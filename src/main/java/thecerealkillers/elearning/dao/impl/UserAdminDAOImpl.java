@@ -34,6 +34,7 @@ public class UserAdminDAOImpl implements UserAdminDAO {
             @Override
             public User mapRow(ResultSet resultSet, int i) throws SQLException {
                 User user = new User();
+                user.setUsername(resultSet.getString("username"));
                 user.setEmail(resultSet.getString("email"));
                 user.setFirstName(resultSet.getString("firstName"));
                 user.setLastName(resultSet.getString("lastName"));
@@ -44,6 +45,6 @@ public class UserAdminDAOImpl implements UserAdminDAO {
                 return user;
             }
         });
-        return null;
+        return users;
     }
 }

@@ -26,6 +26,6 @@ public class UserAdminControllerImpl implements UserAdminController {
     public ResponseEntity<List<User>> getAll() {
         List<User> users = userAdminService.getAll();
 
-        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
