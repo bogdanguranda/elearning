@@ -10,6 +10,9 @@ public class User {
     private String email;
     private String studentId;
     private String hash;
+    private String salt;
+
+    public User() {}
 
     public User(String username, String salt, String hash, String email, String firstName,
                 String lastName, String studentId) {
@@ -21,8 +24,6 @@ public class User {
         this.lastName = lastName;
         this.studentId = studentId;
     }
-
-    private String salt;
 
     public String getUsername() {
         return username;
