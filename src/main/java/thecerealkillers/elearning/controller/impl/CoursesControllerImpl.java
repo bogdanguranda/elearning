@@ -1,10 +1,10 @@
-package thecerealkillers.elearning.controller;
+package thecerealkillers.elearning.controller.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import thecerealkillers.elearning.controller.impl.CoursesController;
+import thecerealkillers.elearning.controller.CoursesController;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.service.CoursesService;
 

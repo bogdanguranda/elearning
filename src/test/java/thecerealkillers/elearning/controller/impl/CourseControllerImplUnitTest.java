@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import thecerealkillers.elearning.controller.CoursesControllerImpl;
+import thecerealkillers.elearning.controller.CoursesController;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.service.CoursesService;
 
