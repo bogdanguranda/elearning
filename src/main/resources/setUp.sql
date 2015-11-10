@@ -16,9 +16,8 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user` (
   `firstName` VARCHAR(45) NULL COMMENT '',
   `lastName` VARCHAR(45) NULL COMMENT '',
   `email` VARCHAR(45) NULL COMMENT '',
-  `studentId` VARCHAR(45) NULL COMMENT '',
-  `hash` VARCHAR(45) NULL COMMENT '',
-  `salt` VARCHAR(45) NULL COMMENT '',
+  `hash` VARCHAR(128) NULL COMMENT '',
+  `salt` VARCHAR(128) NULL COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `email_UNIQUE` (`email` ASC)  COMMENT '')
 ENGINE = InnoDB;
@@ -386,7 +385,7 @@ DROP TABLE IF EXISTS `elearning_db`.`session` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
-  `token` VARCHAR(45) NULL COMMENT '',
+  `token` VARCHAR(36) NULL COMMENT '',
   `creationTimestamp` TIMESTAMP NULL COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
@@ -396,3 +395,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+-- INSERTS FOR DEVELOPMENT ONLY!!!
+INSERT INTO USER VALUES ('boogie', 'Bogdan', 'Guranda', 'bogdanguranda@gmail.com', '', '');

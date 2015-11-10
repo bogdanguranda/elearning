@@ -38,7 +38,6 @@ public class UserAdminDAOImpl implements UserAdminDAO {
                 user.setEmail(resultSet.getString("email"));
                 user.setFirstName(resultSet.getString("firstName"));
                 user.setLastName(resultSet.getString("lastName"));
-                user.setStudentId(resultSet.getString("studentId"));
                 user.setHash(resultSet.getString("hash"));
                 user.setSalt(resultSet.getString("salt"));
 
