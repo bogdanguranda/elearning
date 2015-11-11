@@ -11,6 +11,7 @@ import thecerealkillers.elearning.service.CoursesService;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class CoursesControllerImpl implements CoursesController{
 
     @Autowired
