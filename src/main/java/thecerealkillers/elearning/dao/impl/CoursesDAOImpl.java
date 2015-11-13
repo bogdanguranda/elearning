@@ -27,13 +27,12 @@ public class CoursesDAOImpl implements CoursesDAO {
 
     @Override
     public void add(Course course) {
-        String sql = "insert into course values (:title, :about, :recommendedBackground, :suggestedReadings, :courseFormat);";
+        String sql = "insert into course values (:title, :about, :details, :owner);";
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("title", course.getTitle());
         namedParameters.put("about", course.getAbout());
-        namedParameters.put("recommendedBackground", course.getRecommendedBackground());
-        namedParameters.put("suggestedReadings", course.getSuggestedReadings());
-        namedParameters.put("courseFormat", course.getCourseFormat());
+        namedParameters.put("details", course.getDetails());
+        namedParameters.put("owner", course.getOwner());
 
         namedParameterJdbcTemplate.update(sql, namedParameters);
     }
@@ -62,9 +61,8 @@ public class CoursesDAOImpl implements CoursesDAO {
                 Course course = new Course();
                 course.setTitle(resultSet.getString("title"));
                 course.setAbout(resultSet.getString("about"));
-                course.setRecommendedBackground(resultSet.getString("recommendedBackground"));
-                course.setSuggestedReadings(resultSet.getString("suggestedReadings"));
-                course.setCourseFormat(resultSet.getString("courseFormat"));
+                course.setDetails(resultSet.getString("details"));
+                course.setOwner(resultSet.getString("owner"));
 
                 return course;
             }
@@ -84,9 +82,8 @@ public class CoursesDAOImpl implements CoursesDAO {
                 Course course = new Course();
                 course.setTitle(resultSet.getString("title"));
                 course.setAbout(resultSet.getString("about"));
-                course.setRecommendedBackground(resultSet.getString("recommendedBackground"));
-                course.setSuggestedReadings(resultSet.getString("suggestedReadings"));
-                course.setCourseFormat(resultSet.getString("courseFormat"));
+                course.setDetails(resultSet.getString("details"));
+                course.setOwner(resultSet.getString("owner"));
 
                 return course;
             }
