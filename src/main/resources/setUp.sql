@@ -394,6 +394,7 @@ ENGINE = InnoDB;
 
 -- INSERTS FOR DEVELOPMENT ONLY!!!
 INSERT INTO USER VALUES ('boogie', 'Bogdan', 'Guranda', 'bogdanguranda@gmail.com', '', '');
+INSERT INTO USER VALUES ('cuvidk', 'Corvin', 'Tiperciuc', 'cuvidk@yahoo.ro', 'f13273028f99e74a9e77229695191868010cb5c4e0a252076a5a049a6bb0d6720a1a8d521c120af0997138663a50cbc1f99197c844d2b91b1576a7773a4d7194', '312475d3aa055463dba92f766d3554bb41019a0ed331c12ee8a31f4ec0a71023');
 INSERT INTO COURSE VALUES ('Primii pasi in programare', 'Un curs pentru prescolari.', 'Cursul este destinat tuturor copiilor
 mici. Are ca scop invatare lucrurilor de baza din programare rpin limbajul Python.
 Dureaza 6 saptamani: un curs de 2 ore pe saptmana, cu teme de pe o saptamana pe alta.', 'boogie');
