@@ -1,8 +1,4 @@
--- -----------------------------------------------------
--- Schema elearning_db
--- -----------------------------------------------------
 DROP SCHEMA IF EXISTS `elearning_db` ;
-
 CREATE SCHEMA IF NOT EXISTS `elearning_db` DEFAULT CHARACTER SET utf8 ;
 USE `elearning_db` ;
 
@@ -120,7 +116,7 @@ DROP TABLE IF EXISTS `elearning_db`.`user_status` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`user_status` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `active` TINYINT(1) NOT NULL COMMENT '',
-  `signUpTimestamp` TIMESTAMP NULL COMMENT '',
+  `signUpTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   CONSTRAINT `status_user_username_fk`
     FOREIGN KEY (`username`)
@@ -138,8 +134,8 @@ DROP TABLE IF EXISTS `elearning_db`.`message` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
   `sender` VARCHAR(45) NOT NULL COMMENT '',
   `receiver` VARCHAR(45) NOT NULL COMMENT '',
-  `timestamp` DATETIME NULL COMMENT '',
   `message` TEXT NULL COMMENT '',
+  `timestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`sender`, `receiver`)  COMMENT '',
   INDEX `username_idx` (`receiver` ASC)  COMMENT '',
   CONSTRAINT `sender_username_fk`
@@ -386,7 +382,7 @@ DROP TABLE IF EXISTS `elearning_db`.`session` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `token` VARCHAR(36) NULL COMMENT '',
-  `creationTimestamp` TIMESTAMP NULL COMMENT '',
+  `creationTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
   CONSTRAINT `session_username_fk`
