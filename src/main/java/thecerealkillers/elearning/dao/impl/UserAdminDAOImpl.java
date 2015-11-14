@@ -11,7 +11,10 @@ import thecerealkillers.elearning.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cuvidk on 11/8/2015.
@@ -28,12 +31,11 @@ public class UserAdminDAOImpl implements UserAdminDAO {
 
     @Override
     public void addSession(SessionDM session) {
-        String sqlCommand = "insert into session values (:username, :token, :creationTimestamp);";
+        String sqlCommand = "insert into session values (:username, :token, default);";
         Map<String, String> namedParameters = new HashMap<>();
 
         namedParameters.put("username", session.getUsername());
         namedParameters.put("token", session.getToken());
-        namedParameters.put("creationTimestamp", session.getCreationStamp().toString());
 
         namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
     }

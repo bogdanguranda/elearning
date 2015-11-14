@@ -1,7 +1,6 @@
 package thecerealkillers.elearning.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.UserAdminDAO;
 import thecerealkillers.elearning.model.SessionDM;
@@ -12,7 +11,6 @@ import thecerealkillers.elearning.utilities.PasswordExpert;
 import thecerealkillers.elearning.utilities.TokenGenerator;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -36,7 +34,7 @@ public class UserAdminServiceImpl implements UserAdminService {
                     return session.getToken();
                 else {
                     String token = TokenGenerator.generate();
-                    session = new SessionDM(username, token, new Timestamp(System.currentTimeMillis()));
+                    session = new SessionDM(username, token, null);
                     userAdminDAO.addSession(session);
                     return token;
                 }

@@ -1,6 +1,6 @@
 package thecerealkillers.elearning.model;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by cuvidk on 11/14/2015.
@@ -9,18 +9,14 @@ public class SessionDM {
 
     private String username;
     private String token;
-    private Timestamp creationStamp;
+    private Date creationStamp;
 
     public SessionDM() {
-        username = "";
-        token = "";
-        creationStamp = new Timestamp(System.currentTimeMillis());
     }
 
-    public SessionDM(String username, String token, Timestamp creationStamp) {
+    public SessionDM(String username, String token, Date creationStamp) {
         this.username = username;
         this.token = token;
-        this.creationStamp = creationStamp;
     }
 
     public String getUsername() {
@@ -31,11 +27,11 @@ public class SessionDM {
         this.username = username;
     }
 
-    public Timestamp getCreationStamp() {
+    public Date getCreationStamp() {
         return creationStamp;
     }
 
-    public void setCreationStamp(Timestamp creationStamp) {
+    public void setCreationStamp(Date creationStamp) {
         this.creationStamp = creationStamp;
     }
 

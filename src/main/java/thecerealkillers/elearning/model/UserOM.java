@@ -8,8 +8,6 @@ public class UserOM {
     private String password;
 
     public UserOM() {
-        this.username = "";
-        this.password = "";
     }
 
     public UserOM(String username, String password) {

@@ -1,6 +1,5 @@
 package thecerealkillers.elearning.controller.impl;
 
-import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +8,9 @@ import thecerealkillers.elearning.controller.UserAdminController;
 import thecerealkillers.elearning.model.User;
 import thecerealkillers.elearning.model.UserOM;
 import thecerealkillers.elearning.service.UserAdminService;
-import thecerealkillers.elearning.utilities.PasswordExpert;
-import thecerealkillers.elearning.utilities.PasswordInfo;
 import thecerealkillers.elearning.validator.UserValidator;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.List;
 
 /**
