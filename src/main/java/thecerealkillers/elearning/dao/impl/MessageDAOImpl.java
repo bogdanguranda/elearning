@@ -9,6 +9,7 @@ import thecerealkillers.elearning.model.Message;
 
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -20,12 +21,12 @@ import java.util.Map;
  */
 
 @Repository
-public class MessageDAOImpl implements MessagesDAO{
+public class MessageDAOImpl implements MessagesDAO {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    public void setDataSource (DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -35,7 +36,7 @@ public class MessageDAOImpl implements MessagesDAO{
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("sender", message.getSenderUsername());
         namedParameters.put("receiver", message.getReceiverUsername());
-        namedParameters.put("timestamp", message.getTimestamp().toString());
+        namedParameters.put("timestamp", null);
         namedParameters.put("message", message.getMessage());
 
         namedParameterJdbcTemplate.update(sql, namedParameters);
@@ -61,4 +62,48 @@ public class MessageDAOImpl implements MessagesDAO{
 
         return messageList;
     }
+
+    @Override
+    public List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername) {
+        List<Message> messagesBetweenUsers;
+        String sqlQuery = "select * from message " +
+                "where (sender='" + senderUsername + "' and receiver='" + receiverUsername + "')" +
+                " or (receiver='" + senderUsername + "' and sender='" + receiverUsername + "');";
+
+        messagesBetweenUsers = namedParameterJdbcTemplate.query(sqlQuery, new RowMapper<Message>() {
+            @Override
+            public Message mapRow(ResultSet resultSet, int i) throws SQLException {
+                Message message = new Message();
+                message.setSenderUsername(resultSet.getString("sender"));
+                message.setReceiverUsername(resultSet.getString("receiver"));
+                message.setTimestamp(null);
+                message.setMessage(resultSet.getString("message"));
+
+                return message;
+            }
+        });
+
+        return messagesBetweenUsers;
+    }
+
+    @Override
+    public List<Message> getMessagesByUser(String username) {
+        List<Message> messagesByUser;
+        String sqlQuery = "select * from message where sender='" + username + "' or receiver='" + username + "';";
+
+        messagesByUser = namedParameterJdbcTemplate.query(sqlQuery, new RowMapper<Message>() {
+            @Override
+            public Message mapRow(ResultSet resultSet, int i) throws SQLException {
+                Message message = new Message();
+                message.setSenderUsername(resultSet.getString("sender"));
+                message.setReceiverUsername(resultSet.getString("receiver"));
+                message.setMessage(resultSet.getString("message"));
+                message.setTimestamp(null);
+
+                return message;
+            }
+        });
+        return messagesByUser;
+    }
+
 }

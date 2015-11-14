@@ -3,12 +3,8 @@ package thecerealkillers.elearning.controller.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.MessagesController;
-import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Message;
 import thecerealkillers.elearning.service.MessageService;
 
@@ -19,10 +15,17 @@ import java.util.List;
  */
 
 @RestController
-public class MessageControllerImpl implements MessagesController{
+public class MessageControllerImpl implements MessagesController {
 
     @Autowired
     private MessageService messageService;
+
+    @RequestMapping(value = "/messages", method = RequestMethod.POST)
+    public ResponseEntity createMessage(@RequestBody Message message) {
+        messageService.add(message);
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
 
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     public ResponseEntity<List<Message>> getAllMessages() {
@@ -31,11 +34,18 @@ public class MessageControllerImpl implements MessagesController{
         return new ResponseEntity<>(messageList, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/messages", method = RequestMethod.POST)
-    public ResponseEntity createMessage(@RequestBody Message message) {
-         messageService.add(message);
+    @RequestMapping(value = "/messages/{senderUsername}/{receiverUsername}", method = RequestMethod.GET)
+    public ResponseEntity<List<Message>> getMessagesBetweenUsers(
+            @PathVariable("senderUsername") String senderUsername, @PathVariable("receiverUsername") String receiverUsername) {
+        List<Message> messagesBetweenUsers = messageService.getMessagesBetweenUsers(senderUsername, receiverUsername);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(messagesBetweenUsers, HttpStatus.ACCEPTED);
     }
 
+    @RequestMapping(value = "/messages/{username}", method = RequestMethod.GET)
+    public ResponseEntity<List<Message>> getMessagesByUser(@PathVariable("username") String username) {
+        List<Message> messagesByUser = messageService.getMessagesByUser(username);
+
+        return new ResponseEntity<>(messagesByUser, HttpStatus.ACCEPTED);
+    }
 }

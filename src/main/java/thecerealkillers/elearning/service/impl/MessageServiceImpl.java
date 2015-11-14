@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Service
-public class MessageServiceImpl implements MessageService{
+public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private MessagesDAO messagesDAO;
@@ -26,5 +26,15 @@ public class MessageServiceImpl implements MessageService{
     @Override
     public List<Message> getAll() {
         return messagesDAO.getAll();
+    }
+
+    @Override
+    public List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername) {
+        return messagesDAO.getMessagesBetweenUsers(senderUsername, receiverUsername);
+    }
+
+    @Override
+    public List<Message> getMessagesByUser(String username) {
+        return messagesDAO.getMessagesByUser(username);
     }
 }

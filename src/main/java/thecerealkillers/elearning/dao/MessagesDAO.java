@@ -15,4 +15,8 @@ public interface MessagesDAO {
     void add(Message message);
 
     List<Message> getAll();
+
+    List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername);
+
+    List<Message> getMessagesByUser(String username);
 }
