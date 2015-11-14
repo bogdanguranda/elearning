@@ -16,9 +16,8 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user` (
   `firstName` VARCHAR(45) NULL COMMENT '',
   `lastName` VARCHAR(45) NULL COMMENT '',
   `email` VARCHAR(45) NULL COMMENT '',
-  `studentId` VARCHAR(45) NULL COMMENT '',
-  `hash` VARCHAR(45) NULL COMMENT '',
-  `salt` VARCHAR(45) NULL COMMENT '',
+  `hash` VARCHAR(128) NULL COMMENT '',
+  `salt` VARCHAR(128) NULL COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `email_UNIQUE` (`email` ASC)  COMMENT '')
 ENGINE = InnoDB;
@@ -386,7 +385,7 @@ DROP TABLE IF EXISTS `elearning_db`.`session` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
-  `token` VARCHAR(45) NULL COMMENT '',
+  `token` VARCHAR(36) NULL COMMENT '',
   `creationTimestamp` TIMESTAMP NULL COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
@@ -396,3 +395,9 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+-- INSERTS FOR DEVELOPMENT ONLY!!!
+INSERT INTO USER VALUES ('boogie', 'Bogdan', 'Guranda', 'bogdanguranda@gmail.com', '', '');
+INSERT INTO COURSE VALUES ('Primii pasi in programare', 'Un curs pentru prescolari.', 'Cursul este destinat tuturor copiilor
+mici. Are ca scop invatare lucrurilor de baza din programare rpin limbajul Python.
+Dureaza 6 saptamani: un curs de 2 ore pe saptmana, cu teme de pe o saptamana pe alta.', 'boogie');

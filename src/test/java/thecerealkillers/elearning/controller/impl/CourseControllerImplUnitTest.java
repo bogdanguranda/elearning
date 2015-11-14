@@ -31,7 +31,7 @@ public class CourseControllerImplUnitTest {
 
     @Test
     public void getCourseTest() {
-        Course course = new Course("titlu", "ceva", "ceva", "altceva", "altceva");
+        Course course = new Course("titlu", "ceva", "ceva", "boogie");
         Mockito.when(coursesService.get("titlu")).thenReturn(course);
 
         ResponseEntity<Course> responseEntity = coursesController.getCourse("titlu");
