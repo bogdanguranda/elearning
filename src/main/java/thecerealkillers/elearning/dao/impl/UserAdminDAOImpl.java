@@ -6,11 +6,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.UserAdminDAO;
+import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by cuvidk on 11/8/2015.
@@ -23,6 +24,63 @@ public class UserAdminDAOImpl implements UserAdminDAO {
     @Autowired
     public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    @Override
+    public void addSession(SessionDM session) {
+        String sqlCommand = "insert into session values (:username, :token, :creationTimestamp);";
+        Map<String, String> namedParameters = new HashMap<>();
+
+        namedParameters.put("username", session.getUsername());
+        namedParameters.put("token", session.getToken());
+        namedParameters.put("creationTimestamp", session.getCreationStamp().toString());
+
+        namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+    }
+
+    @Override
+    public SessionDM getSession(String username) {
+        String sql = "select * from session where username = :username;";
+        Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+        List<SessionDM> sessions = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<SessionDM>() {
+            @Override
+            public SessionDM mapRow(ResultSet resultSet, int i) throws SQLException {
+                SessionDM session = new SessionDM();
+                session.setUsername(resultSet.getString("username"));
+                session.setCreationStamp(resultSet.getTimestamp("creationTimestamp"));
+                session.setToken(resultSet.getString("token"));
+
+                return session;
+            }
+        });
+        if (sessions.size() == 0)
+            return null;
+        return sessions.get(0);
+    }
+
+    @Override
+    public User get(String username) {
+        String sql = "select * from user where username = :username;";
+        Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+        List<User> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                User user = new User();
+                user.setUsername(resultSet.getString("username"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFirstName(resultSet.getString("firstName"));
+                user.setLastName(resultSet.getString("lastName"));
+                user.setHash(resultSet.getString("hash"));
+                user.setSalt(resultSet.getString("salt"));
+
+                return user;
+            }
+        });
+        if (userList.size() == 0)
+            return null;
+        return userList.get(0);
     }
 
     @Override

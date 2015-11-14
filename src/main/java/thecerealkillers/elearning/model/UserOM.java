@@ -6,24 +6,15 @@ package thecerealkillers.elearning.model;
 public class UserOM {
     private String username;
     private String password;
-    private String token;
 
     public UserOM() {
         this.username = "";
         this.password = "";
-        this.token = "";
-    }
-
-    public UserOM(String username, String password, String token) {
-        this.username = username;
-        this.password = password;
-        this.token = token;
     }
 
     public UserOM(String username, String password) {
         this.username = username;
         this.password = password;
-        this.token = "";
     }
 
     public String getUsername() {
@@ -42,20 +33,11 @@ public class UserOM {
         this.password = password;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     @Override
     public String toString() {
         return "UserOM{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", token='" + token + '\'' +
                 '}';
     }
 
@@ -67,8 +49,7 @@ public class UserOM {
         UserOM userOM = (UserOM) o;
 
         if (username != null ? !username.equals(userOM.username) : userOM.username != null) return false;
-        if (password != null ? !password.equals(userOM.password) : userOM.password != null) return false;
-        return !(token != null ? !token.equals(userOM.token) : userOM.token != null);
+        return !(password != null ? !password.equals(userOM.password) : userOM.password != null);
 
     }
 
@@ -76,7 +57,6 @@ public class UserOM {
     public int hashCode() {
         int result = username != null ? username.hashCode() : 0;
         result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (token != null ? token.hashCode() : 0);
         return result;
     }
 }

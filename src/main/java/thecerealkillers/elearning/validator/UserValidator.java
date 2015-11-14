@@ -13,8 +13,8 @@ public class UserValidator extends Validator {
     public static String validateUsername(String username) {
         String feedback = "";
 
-        if (username.length() < 7)
-            feedback += "Username should be composed from at least 7 characters.\n";
+        if (username.length() < 6)
+            feedback += "Username should be composed from at least 6 characters.\n";
         if (!isAlphanumeric(username))
             feedback += "Username should only contain alphanumeric characters.\n";
         return feedback;
