@@ -3,7 +3,7 @@ package thecerealkillers.elearning.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserOM;
+import thecerealkillers.elearning.model.UserLoginInfo;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface UserAdminController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    ResponseEntity<String> authenticate(@RequestBody UserOM user) throws NoSuchAlgorithmException;
+    ResponseEntity<String> authenticate(@RequestBody UserLoginInfo user) throws NoSuchAlgorithmException;
 
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     ResponseEntity<User> get(@PathVariable("username") String username);

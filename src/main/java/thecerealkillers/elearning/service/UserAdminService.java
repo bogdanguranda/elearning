@@ -1,7 +1,7 @@
 package thecerealkillers.elearning.service;
 
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserOM;
+import thecerealkillers.elearning.model.UserLoginInfo;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -16,7 +16,7 @@ public interface UserAdminService {
      * @param user
      * @return - A token as a String.
      */
-    String authenticate(UserOM user) throws NoSuchAlgorithmException;
+    String authenticate(UserLoginInfo user) throws NoSuchAlgorithmException;
 
     /**
      * Retrives the user with username

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.UserAdminController;
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserOM;
+import thecerealkillers.elearning.model.UserLoginInfo;
 import thecerealkillers.elearning.service.UserAdminService;
 import thecerealkillers.elearning.validator.UserValidator;
 
@@ -25,14 +25,13 @@ public class UserAdminControllerImpl implements UserAdminController {
 
     @Override
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<String> authenticate(@RequestBody UserOM user) throws NoSuchAlgorithmException {
-        if (UserValidator.validateUsername(user.getUsername()) != "" ||
-                UserValidator.validatePassword(user.getPassword()) != "") {
+    public ResponseEntity<String> authenticate(@RequestBody UserLoginInfo loginInfo) throws NoSuchAlgorithmException {
+        if (UserValidator.validateLoginInfo(loginInfo) != "") {
             //TODO: HttpStatus should be tweaked, Idk what's the suitable one
             return new ResponseEntity<>("Invalid login info.", HttpStatus.NOT_FOUND);
         }
 
-        String token = userAdminService.authenticate(user);
+        String token = userAdminService.authenticate(loginInfo);
         if (token == null)
             //TODO: HttpStatus should be tweaked, Idk what's the suitable one
             return new ResponseEntity<>("Invalid login info.", HttpStatus.NOT_FOUND);

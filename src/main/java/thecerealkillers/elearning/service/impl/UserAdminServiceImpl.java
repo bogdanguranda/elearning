@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.UserAdminDAO;
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserOM;
+import thecerealkillers.elearning.model.UserLoginInfo;
 import thecerealkillers.elearning.service.UserAdminService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
 import thecerealkillers.elearning.utilities.TokenGenerator;
@@ -23,7 +23,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     private UserAdminDAO userAdminDAO;
 
     @Override
-    public String authenticate(UserOM user) throws NoSuchAlgorithmException {
+    public String authenticate(UserLoginInfo user) throws NoSuchAlgorithmException {
         String username = user.getUsername();
 
         User userData = userAdminDAO.get(username);

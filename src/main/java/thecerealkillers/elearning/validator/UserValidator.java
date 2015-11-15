@@ -1,9 +1,24 @@
 package thecerealkillers.elearning.validator;
 
+import thecerealkillers.elearning.model.UserLoginInfo;
+
 /**
  * Created by cuvidk on 11/14/2015.
  */
 public class UserValidator extends Validator {
+    /**
+     * Checks if the login info is valid.
+     * @param loginInfo
+     * @return a string that describes what's wrong with @loginInfo
+     */
+    public static String validateLoginInfo(UserLoginInfo loginInfo) {
+        return validatePassword(loginInfo.getPassword()) + validateUsername(loginInfo.getUsername());
+    }
+
+    /*public static String validateSignUpInfo() {
+        return "K";
+    }*/
+
     /**
      * Checks if @username is a suitable username.
      * @param username
