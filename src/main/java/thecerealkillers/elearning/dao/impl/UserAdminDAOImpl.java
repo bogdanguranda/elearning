@@ -77,7 +77,7 @@ public class UserAdminDAOImpl implements UserAdminDAO {
 
         //Also adds the user in the user_status table as inactive, since it
         //just created the account. Email validation requested in UserAdminService.
-        sqlCommand = "insert into user_status values(:username, 0, default);";
+        sqlCommand = "insert into user_status values(:username, true, default);";
         namedParameters.clear();
 
         namedParameters.put("username", user.getUsername());

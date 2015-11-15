@@ -2,7 +2,6 @@ package thecerealkillers.elearning.dao;
 
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserSignUpInfo;
 import thecerealkillers.elearning.model.UserStatus;
 
 import java.util.List;

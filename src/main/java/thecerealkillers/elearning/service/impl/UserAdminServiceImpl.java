@@ -53,6 +53,7 @@ public class UserAdminServiceImpl implements UserAdminService {
         if (user == null) {
             PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
 
+            user = new User();
             user.setUsername(signUpInfo.getUsername());
             user.setFirstName(signUpInfo.getFirstName());
             user.setLastName(signUpInfo.getLastName());
