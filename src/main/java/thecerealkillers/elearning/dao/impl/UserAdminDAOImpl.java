@@ -62,6 +62,21 @@ public class UserAdminDAOImpl implements UserAdminDAO {
     }
 
     @Override
+    public void addUser(User user) {
+        String sqlCommand = "insert into user values(:username, :firstName, :lastName, :email, :hash, :salt);";
+        Map<String, String> namedParameters = new HashMap<>();
+
+        namedParameters.put("username", user.getUsername());
+        namedParameters.put("firstName", user.getFirstName());
+        namedParameters.put("lastName", user.getLastName());
+        namedParameters.put("email", user.getEmail());
+        namedParameters.put("hash", user.getHash());
+        namedParameters.put("salt", user.getSalt());
+
+        namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+    }
+
+    @Override
     public User get(String username) {
         String sql = "select * from user where username = :username;";
         Map<String, String> namedParameters = Collections.singletonMap("username", username);

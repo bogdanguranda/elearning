@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.validator;
 
 import thecerealkillers.elearning.model.UserLoginInfo;
+import thecerealkillers.elearning.model.UserSignUpInfo;
 
 /**
  * Created by cuvidk on 11/14/2015.
@@ -9,15 +10,29 @@ public class UserValidator extends Validator {
     /**
      * Checks if the login info is valid.
      * @param loginInfo
-     * @return a string that describes what's wrong with @loginInfo
+     * @return a string that describes what's wrong with @loginInfo,
+     * empty string else.
      */
     public static String validateLoginInfo(UserLoginInfo loginInfo) {
-        return validatePassword(loginInfo.getPassword()) + validateUsername(loginInfo.getUsername());
+        return validatePassword(loginInfo.getPassword()) +
+                validateUsername(loginInfo.getUsername());
     }
 
-    /*public static String validateSignUpInfo() {
-        return "K";
-    }*/
+    /**
+     * Checks if the sign-up info is valid.
+     * @param signUpInfo
+     * @return a string that describes what's wrong with @singUpInfo,
+     * empty string else.
+     */
+    public static String validateSignUpInfo(UserSignUpInfo signUpInfo) {
+        //TODO: this is not fully developed, not at all
+        String feedback = "";
+
+        feedback += validateUsername(signUpInfo.getUsername());
+        feedback += validatePassword(signUpInfo.getPassword());
+
+        return feedback;
+    }
 
     /**
      * Checks if @username is a suitable username.
@@ -26,6 +41,7 @@ public class UserValidator extends Validator {
      * empty string else.
      */
     public static String validateUsername(String username) {
+        //TODO: this is not fully developed, not at all
         String feedback = "";
 
         if (username.length() < 6)
@@ -42,6 +58,7 @@ public class UserValidator extends Validator {
      * empty string else.
      */
     public static String validatePassword(String password) {
+        //TODO: this is not fully developed, not at all
         String feedback = "";
 
         if (password.length() < 7)

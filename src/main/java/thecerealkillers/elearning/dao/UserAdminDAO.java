@@ -2,6 +2,7 @@ package thecerealkillers.elearning.dao;
 
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
+import thecerealkillers.elearning.model.UserSignUpInfo;
 
 import java.util.List;
 
@@ -9,6 +10,12 @@ import java.util.List;
  * Created by cuvidk on 11/8/2015.
  */
 public interface UserAdminDAO {
+    /**
+     * Adds a user in the database.
+     * @param user
+     */
+    void addUser(User user);
+
     /**
      * Retrieves the user with the username
      * @username
