@@ -6,11 +6,14 @@ import thecerealkillers.elearning.dao.UserAdminDAO;
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
 import thecerealkillers.elearning.model.UserLoginInfo;
+import thecerealkillers.elearning.model.UserSignUpInfo;
 import thecerealkillers.elearning.service.UserAdminService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
+import thecerealkillers.elearning.utilities.PasswordInfo;
 import thecerealkillers.elearning.utilities.TokenGenerator;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.List;
 
 /**
@@ -41,6 +44,27 @@ public class UserAdminServiceImpl implements UserAdminService {
             }
         }
         return null;
+    }
+
+    @Override
+    public String createUser(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
+        User user = userAdminDAO.get(signUpInfo.getUsername());
+
+        //TODO: ALSO CHECK IF THE EMAIL IS UNIQUE AT DB LEVEL !!!
+        if (user == null) {
+            PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
+
+            user.setUsername(signUpInfo.getUsername());
+            user.setFirstName(signUpInfo.getFirstName());
+            user.setLastName(signUpInfo.getLastName());
+            user.setEmail(signUpInfo.getEmail());
+            user.setSalt(passInfo.getSalt());
+            user.setHash(passInfo.getHash());
+
+            userAdminDAO.addUser(user);
+        } else
+            return "This username is already registered in the data base";
+        return "";
     }
 
     @Override

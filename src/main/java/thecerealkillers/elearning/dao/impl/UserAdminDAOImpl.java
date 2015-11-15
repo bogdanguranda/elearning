@@ -72,7 +72,14 @@ public class UserAdminDAOImpl implements UserAdminDAO {
         namedParameters.put("email", user.getEmail());
         namedParameters.put("hash", user.getHash());
         namedParameters.put("salt", user.getSalt());
+        namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
 
+        //Also adds the user in the user_status table as inactive, since it
+        //just created the account. Email validation requested in UserAdminService.
+        sqlCommand = "insert into user_status values(:username, 0, default);";
+        namedParameters.clear();
+
+        namedParameters.put("username", user.getUsername());
         namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
     }
 
