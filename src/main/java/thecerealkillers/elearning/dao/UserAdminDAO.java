@@ -3,6 +3,7 @@ package thecerealkillers.elearning.dao;
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
 import thecerealkillers.elearning.model.UserSignUpInfo;
+import thecerealkillers.elearning.model.UserStatus;
 
 import java.util.List;
 
@@ -23,6 +24,14 @@ public interface UserAdminDAO {
      * @return - The user with username @username
      */
     User get(String username);
+
+    /**
+     * Retrieves the status of the user with
+     * @username from DB.
+     * @param username
+     * @return - the status of the user.
+     */
+    UserStatus getUserStatus(String username);
 
     /**
      * Adds @session in the database.

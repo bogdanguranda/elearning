@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public class UserStatus {
     private String username;
-    private Boolean status;
+    private Boolean active;
     private Date signUpTimestamp;
 
     public UserStatus() {
@@ -15,7 +15,7 @@ public class UserStatus {
 
     public UserStatus(String username, Boolean status, Date signUpTimestamp) {
         this.username = username;
-        this.status = status;
+        this.active = status;
         this.signUpTimestamp = signUpTimestamp;
     }
 
@@ -27,12 +27,12 @@ public class UserStatus {
         this.username = username;
     }
 
-    public Boolean getStatus() {
-        return status;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Date getSignUpTimestamp() {
@@ -47,7 +47,7 @@ public class UserStatus {
     public String toString() {
         return "UserStatus{" +
                 "username='" + username + '\'' +
-                ", status=" + status +
+                ", status=" + active +
                 ", signUpTimestamp=" + signUpTimestamp +
                 '}';
     }
@@ -60,7 +60,7 @@ public class UserStatus {
         UserStatus that = (UserStatus) o;
 
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
+        if (active != null ? !active.equals(that.active) : that.active != null) return false;
         return !(signUpTimestamp != null ? !signUpTimestamp.equals(that.signUpTimestamp) : that.signUpTimestamp != null);
 
     }
@@ -68,7 +68,7 @@ public class UserStatus {
     @Override
     public int hashCode() {
         int result = username != null ? username.hashCode() : 0;
-        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (active != null ? active.hashCode() : 0);
         result = 31 * result + (signUpTimestamp != null ? signUpTimestamp.hashCode() : 0);
         return result;
     }

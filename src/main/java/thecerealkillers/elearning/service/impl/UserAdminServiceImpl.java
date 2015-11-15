@@ -3,10 +3,7 @@ package thecerealkillers.elearning.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.UserAdminDAO;
-import thecerealkillers.elearning.model.SessionDM;
-import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserLoginInfo;
-import thecerealkillers.elearning.model.UserSignUpInfo;
+import thecerealkillers.elearning.model.*;
 import thecerealkillers.elearning.service.UserAdminService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
 import thecerealkillers.elearning.utilities.PasswordInfo;
@@ -30,8 +27,10 @@ public class UserAdminServiceImpl implements UserAdminService {
         String username = user.getUsername();
 
         User userData = userAdminDAO.get(username);
-        if (userData != null) {
-            if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())) {
+        UserStatus userStatus = userAdminDAO.getUserStatus(username);
+        if (userData != null && userStatus != null) {
+            if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())
+                    && userStatus.getActive()) {
                 SessionDM session = userAdminDAO.getSession(username);
                 if (session != null)
                     return session.getToken();

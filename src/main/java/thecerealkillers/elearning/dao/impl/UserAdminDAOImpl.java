@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.UserAdminDAO;
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
+import thecerealkillers.elearning.model.UserStatus;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +51,7 @@ public class UserAdminDAOImpl implements UserAdminDAO {
             public SessionDM mapRow(ResultSet resultSet, int i) throws SQLException {
                 SessionDM session = new SessionDM();
                 session.setUsername(resultSet.getString("username"));
-                session.setCreationStamp(resultSet.getTimestamp("creationTimestamp"));
+                session.setCreationStamp(resultSet.getDate("creationTimestamp"));
                 session.setToken(resultSet.getString("token"));
 
                 return session;
@@ -105,6 +106,30 @@ public class UserAdminDAOImpl implements UserAdminDAO {
         if (userList.size() == 0)
             return null;
         return userList.get(0);
+    }
+
+    @Override
+    public UserStatus getUserStatus(String username) {
+        String sqlCommand = "select * from user_status where username = :username;";
+        Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+        List<UserStatus> statuses = namedParameterJdbcTemplate.query(sqlCommand,
+                namedParameters, new RowMapper<UserStatus>() {
+            @Override
+            public UserStatus mapRow(ResultSet resultSet, int i) throws SQLException {
+                UserStatus status = new UserStatus();
+
+                status.setUsername(resultSet.getString("username"));
+                status.setActive(resultSet.getBoolean("active"));
+                status.setSignUpTimestamp(resultSet.getDate("signUpTimestamp"));
+
+                return status;
+            }
+        });
+
+        if (statuses.size() == 0)
+            return null;
+        return statuses.get(0);
     }
 
     @Override
