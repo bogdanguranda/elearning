@@ -3,14 +3,14 @@ package thecerealkillers.elearning.model;
 /**
  * Created by cuvidk on 11/14/2015.
  */
-public class UserOM {
+public class UserLoginInfo {
     private String username;
     private String password;
 
-    public UserOM() {
+    public UserLoginInfo() {
     }
 
-    public UserOM(String username, String password) {
+    public UserLoginInfo(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -33,7 +33,7 @@ public class UserOM {
 
     @Override
     public String toString() {
-        return "UserOM{" +
+        return "UserLoginInfo{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
@@ -42,12 +42,12 @@ public class UserOM {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserOM)) return false;
+        if (!(o instanceof UserLoginInfo)) return false;
 
-        UserOM userOM = (UserOM) o;
+        UserLoginInfo userLoginInfo = (UserLoginInfo) o;
 
-        if (username != null ? !username.equals(userOM.username) : userOM.username != null) return false;
-        return !(password != null ? !password.equals(userOM.password) : userOM.password != null);
+        if (username != null ? !username.equals(userLoginInfo.username) : userLoginInfo.username != null) return false;
+        return !(password != null ? !password.equals(userLoginInfo.password) : userLoginInfo.password != null);
 
     }
 

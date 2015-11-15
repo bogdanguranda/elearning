@@ -3,14 +3,14 @@ package thecerealkillers.elearning.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.UserAdminDAO;
-import thecerealkillers.elearning.model.SessionDM;
-import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserOM;
+import thecerealkillers.elearning.model.*;
 import thecerealkillers.elearning.service.UserAdminService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
+import thecerealkillers.elearning.utilities.PasswordInfo;
 import thecerealkillers.elearning.utilities.TokenGenerator;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.List;
 
 /**
@@ -23,12 +23,14 @@ public class UserAdminServiceImpl implements UserAdminService {
     private UserAdminDAO userAdminDAO;
 
     @Override
-    public String authenticate(UserOM user) throws NoSuchAlgorithmException {
+    public String authenticate(UserLoginInfo user) throws NoSuchAlgorithmException {
         String username = user.getUsername();
 
         User userData = userAdminDAO.get(username);
-        if (userData != null) {
-            if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())) {
+        UserStatus userStatus = userAdminDAO.getUserStatus(username);
+        if (userData != null && userStatus != null) {
+            if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())
+                    && userStatus.getActive()) {
                 SessionDM session = userAdminDAO.getSession(username);
                 if (session != null)
                     return session.getToken();
@@ -41,6 +43,28 @@ public class UserAdminServiceImpl implements UserAdminService {
             }
         }
         return null;
+    }
+
+    @Override
+    public String createUser(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
+        User user = userAdminDAO.get(signUpInfo.getUsername());
+
+        //TODO: ALSO CHECK IF THE EMAIL IS UNIQUE AT DB LEVEL !!!
+        if (user == null) {
+            PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
+
+            user = new User();
+            user.setUsername(signUpInfo.getUsername());
+            user.setFirstName(signUpInfo.getFirstName());
+            user.setLastName(signUpInfo.getLastName());
+            user.setEmail(signUpInfo.getEmail());
+            user.setSalt(passInfo.getSalt());
+            user.setHash(passInfo.getHash());
+
+            userAdminDAO.addUser(user);
+        } else
+            return "This username is already registered in the data base";
+        return "";
     }
 
     @Override

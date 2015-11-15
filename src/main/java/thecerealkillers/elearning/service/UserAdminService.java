@@ -1,9 +1,11 @@
 package thecerealkillers.elearning.service;
 
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserOM;
+import thecerealkillers.elearning.model.UserLoginInfo;
+import thecerealkillers.elearning.model.UserSignUpInfo;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.List;
 
 /**
@@ -11,12 +13,21 @@ import java.util.List;
  */
 public interface UserAdminService {
     /**
-     * Retrives a token if the @user is
+     * Retrives a token if the @loginInfo.user is
      * existent in the database.
-     * @param user
+     * @param loginInfo
      * @return - A token as a String.
      */
-    String authenticate(UserOM user) throws NoSuchAlgorithmException;
+    String authenticate(UserLoginInfo loginInfo) throws NoSuchAlgorithmException;
+
+    /**
+     * This should create a user if it's not already
+     * existent in the database.
+     * @param signUpInfo
+     * @return a string containing info about what went wrong,
+     * empty else.
+     */
+    String createUser(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
 
     /**
      * Retrives the user with username
