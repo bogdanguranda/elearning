@@ -16,4 +16,6 @@ public interface MessageService {
     List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername);
 
     List<Message> getMessagesByUser(String username);
+
+    void delete(String username);
 }
