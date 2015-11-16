@@ -1,2 +1,2 @@
 # elearning
-E-learning web aplication.
+E-learning web aplication's REST API.
