@@ -27,7 +27,7 @@ public interface UserAdminService {
      * @return a string containing info about what went wrong,
      * empty else.
      */
-    String createUser(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
+    String signUp(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
 
     /**
      * Retrives the user with username

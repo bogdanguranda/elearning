@@ -63,7 +63,7 @@ public class UserAdminDAOImpl implements UserAdminDAO {
     }
 
     @Override
-    public void addUser(User user) {
+    public void signUp(User user) {
         String sqlCommand = "insert into user values(:username, :firstName, :lastName, :email, :hash, :salt);";
         Map<String, String> namedParameters = new HashMap<>();
 

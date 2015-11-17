@@ -46,11 +46,11 @@ public class UserAdminControllerImpl implements UserAdminController {
 
     @Override
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestBody UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
+    public ResponseEntity<String> signUp(@RequestBody UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
         try {
             UserValidator.validateSignUpInfo(signUpInfo);
 
-            String validationFeedback = userAdminService.createUser(signUpInfo);
+            String validationFeedback = userAdminService.signUp(signUpInfo);
             if (!validationFeedback.equals(""))
                 return new ResponseEntity<>(validationFeedback, HttpStatus.UNPROCESSABLE_ENTITY);
             return new ResponseEntity<>("Account successfuly created. Please check your email to activate it.", HttpStatus.OK);

@@ -14,7 +14,7 @@ public interface UserAdminDAO {
      * Adds a user in the database.
      * @param user
      */
-    void addUser(User user);
+    void signUp(User user);
 
     /**
      * Retrieves the user with the username

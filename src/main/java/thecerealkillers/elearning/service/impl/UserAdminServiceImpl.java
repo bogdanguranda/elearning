@@ -46,7 +46,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
-    public String createUser(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
+    public String signUp(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
         User user = userAdminDAO.get(signUpInfo.getUsername());
 
         //TODO: ALSO CHECK IF THE EMAIL IS UNIQUE AT DB LEVEL !!!
@@ -61,7 +61,7 @@ public class UserAdminServiceImpl implements UserAdminService {
             user.setSalt(passInfo.getSalt());
             user.setHash(passInfo.getHash());
 
-            userAdminDAO.addUser(user);
+            userAdminDAO.signUp(user);
         } else
             return "This username is already registered in the data base";
         return "";

@@ -20,7 +20,7 @@ public interface UserAdminController {
     ResponseEntity<String> authenticate(@RequestBody UserLoginInfo loginInfo) throws NoSuchAlgorithmException;
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    ResponseEntity<String> createUser(@RequestBody UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
+    ResponseEntity<String> signUp(@RequestBody UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
 
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     ResponseEntity<User> get(@PathVariable("username") String username);
