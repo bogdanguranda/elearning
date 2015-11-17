@@ -18,6 +18,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private MessagesDAO messagesDAO;
+    @Autowired
+    private UserAdminDAO userAdminDAO;
 
     @Override
     public void add(Message message) {
