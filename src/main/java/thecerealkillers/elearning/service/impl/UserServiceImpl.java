@@ -2,9 +2,9 @@ package thecerealkillers.elearning.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thecerealkillers.elearning.dao.UserAdminDAO;
+import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.*;
-import thecerealkillers.elearning.service.UserAdminService;
+import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
 import thecerealkillers.elearning.utilities.PasswordInfo;
 import thecerealkillers.elearning.utilities.TokenGenerator;
@@ -17,10 +17,10 @@ import java.util.List;
  * Created by cuvidk on 11/8/2015.
  */
 @Service
-public class UserAdminServiceImpl implements UserAdminService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserAdminDAO userAdminDAO;
+    private UserDAO userAdminDAO;
 
     @Override
     public String authenticate(UserLoginInfo user) throws NoSuchAlgorithmException {

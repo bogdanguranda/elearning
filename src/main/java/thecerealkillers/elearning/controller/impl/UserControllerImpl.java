@@ -1,17 +1,16 @@
 package thecerealkillers.elearning.controller.impl;
 
-import javafx.beans.InvalidationListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import thecerealkillers.elearning.controller.UserAdminController;
+import thecerealkillers.elearning.controller.UserController;
 import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
 import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
 import thecerealkillers.elearning.model.User;
 import thecerealkillers.elearning.model.UserLoginInfo;
 import thecerealkillers.elearning.model.UserSignUpInfo;
-import thecerealkillers.elearning.service.UserAdminService;
+import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.validator.UserValidator;
 
 import java.security.NoSuchAlgorithmException;
@@ -23,10 +22,10 @@ import java.util.List;
  */
 @RestController
 @CrossOrigin
-public class UserAdminControllerImpl implements UserAdminController {
+public class UserControllerImpl implements UserController {
 
     @Autowired
-    private UserAdminService userAdminService;
+    private UserService userAdminService;
 
     @Override
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
