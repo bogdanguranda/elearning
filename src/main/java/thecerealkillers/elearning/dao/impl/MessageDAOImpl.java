@@ -12,9 +12,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Lucian on 10.11.2015.
@@ -32,12 +30,12 @@ public class MessageDAOImpl implements MessagesDAO {
 
     @Override
     public void add(Message message) {
-        String sql = "insert into message values (:sender, :receiver, :timestamp, :message);";
+        String sql = "insert into message values (:sender, :receiver, :message, :timestamp);";
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("sender", message.getSenderUsername());
         namedParameters.put("receiver", message.getReceiverUsername());
-        namedParameters.put("timestamp", null);
         namedParameters.put("message", message.getMessage());
+        namedParameters.put("timestamp", null);
 
         namedParameterJdbcTemplate.update(sql, namedParameters);
     }
@@ -64,13 +62,13 @@ public class MessageDAOImpl implements MessagesDAO {
     }
 
     @Override
-    public List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername) {
+    public List<Message> getMessagesBetweenUsers(String sender, String receiver) {
         List<Message> messagesBetweenUsers;
-        String sqlQuery = "select * from message " +
-                "where (sender='" + senderUsername + "' and receiver='" + receiverUsername + "')" +
-                " or (receiver='" + senderUsername + "' and sender='" + receiverUsername + "');";
+        String sql = "select * from message " +
+                "where (sender = '" + sender + "' and receiver = '" + receiver + "') " +
+                "or (receiver = '" + sender + "' and sender = '" + receiver + "');";
 
-        messagesBetweenUsers = namedParameterJdbcTemplate.query(sqlQuery, new RowMapper<Message>() {
+        messagesBetweenUsers = namedParameterJdbcTemplate.query(sql, new RowMapper<Message>() {
             @Override
             public Message mapRow(ResultSet resultSet, int i) throws SQLException {
                 Message message = new Message();
@@ -89,9 +87,9 @@ public class MessageDAOImpl implements MessagesDAO {
     @Override
     public List<Message> getMessagesByUser(String username) {
         List<Message> messagesByUser;
-        String sqlQuery = "select * from message where sender='" + username + "' or receiver='" + username + "';";
+        String sql = "select * from message where sender = '" + username + "' or receiver = '" + username + "' ;";
 
-        messagesByUser = namedParameterJdbcTemplate.query(sqlQuery, new RowMapper<Message>() {
+        messagesByUser = namedParameterJdbcTemplate.query(sql, new RowMapper<Message>() {
             @Override
             public Message mapRow(ResultSet resultSet, int i) throws SQLException {
                 Message message = new Message();
@@ -106,4 +104,11 @@ public class MessageDAOImpl implements MessagesDAO {
         return messagesByUser;
     }
 
+    @Override
+    public void delete(String username) {
+        String sql = "delete from message where sender = :username;";
+        Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+        namedParameterJdbcTemplate.update(sql, namedParameters);
+    }
 }

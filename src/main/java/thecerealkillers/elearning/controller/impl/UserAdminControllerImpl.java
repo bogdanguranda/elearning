@@ -1,10 +1,13 @@
 package thecerealkillers.elearning.controller.impl;
 
+import javafx.beans.InvalidationListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.UserAdminController;
+import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
+import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
 import thecerealkillers.elearning.model.User;
 import thecerealkillers.elearning.model.UserLoginInfo;
 import thecerealkillers.elearning.model.UserSignUpInfo;
@@ -28,31 +31,32 @@ public class UserAdminControllerImpl implements UserAdminController {
     @Override
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<String> authenticate(@RequestBody UserLoginInfo loginInfo) throws NoSuchAlgorithmException {
-        if (!UserValidator.validateLoginInfo(loginInfo).equals(""))
-            //TODO: HttpStatus should be tweaked, Idk what's the suitable one
-            return new ResponseEntity<>("Invalid login info.", HttpStatus.UNPROCESSABLE_ENTITY);
+        try {
+            UserValidator.validateLoginInfo(loginInfo);
 
-        String token = userAdminService.authenticate(loginInfo);
-        if (token == null)
-            //TODO: HttpStatus should be tweaked, Idk what's the suitable one
-            return new ResponseEntity<>("Invalid login info.", HttpStatus.UNPROCESSABLE_ENTITY);
-
-        return new ResponseEntity<>(token, HttpStatus.OK);
+            String token = userAdminService.authenticate(loginInfo);
+            if (token == null)
+                //TODO: HttpStatus should be tweaked, Idk what's the suitable one
+                return new ResponseEntity<>("Invalid login info.", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (InvalidLoginInfoException login_exception) {
+            return new ResponseEntity<>(login_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public ResponseEntity<String> createUser(@RequestBody UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
-        String validationFeedback = UserValidator.validateSignUpInfo(signUpInfo);
+        try {
+            UserValidator.validateSignUpInfo(signUpInfo);
 
-        if (!validationFeedback.equals(""))
-            return new ResponseEntity<>(validationFeedback, HttpStatus.UNPROCESSABLE_ENTITY);
-
-        validationFeedback = userAdminService.createUser(signUpInfo);
-        if (!validationFeedback.equals(""))
-            return new ResponseEntity<>(validationFeedback, HttpStatus.UNPROCESSABLE_ENTITY);
-
-        return new ResponseEntity<>("Account successfuly created. Please check your email to activate it.", HttpStatus.OK);
+            String validationFeedback = userAdminService.createUser(signUpInfo);
+            if (!validationFeedback.equals(""))
+                return new ResponseEntity<>(validationFeedback, HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("Account successfuly created. Please check your email to activate it.", HttpStatus.OK);
+        } catch (InvalidSignUpInfoException info_exception) {
+            return new ResponseEntity<>(info_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override

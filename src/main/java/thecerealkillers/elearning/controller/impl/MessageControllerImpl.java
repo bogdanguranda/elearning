@@ -48,4 +48,11 @@ public class MessageControllerImpl implements MessagesController {
 
         return new ResponseEntity<>(messagesByUser, HttpStatus.ACCEPTED);
     }
+
+    @RequestMapping(value = "/messages", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUserMessages(@RequestParam(value = "username", required = true) String username) {
+        messageService.delete(username);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

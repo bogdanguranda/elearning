@@ -3,6 +3,7 @@ package thecerealkillers.elearning.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.MessagesDAO;
+import thecerealkillers.elearning.dao.UserAdminDAO;
 import thecerealkillers.elearning.model.Message;
 import thecerealkillers.elearning.service.MessageService;
 
@@ -17,6 +18,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private MessagesDAO messagesDAO;
+    @Autowired
+    private UserAdminDAO userAdminDAO;
 
     @Override
     public void add(Message message) {
@@ -36,5 +39,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> getMessagesByUser(String username) {
         return messagesDAO.getMessagesByUser(username);
+    }
+
+    @Override
+    public void delete(String username) {
+        messagesDAO.delete(username);
     }
 }
