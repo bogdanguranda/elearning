@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by cuvidk on 11/8/2015.
  */
-public interface UserAdminService {
+public interface UserService {
     /**
      * Retrives a token if the @loginInfo.user is
      * existent in the database.

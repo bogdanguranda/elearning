@@ -14,7 +14,7 @@ import java.util.List;
  * Created by cuvidk on 11/8/2015.
  */
 @RestController
-public interface UserAdminController {
+public interface UserController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     ResponseEntity<String> authenticate(@RequestBody UserLoginInfo loginInfo) throws NoSuchAlgorithmException;
