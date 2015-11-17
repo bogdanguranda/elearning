@@ -19,9 +19,9 @@ public class UserValidator extends Validator {
      * @return a string that describes what's wrong with @loginInfo,
      * empty string else.
      */
-    public static void validateLoginInfo(UserLoginInfo loginInfo) throws InvalidLoginInfo {
+    public static void validateLoginInfo(UserLoginInfo loginInfo) throws InvalidLoginInfoException {
         String feedback = "";
-        
+
         try {
             validateUsername(loginInfo.getUsername());
         } catch (InvalidUsernameException ex_username) {
@@ -34,7 +34,7 @@ public class UserValidator extends Validator {
         }
 
         if (!"".equals(feedback))
-            throw new InvalidLoginInfo(feedback);
+            throw new InvalidLoginInfoException(feedback);
     }
 
     /**
@@ -44,7 +44,7 @@ public class UserValidator extends Validator {
      * @return a string that describes what's wrong with @singUpInfo,
      * empty string else.
      */
-    public static void validateSignUpInfo(UserSignUpInfo signUpInfo) throws InvalidSignUpInfo {
+    public static void validateSignUpInfo(UserSignUpInfo signUpInfo) throws InvalidSignUpInfoException {
         String feedback = "";
         try {
             validateUsername(signUpInfo.getUsername());
@@ -52,12 +52,12 @@ public class UserValidator extends Validator {
             feedback += ex_username.getMessage();
         }
         try {
-            validateName(signUpInfo.getFirstName());
+            validateName(signUpInfo.getFirstName(), true);
         } catch (InvalidNameException ex_name) {
             feedback += ex_name.getMessage();
         }
         try {
-            validateName(signUpInfo.getLastName());
+            validateName(signUpInfo.getLastName(), false);
         } catch (InvalidNameException ex_name) {
             feedback += ex_name.getMessage();
         }
@@ -73,7 +73,7 @@ public class UserValidator extends Validator {
         }
 
         if (!"".equals(feedback))
-            throw new InvalidSignUpInfo(feedback);
+            throw new InvalidSignUpInfoException(feedback);
 
     }
 
@@ -84,7 +84,7 @@ public class UserValidator extends Validator {
      * @return a string that describes what's wrong with @name,
      * empty string else
      */
-    private static void validateName(String name) throws InvalidNameException {
+    private static void validateName(String name, boolean isFirstName) throws InvalidNameException {
         String feedback = "";
         Pattern pattern;
         Matcher matcher;
@@ -93,12 +93,15 @@ public class UserValidator extends Validator {
         pattern = Pattern.compile(NAME_PATTERN);
         matcher = pattern.matcher(name);
 
-        if (!matcher.matches())
-            feedback += InvalidNameException.NAME_WRONG_FORMAT;
+        if (!matcher.matches() && isFirstName)
+            feedback += InvalidNameException.FIRST_NAME_WRONG_FORMAT;
+        if (!matcher.matches() && !isFirstName)
+            feedback += InvalidNameException.LAST_NAME_WRONG_FORMAT;
 
         if (!"".equals(feedback))
             throw new InvalidNameException(feedback);
     }
+
 
     /**
      * Checks if @username is a suitable username.

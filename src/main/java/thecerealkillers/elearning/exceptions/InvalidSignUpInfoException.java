@@ -3,8 +3,8 @@ package thecerealkillers.elearning.exceptions;
 /**
  * Created by Lucian on 17.11.2015.
  */
-public class InvalidLoginInfo extends Throwable {
-    public InvalidLoginInfo(String feedback) {
+public class InvalidSignUpInfoException extends Throwable {
+    public InvalidSignUpInfoException(String feedback) {
         super(feedback);
     }
 }
