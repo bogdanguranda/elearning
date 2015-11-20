@@ -63,8 +63,9 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-    public ResponseEntity<User> get(@PathVariable("username") String username) {
+    public ResponseEntity<User> get(@PathVariable("username") String username, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token); //if the token is not found an exception will occur
             User user = userAdminService.get(username);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (ServiceException service_exception) {
@@ -74,10 +75,10 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAll() {
+    public ResponseEntity<List<User>> getAll(@RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token); //if the token is not found an exception will occur
             List<User> users = userAdminService.getAll();
-
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (ServiceException service_exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

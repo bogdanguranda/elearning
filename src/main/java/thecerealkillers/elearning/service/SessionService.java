@@ -7,7 +7,6 @@ import thecerealkillers.elearning.model.SessionDM;
 /**
  * Created by cuvidk on 11/20/2015.
  */
-@Service
 public interface SessionService {
     /**
      * Adds @session in the database.

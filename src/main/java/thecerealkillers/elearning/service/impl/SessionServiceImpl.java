@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
@@ -12,6 +13,7 @@ import thecerealkillers.elearning.service.SessionService;
  */
 @Service
 public class SessionServiceImpl implements SessionService {
+    @Autowired
     private SessionDAO sessionDAO;
 
     @Override
