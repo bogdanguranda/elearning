@@ -1,5 +1,7 @@
 package thecerealkillers.elearning.service;
 
+import org.springframework.stereotype.Service;
+import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.User;
 import thecerealkillers.elearning.model.UserLoginInfo;
 import thecerealkillers.elearning.model.UserSignUpInfo;
@@ -17,17 +19,18 @@ public interface UserService {
      * existent in the database.
      * @param loginInfo
      * @return - A token as a String.
+     * @throws ServiceException if DAOException was caught /
+     * other weird exception.
      */
-    String authenticate(UserLoginInfo loginInfo) throws NoSuchAlgorithmException;
+    String authenticate(UserLoginInfo loginInfo) throws ServiceException;
 
     /**
      * This should create a user if it's not already
      * existent in the database.
      * @param signUpInfo
-     * @return a string containing info about what went wrong,
-     * empty else.
+     * @throws ServiceException if DAOException was caught / etc.
      */
-    String signUp(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
+    void signUp(UserSignUpInfo signUpInfo) throws ServiceException;
 
     /**
      * Retrives the user with username
@@ -35,11 +38,11 @@ public interface UserService {
      * @param username
      * @return - the user with username @username
      */
-    User get(String username);
+    User get(String username) throws ServiceException;
 
     /**
      * Retrieves a list of all the
      * existing users in the database.
      */
-    List<User> getAll();
+    List<User> getAll() throws ServiceException;
 }

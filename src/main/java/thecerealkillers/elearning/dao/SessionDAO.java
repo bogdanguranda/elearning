@@ -33,4 +33,13 @@ public interface SessionDAO {
      * other weird problem.
      */
     SessionDM getSessionByToken(String token) throws DAOException;
+
+    /**
+     * Checks if there exists an active session in the
+     * DB for user @username
+     * @param username
+     * @return true if there already is an active session, false else
+     * @throws DAOException if DB problems / etc.
+     */
+    boolean isSessionAvailable(String username) throws DAOException;
 }

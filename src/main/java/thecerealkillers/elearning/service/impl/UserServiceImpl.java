@@ -2,7 +2,10 @@ package thecerealkillers.elearning.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.dao.UserDAO;
+import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.*;
 import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
@@ -21,59 +24,76 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userAdminDAO;
+    @Autowired
+    private SessionDAO sessionDAO;
 
     @Override
-    public String authenticate(UserLoginInfo user) throws NoSuchAlgorithmException {
-        String username = user.getUsername();
+    public String authenticate(UserLoginInfo user) throws ServiceException {
+        try {
+            String username = user.getUsername();
 
-        User userData = userAdminDAO.get(username);
-        UserStatus userStatus = userAdminDAO.getUserStatus(username);
-        if (userData != null && userStatus != null) {
+            User userData = userAdminDAO.get(username);
+            UserStatus userStatus = userAdminDAO.getUserStatus(username);
             if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())
                     && userStatus.getActive()) {
-                SessionDM session = userAdminDAO.getSession(username);
-                if (session != null)
-                    return session.getToken();
+                if (sessionDAO.isSessionAvailable(username))
+                    return sessionDAO.getSessionByUser(username).getToken();
                 else {
                     String token = TokenGenerator.generate();
-                    session = new SessionDM(username, token, null);
-                    userAdminDAO.addSession(session);
+                    SessionDM session = new SessionDM(username, token, null);
+                    sessionDAO.addSession(session);
                     return token;
                 }
             }
+            throw new ServiceException("Wrong password / user not active.");
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(dao_exception.getMessage());
+        } catch (NoSuchAlgorithmException exception) {
+            throw new ServiceException(exception.getMessage());
         }
-        return null;
     }
 
     @Override
-    public String signUp(UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException {
-        User user = userAdminDAO.get(signUpInfo.getUsername());
+    public void signUp(UserSignUpInfo signUpInfo) throws ServiceException {
+        try {
+            if (userAdminDAO.isEmailAvailable(signUpInfo.getEmail()) &&
+                    userAdminDAO.isUsernameAvailable(signUpInfo.getUsername())) {
+                PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
 
-        //TODO: ALSO CHECK IF THE EMAIL IS UNIQUE AT DB LEVEL !!!
-        if (user == null) {
-            PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
+                User user = new User();
+                user.setUsername(signUpInfo.getUsername());
+                user.setFirstName(signUpInfo.getFirstName());
+                user.setLastName(signUpInfo.getLastName());
+                user.setEmail(signUpInfo.getEmail());
+                user.setSalt(passInfo.getSalt());
+                user.setHash(passInfo.getHash());
 
-            user = new User();
-            user.setUsername(signUpInfo.getUsername());
-            user.setFirstName(signUpInfo.getFirstName());
-            user.setLastName(signUpInfo.getLastName());
-            user.setEmail(signUpInfo.getEmail());
-            user.setSalt(passInfo.getSalt());
-            user.setHash(passInfo.getHash());
-
-            userAdminDAO.signUp(user);
-        } else
-            return "This username is already registered in the data base";
-        return "";
+                userAdminDAO.signUp(user);
+            }
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(dao_exception.getMessage());
+        } catch (NoSuchAlgorithmException exception) {
+            throw new ServiceException(exception.getMessage());
+        } catch (NoSuchProviderException exception) {
+            throw new ServiceException(exception.getMessage());
+        }
     }
 
     @Override
-    public User get(String username) {
-        return userAdminDAO.get(username);
+    public User get(String username) throws ServiceException {
+        try {
+            return userAdminDAO.get(username);
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(dao_exception.getMessage());
+        }
     }
 
     @Override
-    public List<User> getAll() {
-        return userAdminDAO.getAll();
+    public List<User> getAll() throws ServiceException {
+        try {
+            return userAdminDAO.getAll();
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(dao_exception.getMessage());
+        }
     }
 }

@@ -92,4 +92,26 @@ public class SessionDAOImpl implements SessionDAO {
             throw new DAOException(exception.getMessage());
         }
     }
+
+    @Override
+    public boolean isSessionAvailable(String username) throws DAOException {
+        try {
+            String sql = "select username from session where username = :username;";
+            Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+            List<String> users = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    String username = resultSet.getString("username");
+
+                    return username;
+                }
+            });
+            if (users.size() == 0)
+                return false;
+            return true;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
 }
