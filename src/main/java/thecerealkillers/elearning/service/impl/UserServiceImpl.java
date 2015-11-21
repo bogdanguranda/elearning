@@ -6,7 +6,6 @@ import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.*;
 import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
-import thecerealkillers.elearning.utilities.PasswordInfo;
 import thecerealkillers.elearning.utilities.TokenGenerator;
 
 import java.security.NoSuchAlgorithmException;
