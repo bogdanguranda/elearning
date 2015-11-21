@@ -17,7 +17,7 @@ public interface TopicController {
     ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title);
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.POST)
-    ResponseEntity updateTopic( @PathVariable ("title") String title, @RequestBody Topic newTopic);
+    ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic);
 
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
     ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title);
