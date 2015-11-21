@@ -1,5 +1,7 @@
 package thecerealkillers.elearning.utilities;
 
+import thecerealkillers.elearning.model.PasswordInfo;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
