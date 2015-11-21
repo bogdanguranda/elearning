@@ -23,8 +23,8 @@ public interface UserController {
     ResponseEntity<String> signUp(@RequestBody UserSignUpInfo signUpInfo) throws NoSuchProviderException, NoSuchAlgorithmException;
 
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-    ResponseEntity<User> get(@PathVariable("username") String username);
+    ResponseEntity<User> get(@PathVariable("username") String username, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    ResponseEntity<List<User>> getAll();
+    ResponseEntity<List<User>> getAll(@RequestHeader(value="token") String token);
 }

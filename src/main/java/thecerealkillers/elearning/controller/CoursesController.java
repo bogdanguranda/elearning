@@ -10,14 +10,15 @@ import java.util.List;
 public interface CoursesController {
 
     @RequestMapping(value = "/courses", method = RequestMethod.GET)
-    ResponseEntity<List<Course>> getAllCourses();
+    ResponseEntity<List<Course>> getAllCourses(@RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/courses", method = RequestMethod.POST)
-    ResponseEntity createCourse(@RequestBody Course course);
+    ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/courses", method = RequestMethod.DELETE)
-    ResponseEntity deleteCourse(@RequestParam(value = "title", required = true) String title);
+    ResponseEntity deleteCourse(@RequestParam(value = "title", required = true) String title,
+                                @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/courses/{title}", method = RequestMethod.GET)
-    ResponseEntity<Course> getCourse(@PathVariable("title") String title);
+    ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value="token") String token);
 }
