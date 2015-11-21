@@ -398,3 +398,15 @@ INSERT INTO USER VALUES ('boogie', 'Bogdan', 'Guranda', 'bogdanguranda@gmail.com
 INSERT INTO COURSE VALUES ('Primii pasi in programare', 'Un curs pentru prescolari.', 'Cursul este destinat tuturor copiilor
 mici. Are ca scop invatare lucrurilor de baza din programare rpin limbajul Python.
 Dureaza 6 saptamani: un curs de 2 ore pe saptmana, cu teme de pe o saptamana pe alta.', 'boogie');
+/*
+INSERT INTO topic VALUES ('Topic1');
+INSERT INTO topic VALUES ('Topic2');
+INSERT INTO thread VALUES ('Thread11', 'boogie');
+INSERT INTO thread VALUES ('Thread21', 'boogie');
+INSERT INTO thread VALUES ('Thread12', 'boogie');
+INSERT INTO thread VALUES ('Thread22', 'boogie');
+INSERT INTO topic_thread VALUES ('Topic1', 'Thread11');
+INSERT INTO topic_thread VALUES ('Topic1', 'Thread21');
+INSERT INTO topic_thread VALUES ('Topic2', 'Thread12');
+INSERT INTO topic_thread VALUES ('Topic2', 'Thread22');
+*/

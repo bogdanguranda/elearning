@@ -15,32 +15,37 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     private ForumThreadDAO forumThreadDAO;
 
     @Override
-    public void add(ForumThread newForumThread) {
+    public void add(ForumThread newForumThread, String topicTitle) {
+        forumThreadDAO.add(newForumThread, topicTitle);
+    }
 
+    @Override
+    public List<ForumThread> getAll() {
+        return forumThreadDAO.getAll();
     }
 
     @Override
     public List<ForumThread> getThreadsOwnedByUser(String userName) {
-        return null;
+        return forumThreadDAO.getThreadsOwnedByUser(userName);
     }
 
     @Override
     public ForumThread getThreadByTitle(String threadTitle) {
-        return null;
+        return forumThreadDAO.getThreadByTitle(threadTitle);
     }
 
     @Override
-    public ForumThread getThreadByTopic(String threadTopic) {
-        return null;
+    public List<ForumThread> getThreadsForTopic(String topic) {
+        return forumThreadDAO.getThreadsForTopic(topic);
     }
 
     @Override
     public void updateThread(String oldTitle, ForumThread newThread) {
-
+        forumThreadDAO.updateThread(oldTitle, newThread);
     }
 
     @Override
-    public void deleteThreadByTitle(ForumThread threadToDelete) {
-
+    public void deleteThreadByTitle(String threadToDelete) {
+        forumThreadDAO.deleteThreadByTitle(threadToDelete);
     }
 }
