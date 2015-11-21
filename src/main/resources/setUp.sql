@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `elearning_db`.`user_status` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`user_status` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `active` TINYINT(1) NOT NULL COMMENT '',
-  `signUpTimestamp` TIMESTAMP NULL COMMENT '',
+  `signUpTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   CONSTRAINT `status_user_username_fk`
     FOREIGN KEY (`username`)
@@ -137,7 +137,7 @@ DROP TABLE IF EXISTS `elearning_db`.`message` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
   `sender` VARCHAR(45) NOT NULL COMMENT '',
   `receiver` VARCHAR(45) NOT NULL COMMENT '',
-  `timestamp` DATETIME NULL COMMENT '',
+  `timestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   `message` TEXT NULL COMMENT '',
   PRIMARY KEY (`sender`, `receiver`)  COMMENT '',
   INDEX `username_idx` (`receiver` ASC)  COMMENT '',
@@ -320,7 +320,7 @@ DROP TABLE IF EXISTS `elearning_db`.`comment` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`comment` (
   `owner` VARCHAR(45) NOT NULL COMMENT '',
-  `timestamp` DATETIME NOT NULL COMMENT '',
+  `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   `message` TEXT NULL COMMENT '',
   PRIMARY KEY (`owner`, `timestamp`)  COMMENT '',
   CONSTRAINT `comment_user_username_fk`
@@ -339,7 +339,7 @@ DROP TABLE IF EXISTS `elearning_db`.`thread_comment` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`thread_comment` (
   `thread` VARCHAR(45) NOT NULL COMMENT '',
   `commentOwner` VARCHAR(45) NOT NULL COMMENT '',
-  `timestamp` DATETIME NOT NULL COMMENT '',
+  `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`thread`, `commentOwner`, `timestamp`)  COMMENT '',
   INDEX `owner_idx` (`commentOwner` ASC)  COMMENT '',
   CONSTRAINT `thread_comment_thread_title_fk`
@@ -386,7 +386,7 @@ DROP TABLE IF EXISTS `elearning_db`.`session` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `token` VARCHAR(36) NULL COMMENT '',
-  `creationTimestamp` TIMESTAMP NULL COMMENT '',
+  `creationTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
   CONSTRAINT `session_username_fk`
@@ -395,9 +395,3 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
-
--- INSERTS FOR DEVELOPMENT ONLY!!!
-INSERT INTO USER VALUES ('boogie', 'Bogdan', 'Guranda', 'bogdanguranda@gmail.com', '', '');
-INSERT INTO COURSE VALUES ('Primii pasi in programare', 'Un curs pentru prescolari.', 'Cursul este destinat tuturor copiilor
-mici. Are ca scop invatare lucrurilor de baza din programare rpin limbajul Python.
-Dureaza 6 saptamani: un curs de 2 ore pe saptmana, cu teme de pe o saptamana pe alta.', 'boogie');
