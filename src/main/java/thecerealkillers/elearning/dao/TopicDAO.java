@@ -1,44 +1,51 @@
 package thecerealkillers.elearning.dao;
 
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Topic;
 
 import java.util.List;
+
 
 public interface TopicDAO {
     /**
      * Adds a topic in the database.
      *
      * @param newTopic
+     * @throws DAOException
      */
-    void add(Topic newTopic);
+    void add(Topic newTopic) throws DAOException;
 
     /**
      * Retrieves a topic by title.
      *
      * @param title
      * @return The topic with title @title
+     * @throws DAOException
      */
-    Topic get(String title);
+    Topic get(String title) throws DAOException;
 
     /**
      * Returns all the topics in the database.
      *
      * @return all topics that are stored in the database.
+     * @throws DAOException
      */
-    List<Topic> getAll();
+    List<Topic> getAll() throws DAOException;
 
     /**
      * Updates the data for a topic by title.
      *
      * @param title
      * @param newTopicData
+     * @throws DAOException
      */
-    void update(String title, Topic newTopicData);
+    void update(String title, Topic newTopicData) throws DAOException;
 
     /**
      * Deletes a topic by title.
      *
      * @param title
+     * @throws DAOException
      */
-    void delete(String title);
+    void delete(String title) throws DAOException;
 }

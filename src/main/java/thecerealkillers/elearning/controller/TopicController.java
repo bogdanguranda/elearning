@@ -1,10 +1,12 @@
 package thecerealkillers.elearning.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.model.Topic;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 
 public interface TopicController {
     @RequestMapping(value = "/topics", method = RequestMethod.POST)

@@ -1,14 +1,18 @@
 package thecerealkillers.elearning.controller.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.TopicController;
-import thecerealkillers.elearning.model.Topic;
 import thecerealkillers.elearning.service.TopicService;
+import thecerealkillers.elearning.model.Topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+import java.util.ArrayList;
 import java.util.List;
+
 
 @RestController
 @CrossOrigin
@@ -19,36 +23,56 @@ public class TopicControllerImpl implements TopicController {
 
     @Override
     public ResponseEntity createTopic(@RequestBody Topic newTopic) {
-        topicService.add(newTopic);
+        try {
+            topicService.add(newTopic);
 
-        return new ResponseEntity(HttpStatus.CREATED);
+            return new ResponseEntity(HttpStatus.CREATED);
+        } catch (ServiceException service_exception) {
+            return new ResponseEntity<>(service_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override
     public ResponseEntity<List<Topic>> getAllTopics() {
-        List<Topic> topicList = topicService.getAll();
+        try {
+            List<Topic> topicList = topicService.getAll();
 
-        return new ResponseEntity<>(topicList, HttpStatus.OK);
+            return new ResponseEntity<>(topicList, HttpStatus.OK);
+        } catch (ServiceException service_exception) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
     public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title) {
-        Topic topic = topicService.get(title);
+        try {
+            Topic topic = topicService.get(title);
 
-        return new ResponseEntity<Topic>(topic, HttpStatus.CREATED);
+            return new ResponseEntity<>(topic, HttpStatus.CREATED);
+        } catch (ServiceException service_exception) {
+            return new ResponseEntity<>(new Topic(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
     public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic) {
-        topicService.update(title, newTopic);
+        try {
+            topicService.update(title, newTopic);
 
-        return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (ServiceException service_exception) {
+            return new ResponseEntity<>(service_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override
     public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title) {
-        topicService.delete(title);
+        try {
+            topicService.delete(title);
 
-        return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (ServiceException service_exception) {
+            return new ResponseEntity<>(service_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 }
