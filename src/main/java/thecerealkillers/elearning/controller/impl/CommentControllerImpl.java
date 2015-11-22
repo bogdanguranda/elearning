@@ -8,7 +8,6 @@ import thecerealkillers.elearning.controller.CommentController;
 import thecerealkillers.elearning.model.Comment;
 import thecerealkillers.elearning.service.CommentService;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -19,21 +18,19 @@ public class CommentControllerImpl implements CommentController {
     private CommentService commentService;
 
     @Override
-    public ResponseEntity createThread(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle) {
-        commentService.addComment(owner,message,threadTitle);
-
-        System.out.println("createThread");
+    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle) {
+        commentService.addComment(owner, message, threadTitle);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@PathVariable("owner") String owner, @RequestParam(value = "timeStamp", required = true) Date timeStamp) {
-        Comment comment = commentService.getCommentByOwnerAndTimeStamp(owner, timeStamp);
+    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment) {
+        System.out.println("getCommentByOwnerAndTimeStamp    a");
 
-        System.out.println("getCommentByOwnerAndTimeStamp");
+            Comment com = commentService.getCommentByOwnerAndTimeStamp(comment.getOwner(), comment.getTimeStamp());
 
-        return new ResponseEntity<>(comment, HttpStatus.OK);
+            return new ResponseEntity<>(com, HttpStatus.OK);
     }
 
     @Override
@@ -41,25 +38,19 @@ public class CommentControllerImpl implements CommentController {
         System.out.println("getCommentsForThread");
         List<Comment> commentList = commentService.getCommentsForThread(threadTitle);
 
-        System.out.println("getCommentsForThread");
-
         return new ResponseEntity<>(commentList, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity updateComment(@PathVariable("owner") String owner, @PathVariable("timeStamp") Date timeStamp, @RequestParam(value = "message", required = true) String message) {
-        commentService.updateComment(owner, timeStamp, message);
-
-        System.out.println("updateComment");
+    public ResponseEntity updateComment(@RequestBody Comment comment) {
+        commentService.updateComment(comment.getOwner(), comment.getTimeStamp(), comment.getMessage());
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity deleteComment(@PathVariable("owner") String owner, @PathVariable("timeStamp") Date timeStamp) {
-        commentService.deleteComment(owner, timeStamp);
-
-        System.out.println("deleteComment");
+    public ResponseEntity deleteComment(@RequestBody Comment comment) {
+        commentService.deleteComment(comment.getOwner(), comment.getTimeStamp());
 
         return new ResponseEntity(HttpStatus.OK);
     }

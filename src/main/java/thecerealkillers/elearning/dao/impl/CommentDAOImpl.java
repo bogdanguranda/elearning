@@ -27,14 +27,13 @@ public class CommentDAOImpl implements CommentDAO {
     public void addComment(String owner, String message, String threadTitle) {
         String command = "INSERT INTO comment VALUES (:owner, DEFAULT, :message)";
 
-        Date timeStamp = new Date();
+        Date timeStamp = new Date(Calendar.getInstance().getTimeInMillis());
         SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStampStr = sdf.format(timeStamp);
 
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("owner", owner);
         namedParameters.put("message", message);
-
 
         namedParameterJdbcTemplate.update(command, namedParameters);
 
@@ -47,7 +46,7 @@ public class CommentDAOImpl implements CommentDAO {
 
         namedParameters.put("thread", threadTitle);
         namedParameters.put("commentOwner", owner);
-        namedParameters.put("timeStamp", timeStamp.toString());
+        namedParameters.put("timeStamp", timeStamp);
 
         namedParameterJdbcTemplate.update(command, namedParameters);
     }
@@ -57,20 +56,20 @@ public class CommentDAOImpl implements CommentDAO {
         String command = "SELECT * FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
         Map<String, String> namedParameters = new HashMap<>();
 
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         namedParameters.put("owner", owner);
-        namedParameters.put("timeStamp", timeStamp.toString());
+        namedParameters.put("timeStamp", sdf.format(timeStamp));
 
         List<Comment> commentList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<Comment>() {
             @Override
             public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
                 Comment comment = new Comment();
 
-
                 comment.setOwner(resultSet.getString("owner"));
-                comment.setTimeStamp(resultSet.getDate("timeStamp"));
-                comment.setMeessage(resultSet.getString("message"));
+                comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
+                comment.setMessage(resultSet.getString("message"));
 
-                System.out.print(comment.getMeessage());
                 return comment;
             }
         });
@@ -89,8 +88,8 @@ public class CommentDAOImpl implements CommentDAO {
                 Comment comment = new Comment();
 
                 comment.setOwner(resultSet.getString("owner"));
-                comment.setTimeStamp(resultSet.getDate("timeStamp"));
-                comment.setMeessage(resultSet.getString("message"));
+                comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
+                comment.setMessage(resultSet.getString("message"));
 
                 return comment;
             }
@@ -101,11 +100,13 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public void updateComment(String owner, Date timeStamp, String newMessage) {
-        String command = "UPDATE comment SET newMessage = :newMessage WHERE owner = :owner AND timeStamp = :timeStamp";
+        String command = "UPDATE comment SET message = :message WHERE owner = :owner AND timeStamp = :timeStamp";
         Map<String, String> namedParameters = new HashMap<>();
 
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         namedParameters.put("owner", owner);
-        namedParameters.put("timeStamp", timeStamp.toString());
+        namedParameters.put("timeStamp", sdf.format(timeStamp));
         namedParameters.put("message", newMessage);
 
         namedParameterJdbcTemplate.update(command, namedParameters);
@@ -116,8 +117,10 @@ public class CommentDAOImpl implements CommentDAO {
         String command = "DELETE FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
         Map<String, String> namedParameters = new HashMap<>();
 
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         namedParameters.put("owner", owner);
-        namedParameters.put("timeStamp", timeStamp.toString());
+        namedParameters.put("timeStamp", sdf.format(timeStamp));
 
         namedParameterJdbcTemplate.update(command, namedParameters);
     }
