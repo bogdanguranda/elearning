@@ -15,17 +15,18 @@ public interface CommentController {
     ResponseEntity createComment(
             @RequestParam(value = "message", required = true) String message,
             @PathVariable("owner") String owner,
-            @PathVariable("threadTitle") String threadTitle);
+            @PathVariable("threadTitle") String threadTitle,
+            @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/comments/owner", method = RequestMethod.POST)
-    ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment);
+    ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/comments/thread/{threadTitle}", method = RequestMethod.GET)
-    ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle);
+    ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
-    ResponseEntity updateComment(@RequestBody Comment comment);
+    ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/comments/delete", method = RequestMethod.DELETE)
-    ResponseEntity deleteComment(@RequestBody Comment comment);
+    ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value="token") String token);
 }

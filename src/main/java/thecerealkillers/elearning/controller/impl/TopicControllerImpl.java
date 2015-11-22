@@ -2,6 +2,7 @@ package thecerealkillers.elearning.controller.impl;
 
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.TopicController;
+import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.TopicService;
 import thecerealkillers.elearning.model.Topic;
 
@@ -20,10 +21,14 @@ public class TopicControllerImpl implements TopicController {
 
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private SessionService sessionService;
 
     @Override
-    public ResponseEntity createTopic(@RequestBody Topic newTopic) {
+    public ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             topicService.add(newTopic);
 
             return new ResponseEntity(HttpStatus.CREATED);
@@ -33,8 +38,10 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity<List<Topic>> getAllTopics() {
+    public ResponseEntity<List<Topic>> getAllTopics(@RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             List<Topic> topicList = topicService.getAll();
 
             return new ResponseEntity<>(topicList, HttpStatus.OK);
@@ -44,8 +51,10 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title) {
+    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             Topic topic = topicService.get(title);
 
             return new ResponseEntity<>(topic, HttpStatus.CREATED);
@@ -55,8 +64,10 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic) {
+    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             topicService.update(title, newTopic);
 
             return new ResponseEntity(HttpStatus.OK);
@@ -66,8 +77,10 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title) {
+    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             topicService.delete(title);
 
             return new ResponseEntity(HttpStatus.OK);

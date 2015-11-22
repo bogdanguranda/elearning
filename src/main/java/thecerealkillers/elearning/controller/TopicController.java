@@ -10,17 +10,17 @@ import java.util.List;
 
 public interface TopicController {
     @RequestMapping(value = "/topics", method = RequestMethod.POST)
-    ResponseEntity createTopic(@RequestBody Topic newTopic);
+    ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/topics", method = RequestMethod.GET)
-    ResponseEntity<List<Topic>> getAllTopics();
+    ResponseEntity<List<Topic>> getAllTopics(@RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
-    ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title);
+    ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.POST)
-    ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic);
+    ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value="token") String token);
 
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
-    ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title);
+    ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value="token") String token);
 }

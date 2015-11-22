@@ -3,6 +3,7 @@ package thecerealkillers.elearning.controller.impl;
 import thecerealkillers.elearning.controller.ForumThreadController;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.service.ForumThreadService;
+import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.model.ForumThread;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,14 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
     @Autowired
     private ForumThreadService forumThreadService;
+    @Autowired
+    private SessionService sessionService;
 
     @Override
-    public ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic) {
+    public ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             forumThreadService.add(newThread, topic);
 
             return new ResponseEntity(HttpStatus.CREATED);
@@ -33,8 +38,10 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getAll() {
+    public ResponseEntity<List<ForumThread>> getAll(@RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             List<ForumThread> threadList = forumThreadService.getAll();
 
             return new ResponseEntity<>(threadList, HttpStatus.OK);
@@ -44,8 +51,10 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName) {
+    public ResponseEntity<List<ForumThread>> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             List<ForumThread> threadList = forumThreadService.getThreadsOwnedByUser(userName);
 
             return new ResponseEntity<>(threadList, HttpStatus.OK);
@@ -55,8 +64,10 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    public ResponseEntity<ForumThread> getThreadByTitle(@PathVariable("threadTitle") String threadTitle) {
+    public ResponseEntity<ForumThread> getThreadByTitle(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             ForumThread thread = forumThreadService.getThreadByTitle(threadTitle);
 
             return new ResponseEntity<>(thread, HttpStatus.OK);
@@ -66,8 +77,10 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic) {
+    public ResponseEntity<List<ForumThread>> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             List<ForumThread> threadList = forumThreadService.getThreadsForTopic(threadTopic);
 
             return new ResponseEntity<>(threadList, HttpStatus.OK);
@@ -77,8 +90,10 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle, @RequestBody ForumThread newThread) {
+    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle, @RequestBody ForumThread newThread, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             forumThreadService.updateThread(oldTitle, newThread);
 
             return new ResponseEntity(HttpStatus.OK);
@@ -88,8 +103,10 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    public ResponseEntity deleteThreadByTitle (@RequestParam(value = "threadTitle", required = true) String threadTitle) {
+    public ResponseEntity deleteThreadByTitle (@RequestParam(value = "threadTitle", required = true) String threadTitle, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             forumThreadService.deleteThreadByTitle(threadTitle);
 
             return new ResponseEntity(HttpStatus.OK);

@@ -3,6 +3,7 @@ package thecerealkillers.elearning.controller.impl;
 import thecerealkillers.elearning.controller.CommentController;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.service.CommentService;
+import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.model.Comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,14 @@ public class CommentControllerImpl implements CommentController {
 
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SessionService sessionService;
 
     @Override
-    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle) {
+    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             commentService.addComment(owner, message, threadTitle);
 
             return new ResponseEntity(HttpStatus.CREATED);
@@ -33,9 +38,9 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment) {
+    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value="token") String token) {
         try {
-            System.out.println("getCommentByOwnerAndTimeStamp    a");
+            sessionService.getSessionByToken(token);
 
             Comment com = commentService.getCommentByOwnerAndTimeStamp(comment.getOwner(), comment.getTimeStamp());
 
@@ -46,9 +51,10 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle) {
+    public ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token) {
         try {
-            System.out.println("getCommentsForThread");
+            sessionService.getSessionByToken(token);
+
             List<Comment> commentList = commentService.getCommentsForThread(threadTitle);
 
             return new ResponseEntity<>(commentList, HttpStatus.OK);
@@ -58,8 +64,10 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public ResponseEntity updateComment(@RequestBody Comment comment) {
+    public ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             commentService.updateComment(comment.getOwner(), comment.getTimeStamp(), comment.getMessage());
 
             return new ResponseEntity(HttpStatus.OK);
@@ -69,8 +77,10 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public ResponseEntity deleteComment(@RequestBody Comment comment) {
+    public ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value="token") String token) {
         try {
+            sessionService.getSessionByToken(token);
+
             commentService.deleteComment(comment.getOwner(), comment.getTimeStamp());
 
             return new ResponseEntity(HttpStatus.OK);
