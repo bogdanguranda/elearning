@@ -1,11 +1,13 @@
 package thecerealkillers.elearning.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMethod;
 import thecerealkillers.elearning.model.Comment;
 
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
+
 
 public interface CommentController {
 

@@ -1,17 +1,21 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.CommentDAO;
 import thecerealkillers.elearning.model.Comment;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
 
 @Repository
 public class CommentDAOImpl implements CommentDAO {
@@ -24,104 +28,128 @@ public class CommentDAOImpl implements CommentDAO {
     }
 
     @Override
-    public void addComment(String owner, String message, String threadTitle) {
-        String command = "INSERT INTO comment VALUES (:owner, DEFAULT, :message)";
+    public void addComment(String owner, String message, String threadTitle) throws DAOException {
+        try {
+            String command = "INSERT INTO comment VALUES (:owner, DEFAULT, :message)";
 
-        Date timeStamp = new Date(Calendar.getInstance().getTimeInMillis());
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String timeStampStr = sdf.format(timeStamp);
+            Date timeStamp = new Date(Calendar.getInstance().getTimeInMillis());
+            SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String timeStampStr = sdf.format(timeStamp);
 
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("owner", owner);
-        namedParameters.put("message", message);
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("owner", owner);
+            namedParameters.put("message", message);
 
-        namedParameterJdbcTemplate.update(command, namedParameters);
+            namedParameterJdbcTemplate.update(command, namedParameters);
 
-        addCommentToThread(owner, timeStampStr, threadTitle);
+            addCommentToThread(owner, timeStampStr, threadTitle);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
-    private void addCommentToThread(String owner, String timeStamp, String threadTitle) {
-        String command = "INSERT INTO thread_comment VALUES (:thread, :commentOwner, :timeStamp)";
-        Map<String, String> namedParameters = new HashMap<>();
+    private void addCommentToThread(String owner, String timeStamp, String threadTitle) throws DAOException {
+        try {
+            String command = "INSERT INTO thread_comment VALUES (:thread, :commentOwner, :timeStamp)";
+            Map<String, String> namedParameters = new HashMap<>();
 
-        namedParameters.put("thread", threadTitle);
-        namedParameters.put("commentOwner", owner);
-        namedParameters.put("timeStamp", timeStamp);
+            namedParameters.put("thread", threadTitle);
+            namedParameters.put("commentOwner", owner);
+            namedParameters.put("timeStamp", timeStamp);
 
-        namedParameterJdbcTemplate.update(command, namedParameters);
-    }
-
-    @Override
-    public Comment getCommentByOwnerAndTimeStamp(String owner, Date timeStamp) {
-        String command = "SELECT * FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
-        Map<String, String> namedParameters = new HashMap<>();
-
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        namedParameters.put("owner", owner);
-        namedParameters.put("timeStamp", sdf.format(timeStamp));
-
-        List<Comment> commentList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<Comment>() {
-            @Override
-            public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
-                Comment comment = new Comment();
-
-                comment.setOwner(resultSet.getString("owner"));
-                comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
-                comment.setMessage(resultSet.getString("message"));
-
-                return comment;
-            }
-        });
-
-        return commentList.get(0);
+            namedParameterJdbcTemplate.update(command, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
     @Override
-    public List<Comment> getCommentsForThread(String threadTitle) {
-        Map<String, String> namedParameters = Collections.singletonMap("threadTitle", threadTitle);
-        String command = "SELECT * FROM comment AS B WHERE owner IN (SELECT thread_comment.commentOwner FROM thread_comment WHERE thread = :threadTitle) AND timeStamp = (SELECT thread_comment.timestamp AS timp FROM thread_comment WHERE thread = :threadTitle)";
+    public Comment getCommentByOwnerAndTimeStamp(String owner, Date timeStamp) throws DAOException {
+        try {
+            String command = "SELECT * FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
+            Map<String, String> namedParameters = new HashMap<>();
 
-        List<Comment> commentList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<Comment>() {
-            @Override
-            public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
-                Comment comment = new Comment();
+            SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                comment.setOwner(resultSet.getString("owner"));
-                comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
-                comment.setMessage(resultSet.getString("message"));
+            namedParameters.put("owner", owner);
+            namedParameters.put("timeStamp", sdf.format(timeStamp));
 
-                return comment;
-            }
-        });
+            List<Comment> commentList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<Comment>() {
+                @Override
+                public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Comment comment = new Comment();
 
-        return commentList;
+                    comment.setOwner(resultSet.getString("owner"));
+                    comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
+                    comment.setMessage(resultSet.getString("message"));
+
+                    return comment;
+                }
+            });
+
+            return commentList.get(0);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
     @Override
-    public void updateComment(String owner, Date timeStamp, String newMessage) {
-        String command = "UPDATE comment SET message = :message WHERE owner = :owner AND timeStamp = :timeStamp";
-        Map<String, String> namedParameters = new HashMap<>();
+    public List<Comment> getCommentsForThread(String threadTitle) throws DAOException {
+        try {
+            Map<String, String> namedParameters = Collections.singletonMap("threadTitle", threadTitle);
+            String command = "SELECT * FROM comment AS B WHERE owner IN (SELECT thread_comment.commentOwner FROM thread_comment WHERE thread = :threadTitle) AND timeStamp = (SELECT thread_comment.timestamp AS timp FROM thread_comment WHERE thread = :threadTitle)";
 
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            List<Comment> commentList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<Comment>() {
+                @Override
+                public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Comment comment = new Comment();
 
-        namedParameters.put("owner", owner);
-        namedParameters.put("timeStamp", sdf.format(timeStamp));
-        namedParameters.put("message", newMessage);
+                    comment.setOwner(resultSet.getString("owner"));
+                    comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
+                    comment.setMessage(resultSet.getString("message"));
 
-        namedParameterJdbcTemplate.update(command, namedParameters);
+                    return comment;
+                }
+            });
+
+            return commentList;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
     @Override
-    public void deleteComment(String owner, Date timeStamp) {
-        String command = "DELETE FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
-        Map<String, String> namedParameters = new HashMap<>();
+    public void updateComment(String owner, Date timeStamp, String newMessage) throws DAOException {
+        try {
+            String command = "UPDATE comment SET message = :message WHERE owner = :owner AND timeStamp = :timeStamp";
+            Map<String, String> namedParameters = new HashMap<>();
 
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        namedParameters.put("owner", owner);
-        namedParameters.put("timeStamp", sdf.format(timeStamp));
+            namedParameters.put("owner", owner);
+            namedParameters.put("timeStamp", sdf.format(timeStamp));
+            namedParameters.put("message", newMessage);
 
-        namedParameterJdbcTemplate.update(command, namedParameters);
+            namedParameterJdbcTemplate.update(command, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteComment(String owner, Date timeStamp) throws DAOException {
+        try {
+            String command = "DELETE FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
+            Map<String, String> namedParameters = new HashMap<>();
+
+            SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            namedParameters.put("owner", owner);
+            namedParameters.put("timeStamp", sdf.format(timeStamp));
+
+            namedParameterJdbcTemplate.update(command, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 }
