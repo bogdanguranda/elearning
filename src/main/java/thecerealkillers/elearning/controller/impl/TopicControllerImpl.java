@@ -27,8 +27,8 @@ public class TopicControllerImpl implements TopicController {
             topicService.add(newTopic);
 
             return new ResponseEntity(HttpStatus.CREATED);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(service_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -38,7 +38,7 @@ public class TopicControllerImpl implements TopicController {
             List<Topic> topicList = topicService.getAll();
 
             return new ResponseEntity<>(topicList, HttpStatus.OK);
-        } catch (ServiceException service_exception) {
+        } catch (ServiceException serviceException) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
         }
     }
@@ -49,7 +49,7 @@ public class TopicControllerImpl implements TopicController {
             Topic topic = topicService.get(title);
 
             return new ResponseEntity<>(topic, HttpStatus.CREATED);
-        } catch (ServiceException service_exception) {
+        } catch (ServiceException serviceException) {
             return new ResponseEntity<>(new Topic(), HttpStatus.NOT_FOUND);
         }
     }
@@ -60,8 +60,8 @@ public class TopicControllerImpl implements TopicController {
             topicService.update(title, newTopic);
 
             return new ResponseEntity(HttpStatus.OK);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(service_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -71,8 +71,8 @@ public class TopicControllerImpl implements TopicController {
             topicService.delete(title);
 
             return new ResponseEntity(HttpStatus.OK);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(service_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

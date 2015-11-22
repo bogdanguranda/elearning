@@ -22,8 +22,8 @@ public class TopicServiceImpl implements TopicService {
     public void add(Topic newTopic) throws ServiceException {
         try {
             topicDAO.add(newTopic);
-        } catch (DAOException dao_exception) {
-            throw new ServiceException(dao_exception.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 
@@ -31,8 +31,8 @@ public class TopicServiceImpl implements TopicService {
     public Topic get(String title) throws ServiceException {
         try {
             return topicDAO.get(title);
-        } catch (DAOException dao_exception) {
-            throw new ServiceException(dao_exception.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 
@@ -40,8 +40,8 @@ public class TopicServiceImpl implements TopicService {
     public List<Topic> getAll() throws ServiceException {
         try {
             return topicDAO.getAll();
-        } catch (DAOException dao_exception) {
-            throw new ServiceException(dao_exception.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 
@@ -49,8 +49,8 @@ public class TopicServiceImpl implements TopicService {
     public void update(String title, Topic newTopicData) throws ServiceException {
         try {
             topicDAO.update(title, newTopicData);
-        } catch (DAOException dao_exception) {
-            throw new ServiceException(dao_exception.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 
@@ -58,8 +58,8 @@ public class TopicServiceImpl implements TopicService {
     public void delete(String title) throws ServiceException {
         try {
             topicDAO.delete(title);
-        } catch (DAOException dao_exception) {
-            throw new ServiceException(dao_exception.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 }
