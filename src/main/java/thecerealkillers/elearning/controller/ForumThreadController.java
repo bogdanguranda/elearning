@@ -1,14 +1,14 @@
 package thecerealkillers.elearning.controller;
 
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.model.ForumThread;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface ForumThreadController {
 
+public interface ForumThreadController {
 
     @RequestMapping(value = "/threads/topic/{topic}", method = RequestMethod.POST)
     ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic);
