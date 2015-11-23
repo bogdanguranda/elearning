@@ -6,6 +6,9 @@ import thecerealkillers.elearning.model.ForumThread;
 import java.util.List;
 
 
+/**
+ * Created by Dani
+ */
 public interface ForumThreadService {
 
     /**

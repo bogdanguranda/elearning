@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 
+/**
+ * Created by Dani
+ */
 @Repository
 public class CommentDAOImpl implements CommentDAO {
 
@@ -48,21 +51,6 @@ public class CommentDAOImpl implements CommentDAO {
         }
     }
 
-    private void addCommentToThread(String owner, String timeStamp, String threadTitle) throws DAOException {
-        try {
-            String command = "INSERT INTO thread_comment VALUES (:thread, :commentOwner, :timeStamp)";
-            Map<String, String> namedParameters = new HashMap<>();
-
-            namedParameters.put("thread", threadTitle);
-            namedParameters.put("commentOwner", owner);
-            namedParameters.put("timeStamp", timeStamp);
-
-            namedParameterJdbcTemplate.update(command, namedParameters);
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
     @Override
     public Comment getCommentByOwnerAndTimeStamp(String owner, Date timeStamp) throws DAOException {
         try {
@@ -87,6 +75,9 @@ public class CommentDAOImpl implements CommentDAO {
                 }
             });
 
+            if (commentList.size() == 0)
+                throw new DAOException("No comments owned by :  " + owner + "posted in :  " + sdf.format(timeStamp));
+
             return commentList.get(0);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -97,7 +88,10 @@ public class CommentDAOImpl implements CommentDAO {
     public List<Comment> getCommentsForThread(String threadTitle) throws DAOException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("threadTitle", threadTitle);
-            String command = "SELECT * FROM comment AS B WHERE owner IN (SELECT thread_comment.commentOwner FROM thread_comment WHERE thread = :threadTitle) AND timeStamp = (SELECT thread_comment.timestamp AS timp FROM thread_comment WHERE thread = :threadTitle)";
+
+            String firstCondition = "SELECT thread_comment.commentOwner FROM thread_comment WHERE thread = :threadTitle";
+            String secondCondition = "SELECT thread_comment.timestamp AS timp FROM thread_comment WHERE thread = :threadTitle";
+            String command = "SELECT * FROM comment AS B WHERE owner IN (" + firstCondition + ") AND timeStamp IN (" + secondCondition + ")";
 
             List<Comment> commentList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<Comment>() {
                 @Override
@@ -111,6 +105,9 @@ public class CommentDAOImpl implements CommentDAO {
                     return comment;
                 }
             });
+
+            if (commentList.size() == 0)
+                throw new DAOException("No comments posted in thread :  " + threadTitle);
 
             return commentList;
         } catch (Exception exception) {
@@ -146,6 +143,23 @@ public class CommentDAOImpl implements CommentDAO {
 
             namedParameters.put("owner", owner);
             namedParameters.put("timeStamp", sdf.format(timeStamp));
+
+            namedParameterJdbcTemplate.update(command, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+
+    /// Additional required methods
+    private void addCommentToThread(String owner, String timeStamp, String threadTitle) throws DAOException {
+        try {
+            String command = "INSERT INTO thread_comment VALUES (:thread, :commentOwner, :timeStamp)";
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("thread", threadTitle);
+            namedParameters.put("commentOwner", owner);
+            namedParameters.put("timeStamp", timeStamp);
 
             namedParameterJdbcTemplate.update(command, namedParameters);
         } catch (Exception exception) {

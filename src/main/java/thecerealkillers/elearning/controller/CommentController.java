@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 
+/**
+ * Created by Dani
+ */
 public interface CommentController {
 
     @RequestMapping(value = "/comments/add/{owner}/{threadTitle}", method = RequestMethod.POST)
@@ -16,17 +19,17 @@ public interface CommentController {
             @RequestParam(value = "message", required = true) String message,
             @PathVariable("owner") String owner,
             @PathVariable("threadTitle") String threadTitle,
-            @RequestHeader(value="token") String token);
+            @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/owner", method = RequestMethod.POST)
-    ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value="token") String token);
+    ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/thread/{threadTitle}", method = RequestMethod.GET)
-    ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token);
+    ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
-    ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value="token") String token);
+    ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/delete", method = RequestMethod.DELETE)
-    ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value="token") String token);
+    ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
 }

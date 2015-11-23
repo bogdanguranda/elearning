@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Created by Dani
+ */
 @RestController
 @CrossOrigin
 public class CommentControllerImpl implements CommentController {
@@ -25,7 +27,7 @@ public class CommentControllerImpl implements CommentController {
     private SessionService sessionService;
 
     @Override
-    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token) {
+    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -33,12 +35,12 @@ public class CommentControllerImpl implements CommentController {
 
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value="token") String token) {
+    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -46,12 +48,12 @@ public class CommentControllerImpl implements CommentController {
 
             return new ResponseEntity<>(com, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new Comment(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token) {
+    public ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -59,12 +61,12 @@ public class CommentControllerImpl implements CommentController {
 
             return new ResponseEntity<>(commentList, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value="token") String token) {
+    public ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -72,12 +74,12 @@ public class CommentControllerImpl implements CommentController {
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value="token") String token) {
+    public ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -85,7 +87,7 @@ public class CommentControllerImpl implements CommentController {
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

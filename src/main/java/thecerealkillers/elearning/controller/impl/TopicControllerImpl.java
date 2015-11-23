@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Created by Dani
+ */
 @RestController
 @CrossOrigin
 public class TopicControllerImpl implements TopicController {
@@ -25,7 +27,7 @@ public class TopicControllerImpl implements TopicController {
     private SessionService sessionService;
 
     @Override
-    public ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value="token") String token) {
+    public ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -33,12 +35,12 @@ public class TopicControllerImpl implements TopicController {
 
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<Topic>> getAllTopics(@RequestHeader(value="token") String token) {
+    public ResponseEntity<List<Topic>> getAllTopics(@RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -46,25 +48,25 @@ public class TopicControllerImpl implements TopicController {
 
             return new ResponseEntity<>(topicList, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value="token") String token) {
+    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
             Topic topic = topicService.get(title);
 
-            return new ResponseEntity<>(topic, HttpStatus.CREATED);
+            return new ResponseEntity<>(topic, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new Topic(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value="token") String token) {
+    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -72,12 +74,12 @@ public class TopicControllerImpl implements TopicController {
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value="token") String token) {
+    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -85,7 +87,7 @@ public class TopicControllerImpl implements TopicController {
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

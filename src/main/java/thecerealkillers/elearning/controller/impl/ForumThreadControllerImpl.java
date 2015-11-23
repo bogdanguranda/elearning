@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Created by Dani
+ */
 @RestController
 @CrossOrigin
 public class ForumThreadControllerImpl implements ForumThreadController {
@@ -25,7 +27,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     private SessionService sessionService;
 
     @Override
-    public ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic, @RequestHeader(value="token") String token) {
+    public ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -33,12 +35,12 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getAll(@RequestHeader(value="token") String token) {
+    public ResponseEntity<List<ForumThread>> getAll(@RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -46,12 +48,12 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity<>(threadList, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName, @RequestHeader(value="token") String token) {
+    public ResponseEntity<List<ForumThread>> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -59,12 +61,12 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity<>(threadList, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity<ForumThread> getThreadByTitle(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value="token") String token) {
+    public ResponseEntity<ForumThread> getThreadByTitle(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -72,12 +74,12 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity<>(thread, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new ForumThread(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic, @RequestHeader(value="token") String token) {
+    public ResponseEntity<List<ForumThread>> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -85,12 +87,12 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity<>(threadList, HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle, @RequestBody ForumThread newThread, @RequestHeader(value="token") String token) {
+    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle, @RequestBody ForumThread newThread, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -98,12 +100,12 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity deleteThreadByTitle (@RequestParam(value = "threadTitle", required = true) String threadTitle, @RequestHeader(value="token") String token) {
+    public ResponseEntity deleteThreadByTitle(@RequestParam(value = "threadTitle", required = true) String threadTitle, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -111,7 +113,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

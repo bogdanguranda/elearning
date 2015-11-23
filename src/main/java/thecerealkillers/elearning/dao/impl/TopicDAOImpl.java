@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Created by Dani
+ */
 @Repository
 public class TopicDAOImpl implements TopicDAO {
 
@@ -60,6 +63,9 @@ public class TopicDAOImpl implements TopicDAO {
                 }
             });
 
+            if (topicList.size() == 0)
+                throw new DAOException("No topic with title :  " + title);
+
             return topicList.get(0);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -82,6 +88,9 @@ public class TopicDAOImpl implements TopicDAO {
                     return topic;
                 }
             });
+
+            if (topicList.size() == 0)
+                throw new DAOException("No topics in the database");
 
             return topicList;
         } catch (Exception exception) {

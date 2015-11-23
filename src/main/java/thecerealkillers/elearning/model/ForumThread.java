@@ -1,5 +1,9 @@
 package thecerealkillers.elearning.model;
 
+
+/**
+ * Created by Dani
+ */
 public class ForumThread {
 
     private String title;

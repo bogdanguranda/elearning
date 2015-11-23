@@ -1,6 +1,11 @@
 package thecerealkillers.elearning.model;
 
+
+/**
+ * Created by Dani
+ */
 public class PasswordInfo {
+
     private String password;
     private String hash;
     private String salt;

@@ -1,16 +1,21 @@
 package thecerealkillers.elearning.service.impl;
 
+import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.service.CommentService;
+import thecerealkillers.elearning.dao.CommentDAO;
+import thecerealkillers.elearning.model.Comment;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thecerealkillers.elearning.dao.CommentDAO;
-import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.Comment;
-import thecerealkillers.elearning.service.CommentService;
 
 import java.util.Date;
 import java.util.List;
 
+
+/**
+ * Created by Dani
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
 

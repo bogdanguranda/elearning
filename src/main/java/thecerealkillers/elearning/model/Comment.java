@@ -3,6 +3,10 @@ package thecerealkillers.elearning.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/**
+ * Created by Dani
+ */
 public class Comment {
 
     private String owner;
@@ -34,7 +38,7 @@ public class Comment {
     }
 
     public Comment() {
-        message = "";
+        message = ""; // DO NOT REMOVE THIS LINE !!! (required for URLs exposed by CommentControllerImlp)
     }
 
     @Override

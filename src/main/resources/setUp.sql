@@ -395,17 +395,3 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
-
--- INSERTS FOR DEVELOPMENT ONLY!!!
-INSERT INTO USER VALUES ('boogie', 'Bogdan', 'Guranda', 'bogdanguranda@gmail.com', '', '');
-
-INSERT INTO topic VALUES ('Topic1');
-INSERT INTO topic VALUES ('Topic2');
-INSERT INTO thread VALUES ('Thread11', 'boogie');
-INSERT INTO thread VALUES ('Thread21', 'boogie');
-INSERT INTO thread VALUES ('Thread12', 'boogie');
-INSERT INTO thread VALUES ('Thread22', 'boogie');
-INSERT INTO topic_thread VALUES ('Topic1', 'Thread11');
-INSERT INTO topic_thread VALUES ('Topic1', 'Thread21');
-INSERT INTO topic_thread VALUES ('Topic2', 'Thread12');
-INSERT INTO topic_thread VALUES ('Topic2', 'Thread22');

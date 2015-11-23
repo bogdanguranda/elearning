@@ -16,6 +16,9 @@ import java.sql.ResultSet;
 import java.util.*;
 
 
+/**
+ * Created by Dani
+ */
 @Repository
 public class ForumThreadDAOImpl implements ForumThreadDAO {
 
@@ -61,6 +64,9 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                 }
             });
 
+            if (topicList.size() == 0)
+                throw new DAOException("No threads in the database");
+
             return topicList;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -84,6 +90,9 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                     return thread;
                 }
             });
+
+            if (threadList.size() == 0)
+                throw new DAOException("No threads owned by :  " + userName);
 
             return threadList;
         } catch (Exception exception) {
@@ -109,6 +118,9 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                 }
             });
 
+            if (threadList.size() == 0)
+                throw new DAOException("No thread with title :  " + threadTitle);
+
             return threadList.get(0);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -133,6 +145,9 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
             for (String title : threadTitleList) {
                 threadList.add(getThreadByTitle(title));
             }
+
+            if (threadList.size() == 0)
+                throw new DAOException("No threads with topic :  " + topic);
 
             return threadList;
         } catch (Exception exception) {
