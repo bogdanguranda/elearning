@@ -140,9 +140,15 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
   `timestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   `message` TEXT NULL COMMENT '',
   PRIMARY KEY (`sender`, `receiver`)  COMMENT '',
-  CONSTRAINT `message_usernames_fk`
-    FOREIGN KEY (`sender` , `receiver`)
-    REFERENCES `elearning_db`.`user` (`username` , `username`)
+  INDEX `username_idx` (`receiver` ASC)  COMMENT '',
+  CONSTRAINT `sender_username_fk`
+    FOREIGN KEY (`sender`)
+    REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `receiver_username_fk`
+    FOREIGN KEY (`receiver`)
+    REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
