@@ -1,10 +1,16 @@
 package thecerealkillers.elearning.utilities;
 
-import java.security.MessageDigest;
+import thecerealkillers.elearning.model.PasswordInfo;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 
+
+/**
+ * Created by Dani
+ */
 public final class PasswordExpert {
 
     private static final int SALT_BYTE_SIZE = 32;
