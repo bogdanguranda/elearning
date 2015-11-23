@@ -140,15 +140,9 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
   `timestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   `message` TEXT NULL COMMENT '',
   PRIMARY KEY (`sender`, `receiver`)  COMMENT '',
-  INDEX `username_idx` (`receiver` ASC)  COMMENT '',
-  CONSTRAINT `sender_username_fk`
-    FOREIGN KEY (`sender`)
-    REFERENCES `elearning_db`.`user` (`username`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `receiver_username_fk`
-    FOREIGN KEY (`receiver`)
-    REFERENCES `elearning_db`.`user` (`username`)
+  CONSTRAINT `message_usernames_fk`
+    FOREIGN KEY (`sender` , `receiver`)
+    REFERENCES `elearning_db`.`user` (`username` , `username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -341,15 +335,15 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`thread_comment` (
   `commentOwner` VARCHAR(45) NOT NULL COMMENT '',
   `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`thread`, `commentOwner`, `timestamp`)  COMMENT '',
-  INDEX `owner_idx` (`commentOwner` ASC)  COMMENT '',
+  INDEX `owner_idx` (`commentOwner` ASC, `timestamp` ASC)  COMMENT '',
   CONSTRAINT `thread_comment_thread_title_fk`
     FOREIGN KEY (`thread`)
     REFERENCES `elearning_db`.`thread` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `thread_comment_comment_owner_fk`
-    FOREIGN KEY (`commentOwner`)
-    REFERENCES `elearning_db`.`comment` (`owner`)
+  CONSTRAINT `thread_comment_composite_fk`
+    FOREIGN KEY (`commentOwner` , `timestamp`)
+    REFERENCES `elearning_db`.`comment` (`owner` , `timestamp`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
