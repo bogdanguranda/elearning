@@ -1,0 +1,23 @@
+XMLToEmail and emailData.xvm rules
+
+	- How to add a new email
+		<email purpose="%email purpose%">
+			<fields>subject,greeting,%Tag names of the portions that will compose the email separated with commas. Do NOT use white spaces, it was not tested.%</fields>
+			<subject>%Email subject%</subject>
+			<greeting>%Generic greeting message%</greeting>
+			...
+		</email>
+	- Key tag names that XMLToEmail looks for and how it processed them:
+		# fields => Contains all user defined tags that compose the email separated with commas.
+		# emailInsert* => Will ignore the text hold by this tag and will insert the current element from elementsToInsert.
+			NOTE:  The order in which the elements are provided is IMPORTANT, they will be added in the email body in the same order that they are in list.
+		# linkText => Will add "<a href=\" before the data defined with linkText tag and "\" + the link style defined by LINK_STYLE + ">"
+		# greeting => Will add after the data defined with greeting the text provided by parameter @name
+	- Tags with the same name will be concatenated in one single String in the orded that they are specified by "fields" tag, so if you do something like:
+			<tagName1>abc</tagName1>
+			<tagName2>def</tagName2>
+			<tagName1>ghi</tagName1>
+		in the result will is: "abcghidef"
+	- To add a new line you must use <br>
+	- To add HTML you must use : <![CDATA[%HTML code%]]>
+	- "footer" tag must be use only once, "subject" tag is not required, besides "fields" tag you can use what you want.
