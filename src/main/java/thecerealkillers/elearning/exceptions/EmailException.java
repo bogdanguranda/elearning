@@ -1,13 +1,13 @@
 package thecerealkillers.elearning.exceptions;
 
 /**
- * Created by Jack on 02-Dec-15.
+ * Created by Dani
  */
-public class MailException extends Exception {
+public class EmailException extends Exception {
 
     public static final String EMAIL_EXCEPTION = "An error occurred while sending the mail.\n";
 
-    public MailException(String message) {
+    public EmailException(String message) {
         super(message);
     }
 }

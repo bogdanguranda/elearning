@@ -14,23 +14,27 @@ import java.util.List;
 public interface TopicController {
 
     @RequestMapping(value = "/topics", method = RequestMethod.POST)
-    ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value = "token") String token);
+    ResponseEntity createTopic(
+            @RequestBody Topic newTopic,
+            @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/topics", method = RequestMethod.GET)
-    ResponseEntity<List<Topic>> getAllTopics(@RequestHeader(value = "token") String token);
+    ResponseEntity<List<Topic>> getAllTopics(
+            @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
-    ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value = "token") String token);
+    ResponseEntity<Topic> getTopicByTitle(
+            @PathVariable("title") String title,
+            @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.POST)
-    ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value = "token") String token);
+    ResponseEntity updateTopic(
+            @PathVariable("title") String title,
+            @RequestBody Topic newTopic,
+            @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
-    ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value = "token") String token);
-
-
-
-    ///                     DELETE WHEN DONE
-    @RequestMapping(value = "/mail", method = RequestMethod.GET)
-    ResponseEntity mail();
+    ResponseEntity deleteTopicByTitle(
+            @RequestParam(value = "title", required = true) String title,
+            @RequestHeader(value = "token") String token);
 }

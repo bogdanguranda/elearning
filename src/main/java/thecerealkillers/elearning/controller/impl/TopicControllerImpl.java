@@ -14,10 +14,6 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 
-///                     DELETE WHEN DONE
-import thecerealkillers.elearning.utilities.MailExpert;
-
-
 /**
  * Created by Dani
  */
@@ -57,7 +53,8 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title,
+                                                 @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -70,7 +67,8 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value = "token") String token) {
+    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic,
+                                      @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -83,7 +81,8 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value = "token") String token) {
+    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title,
+                                             @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -93,19 +92,5 @@ public class TopicControllerImpl implements TopicController {
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-    }
-
-
-    ///                     DELETE WHEN DONE
-    @Override
-    public ResponseEntity mail() {
-        try {
-            MailExpert.sendMailValidation("", "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-            MailExpert.sendAccountCreated("");
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity(HttpStatus.OK);
     }
 }

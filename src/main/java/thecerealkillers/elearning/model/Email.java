@@ -1,9 +1,10 @@
 package thecerealkillers.elearning.model;
 
+
 /**
  * Created by Dani
  */
-public class Mail {
+public class Email {
 
     private String to;
     private String subject;
@@ -38,11 +39,11 @@ public class Mail {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Mail mail = (Mail) o;
+        Email email = (Email) o;
 
-        if (to != null ? !to.equals(mail.to) : mail.to != null) return false;
-        if (subject != null ? !subject.equals(mail.subject) : mail.subject != null) return false;
-        return !(message != null ? !message.equals(mail.message) : mail.message != null);
+        if (to != null ? !to.equals(email.to) : email.to != null) return false;
+        if (subject != null ? !subject.equals(email.subject) : email.subject != null) return false;
+        return !(message != null ? !message.equals(email.message) : email.message != null);
 
     }
 
@@ -56,7 +57,7 @@ public class Mail {
 
     @Override
     public String toString() {
-        return "Mail{" +
+        return "Email{" +
                 "to='" + to + '\'' +
                 ", subject='" + subject + '\'' +
                 ", message='" + message + '\'' +

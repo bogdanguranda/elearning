@@ -1,24 +1,27 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserStatus;
 
-import java.sql.ResultSet;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.sql.SQLException;
+import java.sql.ResultSet;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by cuvidk on 11/8/2015.
+ * Modified by Dani.
  */
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -26,7 +29,7 @@ public class UserDAOImpl implements UserDAO {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -42,15 +45,7 @@ public class UserDAOImpl implements UserDAO {
             namedParameters.put("email", user.getEmail());
             namedParameters.put("hash", user.getHash());
             namedParameters.put("salt", user.getSalt());
-            namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
 
-            //TODO:
-            //Also adds the user in the user_status table as inactive, since it
-            //just created the account. Email validation requested in UserAdminService.
-            sqlCommand = "insert into user_status values(:username, true, default);";
-            namedParameters.clear();
-
-            namedParameters.put("username", user.getUsername());
             namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -67,6 +62,7 @@ public class UserDAOImpl implements UserDAO {
                 @Override
                 public User mapRow(ResultSet resultSet, int i) throws SQLException {
                     User user = new User();
+
                     user.setUsername(resultSet.getString("username"));
                     user.setEmail(resultSet.getString("email"));
                     user.setFirstName(resultSet.getString("firstName"));
@@ -94,12 +90,13 @@ public class UserDAOImpl implements UserDAO {
             List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
                 @Override
                 public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    String username = resultSet.getString("username");
-                    return username;
+                    return resultSet.getString("username");
                 }
             });
+
             if (userList.size() != 0)
                 throw new DAOException("Username " + username + " is not available.");
+
             return true;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -115,41 +112,14 @@ public class UserDAOImpl implements UserDAO {
             List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
                 @Override
                 public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    String username = resultSet.getString("username");
-                    return username;
+                    return resultSet.getString("username");
                 }
             });
+
             if (userList.size() != 0)
                 throw new DAOException("Email " + email + " is not available.");
+
             return true;
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
-    @Override
-    public UserStatus getUserStatus(String username) throws DAOException {
-        try {
-            String sqlCommand = "select * from user_status where username = :username;";
-            Map<String, String> namedParameters = Collections.singletonMap("username", username);
-
-            List<UserStatus> statuses = namedParameterJdbcTemplate.query(sqlCommand,
-                    namedParameters, new RowMapper<UserStatus>() {
-                        @Override
-                        public UserStatus mapRow(ResultSet resultSet, int i) throws SQLException {
-                            UserStatus status = new UserStatus();
-
-                            status.setUsername(resultSet.getString("username"));
-                            status.setActive(resultSet.getBoolean("active"));
-                            status.setSignUpTimestamp(resultSet.getDate("signUpTimestamp"));
-
-                            return status;
-                        }
-                    });
-
-            if (statuses.size() == 0)
-                throw new DAOException("Inexistent user with username: " + username);
-            return statuses.get(0);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
@@ -165,12 +135,15 @@ public class UserDAOImpl implements UserDAO {
                 @Override
                 public User mapRow(ResultSet resultSet, int i) throws SQLException {
                     User user = new User();
+
                     user.setUsername(resultSet.getString("username"));
                     user.setEmail(resultSet.getString("email"));
                     user.setFirstName(resultSet.getString("firstName"));
                     user.setLastName(resultSet.getString("lastName"));
-                    user.setHash(resultSet.getString("hash"));
-                    user.setSalt(resultSet.getString("salt"));
+                    //user.setHash(resultSet.getString("hash"));
+                    //user.setSalt(resultSet.getString("salt"));
+                    user.setHash("");
+                    user.setSalt("");
 
                     return user;
                 }
@@ -180,4 +153,35 @@ public class UserDAOImpl implements UserDAO {
             throw new DAOException(exception.getMessage());
         }
     }
+
+    @Override
+    public void changePassword(String username, String newHash) throws DAOException  {
+        try {
+            String sqlCommand = "UPDATE user SET hash = :hash WHERE username = :username";
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("hash", newHash);
+            namedParameters.put("username", username);
+            namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(String username) throws DAOException {
+
+        try {
+            String sqlCommand = "DELETE FROM user WHERE username = :username";
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("username", username);
+            namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
 }

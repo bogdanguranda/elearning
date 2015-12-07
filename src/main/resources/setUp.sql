@@ -120,6 +120,8 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user_status` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `active` TINYINT(1) NOT NULL COMMENT '',
   `signUpTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
+  `token` VARCHAR(36) NULL COMMENT '',
+  UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   CONSTRAINT `status_user_username_fk`
     FOREIGN KEY (`username`)
