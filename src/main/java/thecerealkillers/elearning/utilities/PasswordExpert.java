@@ -95,8 +95,7 @@ public final class PasswordExpert {
      */
     private static String generateSalt() throws PasswordExpertException {
         try {
-            SecureRandom sr;
-            sr = SecureRandom.getInstance("SHA1PRNG");
+            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
             byte[] saltByte = new byte[SALT_BYTE_SIZE];
             String salt = "";
 
@@ -120,15 +119,10 @@ public final class PasswordExpert {
      */
     private static String createHash(String password, String salt) throws PasswordExpertException {
         try {
-            MessageDigest md;
-
-            md = MessageDigest.getInstance(HASH_FUNCTION);
-
+            MessageDigest md = MessageDigest.getInstance(HASH_FUNCTION);
             String saltedPassword = password + salt;
             byte[] bytes = md.digest(saltedPassword.getBytes());
             StringBuilder sb = new StringBuilder();
-
-            System.out.println(saltedPassword);
 
             for (byte b : bytes) {
                 sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
