@@ -53,7 +53,8 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title,
+                                                 @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -66,7 +67,8 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic, @RequestHeader(value = "token") String token) {
+    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic,
+                                      @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -79,7 +81,8 @@ public class TopicControllerImpl implements TopicController {
     }
 
     @Override
-    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title, @RequestHeader(value = "token") String token) {
+    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title,
+                                             @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 

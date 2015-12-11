@@ -1,9 +1,9 @@
 package thecerealkillers.elearning.utilities;
 
+import thecerealkillers.elearning.exceptions.PasswordExpertException;
 import thecerealkillers.elearning.model.PasswordInfo;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
@@ -19,19 +19,19 @@ public final class PasswordExpert {
     private PasswordExpert() {
     }
 
+
+    ///=========================================Public methods======================================================
+
     /**
      * This function hashes the salted password.
      *
      * @return instance of PasswordInfo that will store the password, salt and the hash of the salted password
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
+     * @throws PasswordExpertException
      */
-    public static PasswordInfo newPassword(String password)
-            throws NoSuchAlgorithmException, NoSuchProviderException {
+    public static PasswordInfo newPassword(String password, String salt) throws PasswordExpertException {
         PasswordInfo passInfo = new PasswordInfo(password);
 
-        String salt = generateSalt();
-        String hash = createHash(passInfo.getPassword(), salt);
+        String hash = createHash(password, salt);
 
         passInfo.setSalt(salt);
         passInfo.setHash(hash);
@@ -40,45 +40,33 @@ public final class PasswordExpert {
     }
 
     /**
-     * Returns a new random salt
+     * This function hashes the salted password.
      *
-     * @return salt
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
+     * @return instance of PasswordInfo that will store the password, salt and the hash of the salted password
+     * @throws PasswordExpertException
      */
-    private static String generateSalt()
-            throws NoSuchAlgorithmException, NoSuchProviderException {
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        byte[] saltByte = new byte[SALT_BYTE_SIZE];
-        String salt = "";
+    public static PasswordInfo newPassword(String password) throws PasswordExpertException {
+        PasswordInfo passInfo = new PasswordInfo(password);
 
-        sr.nextBytes(saltByte);
+        String salt = generateSalt();
+        String hash = createHash(password, salt);
 
-        for (byte b : saltByte) {
-            salt += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
-        }
+        passInfo.setSalt(salt);
+        passInfo.setHash(hash);
 
-        return salt;
+        return passInfo;
     }
 
     /**
-     * Creates the hash for the password and salt
+     * Returns a random String of 20 elements to be used as a password using salt generator method.
      *
-     * @return hash of salted password
-     * @throws NoSuchAlgorithmException
+     * @return string with length equal to 20 to be used as a password
+     * @throws PasswordExpertException
      */
-    private static String createHash(String password, String salt)
-            throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance(HASH_FUNCTION);
-        String saltedPasswd = password + salt;
-        byte[] bytes = md.digest(saltedPasswd.getBytes());
-        StringBuilder sb = new StringBuilder();
+    public static String generatePassword() throws PasswordExpertException {
+        String newPassword = generateSalt();
 
-        for (byte b : bytes) {
-            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-        }
-
-        return sb.toString();
+        return newPassword.substring(0, 20);
     }
 
     /**
@@ -88,12 +76,61 @@ public final class PasswordExpert {
      * @param salt        =	user's salt
      * @param correctHash =	user's correct hash
      * @return true if the password is correct, false otherwise
-     * @throws NoSuchAlgorithmException
+     * @throws PasswordExpertException
      */
-    public static Boolean verifyPassword(String password, String salt, String correctHash)
-            throws NoSuchAlgorithmException {
+    public static Boolean verifyPassword(String password, String salt, String correctHash) throws PasswordExpertException {
         String verifiedHash = createHash(password, salt);
 
         return (correctHash.compareTo(verifiedHash) == 0);
+    }
+
+
+    ///========================================Private methods======================================================
+
+    /**
+     * Returns a new random salt
+     *
+     * @return salt
+     * @throws PasswordExpertException
+     */
+    private static String generateSalt() throws PasswordExpertException {
+        try {
+            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+            byte[] saltByte = new byte[SALT_BYTE_SIZE];
+            String salt = "";
+
+            sr.nextBytes(saltByte);
+
+            for (byte b : saltByte) {
+                salt += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
+            }
+
+            return salt;
+        } catch (NoSuchAlgorithmException exception) {
+            throw new PasswordExpertException(PasswordExpertException.FAILED_SALT + exception.getMessage());
+        }
+    }
+
+    /**
+     * Creates the hash for the password and salt
+     *
+     * @return hash of salted password
+     * @throws PasswordExpertException
+     */
+    private static String createHash(String password, String salt) throws PasswordExpertException {
+        try {
+            MessageDigest md = MessageDigest.getInstance(HASH_FUNCTION);
+            String saltedPassword = password + salt;
+            byte[] bytes = md.digest(saltedPassword.getBytes());
+            StringBuilder sb = new StringBuilder();
+
+            for (byte b : bytes) {
+                sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+            }
+
+            return sb.toString();
+        } catch (NoSuchAlgorithmException exception) {
+            throw new PasswordExpertException(PasswordExpertException.FAILED_HASH + exception.getMessage());
+        }
     }
 }

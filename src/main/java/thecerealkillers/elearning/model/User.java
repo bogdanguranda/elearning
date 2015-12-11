@@ -2,6 +2,7 @@ package thecerealkillers.elearning.model;
 
 /**
  * Created by cuvidk on 11/8/2015.
+ * Modified by Dani
  */
 public class User {
     private String username;
@@ -12,6 +13,15 @@ public class User {
     private String salt;
 
     public User() {}
+
+    public User(String username, String firstName, String lastName, String email, String hash, String salt) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.hash = hash;
+        this.salt = salt;
+    }
 
     public String getUsername() {
         return username;

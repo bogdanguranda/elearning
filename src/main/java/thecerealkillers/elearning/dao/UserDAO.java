@@ -1,18 +1,20 @@
 package thecerealkillers.elearning.dao;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.model.User;
-import thecerealkillers.elearning.model.UserStatus;
 
 import java.util.List;
 
+
 /**
  * Created by cuvidk on 11/8/2015.
+ * Modified by Dani.
  */
 public interface UserDAO {
     /**
      * Adds a user in the database.
+     *
      * @param user
      * @throws DAOException if DB problems / other weird problems.
      */
@@ -20,16 +22,18 @@ public interface UserDAO {
 
     /**
      * Retrieves the user with the username
-     * @username
+     *
      * @param username
      * @return - The user with username @username
      * @throws DAOException if inexistent username / DB problems /
-     * other weird problems.
+     *                      other weird problems.
+     * @username
      */
     User get(String username) throws DAOException;
 
     /**
      * Checks if username is available.
+     *
      * @param username
      * @return true if username is available.
      * @throws DAOException if username not available / DB problems/ etc.
@@ -38,6 +42,7 @@ public interface UserDAO {
 
     /**
      * Checks if email is available.
+     *
      * @param email
      * @return true if email is available.
      * @throws DAOException if email not available / DB problems / etc.
@@ -45,19 +50,27 @@ public interface UserDAO {
     boolean isEmailAvailable(String email) throws DAOException;
 
     /**
-     * Retrieves the status of the user with @username from DB.
+     * Changes password for the user with the username @userNames
+     *
      * @param username
-     * @return - the status of the user.
-     * @throws DAOException if inexistent username / DB problems /
-     * other weird problems.
+     * @param newPassword
      */
-    UserStatus getUserStatus(String username) throws DAOException;
+    void changePassword(String username, String newPassword) throws DAOException;
 
     /**
      * Retrieves a list of all the
      * existing users in the database.
+     *
      * @return - a list with all users in DB.
      * @throws DAOException if DB problems / other weird problems.
      */
     List<User> getAll() throws DAOException;
+
+    /**
+     * Deletes the user account with the username @userName
+     *
+     * @param username
+     * @throws DAOException
+     */
+    void delete(String username) throws DAOException;
 }
