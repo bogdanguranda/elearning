@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -22,7 +23,7 @@ import java.io.File;
  */
 public class XMLToEmail {
 
-    private static String MAIL_INPUT_LOCATION = "F:/proiectColectiv/a/elearning/src/main/resources/emailData.xvm";
+    private static String MAIL_INPUT_LOCATION = "/emailData.xvm";
     private static String LINK_STYLE = "style=\"text-decoration:none\"";
     private static String INSERT_TAG_NAME = "emailInsert";
     private static String FIELD_LIST_SEPARATOR = ",";
@@ -102,7 +103,8 @@ public class XMLToEmail {
      */
     private static NodeList getElementsByTag(String tagName) throws XMLToEmailException {
         try {
-            File inputFile = new File(MAIL_INPUT_LOCATION);
+            URL url = XMLToEmail.class.getResource(MAIL_INPUT_LOCATION);
+            File inputFile = new File(url.toURI());
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
