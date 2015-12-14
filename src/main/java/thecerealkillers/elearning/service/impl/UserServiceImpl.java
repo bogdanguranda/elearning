@@ -112,6 +112,22 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Get role for specific username
+     *
+     * @param username
+     * @return string role
+     * @throws ServiceException
+     */
+    @Override
+    public String getRole(String username) throws ServiceException {
+        try {
+            return userDAO.getRole(username);
+        }catch (DAOException e) {
+            throw new ServiceException(ServiceException.FAILED_GET_ROLE);
+        }
+    }
+
     @Override
     public void validateUserAccount(String userName, String token) throws ServiceException {
         try {

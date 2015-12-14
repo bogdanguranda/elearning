@@ -13,10 +13,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -78,6 +75,35 @@ public class UserDAOImpl implements UserDAO {
             return userList.get(0);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
+        }
+    }
+
+    /**
+     * Get role for specific username
+     * @param username
+     * @return role
+     * @throws DAOException
+     */
+    @Override
+    public String getRole(String username) throws DAOException {
+        try {
+            String sql = "SELECT role FROM user_role WHERE username = :username;";
+            Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+            List<String> roleList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("role");
+                }
+            });
+
+            if(roleList.size() == 0) {
+                throw new DAOException("Role does not exist for this username");
+            }
+
+            return roleList.get(0);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
         }
     }
 

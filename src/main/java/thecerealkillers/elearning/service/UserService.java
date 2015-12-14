@@ -36,6 +36,14 @@ public interface UserService {
     void signUp(UserSignUpInfo signUpInfo) throws ServiceException;
 
     /**
+     * Get role for specific username
+     * @param username
+     * @return string role
+     * @throws ServiceException
+     */
+    String getRole(String username) throws ServiceException;
+
+    /**
      * Retrieves the user with username
      *
      * @param username = username of the user for which to return data

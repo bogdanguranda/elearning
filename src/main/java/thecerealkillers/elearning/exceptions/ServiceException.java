@@ -7,6 +7,7 @@ package thecerealkillers.elearning.exceptions;
  * * Added error messages for userService
  */
 public class ServiceException extends Exception {
+    public static final String FAILED_GET_ROLE = "Failed to get role from DB\n";
     public static String FAILED_EMAIL_SIGN_UP = "Failed to send email with the validation url.\n";
     public static String FAILED_DAO_DELETE_ACCOUNT = "A database error occurred while deleting account.\n";
     public static String FAILED_PASSWORD_SIGN_UP = "Failed while creating salt or generating salt.\n";

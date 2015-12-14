@@ -5,13 +5,10 @@ import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
 import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.UserController;
-import thecerealkillers.elearning.model.PasswordChange;
+import thecerealkillers.elearning.model.*;
 import thecerealkillers.elearning.validator.UserValidator;
 import thecerealkillers.elearning.service.SessionService;
-import thecerealkillers.elearning.model.UserSignUpInfo;
-import thecerealkillers.elearning.model.UserLoginInfo;
 import thecerealkillers.elearning.service.UserService;
-import thecerealkillers.elearning.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +32,19 @@ public class UserControllerImpl implements UserController {
     @Autowired
     private SessionService sessionService;
 
+    //OK, this should work. ok continui eu. finalizez ce mai e.Dar asta zice
+    //ca mai ai ceva eroare
     @Override
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<String> authenticate(@RequestBody UserLoginInfo loginInfo) {
+    public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {
         try {
-            UserValidator.validateLoginInfo(loginInfo);
 
+            UserValidator.validateLoginInfo(loginInfo);
             String token = userService.authenticate(loginInfo);
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            String role = userService.getRole(loginInfo.getUsername());
+            AuthenticationInfo authenticationInfo = new AuthenticationInfo(token, role);
+
+            return new ResponseEntity<>(authenticationInfo, HttpStatus.OK);
         } catch (InvalidLoginInfoException login_exception) {
             return new ResponseEntity<>("Invalid login info.", HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (ServiceException serviceException) {
