@@ -32,6 +32,14 @@ public interface UserDAO {
     User get(String username) throws DAOException;
 
     /**
+     * Get role for specific user
+     * @param username
+     * @return role
+     * @throws DAOException
+     */
+    String getRole(String username) throws DAOException;
+
+    /**
      * Checks if username is available.
      *
      * @param username
