@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service.impl;
 
 
+import thecerealkillers.elearning.dao.impl.UserRoleDAO;
 import thecerealkillers.elearning.exceptions.PasswordExpertException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.EmailException;
@@ -33,6 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private UserRoleDAO userRoleDAO;
     @Autowired
     private SessionDAO sessionDAO;
     @Autowired
@@ -89,7 +92,11 @@ public class UserServiceImpl implements UserService {
 
                 userDAO.signUp(new User(username, signUpInfo.getFirstName(), signUpInfo.getLastName(),
                         signUpInfo.getEmail(), passInfo.getHash(), passInfo.getSalt()));
+                System.out.println("pass signUp");
                 userStatusDAO.add(new UserStatus(username, newToken));
+                System.out.println("pass userStatusDAO");
+                userRoleDAO.addRole(username, "student");
+                System.out.println("pass add role");
 
                 String userRealName = signUpInfo.getFirstName() + " " + signUpInfo.getLastName();
                 String tmpUrl = validationUrl + username + "/?id=" + newToken;

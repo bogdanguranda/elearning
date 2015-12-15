@@ -397,3 +397,7 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+INSERT INTO role VALUE ('student');
+INSERT INTO role VALUE ('administrator');
+INSERT INTO role VALUE ('profesor');
