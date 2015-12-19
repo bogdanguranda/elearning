@@ -16,6 +16,7 @@ import java.util.*;
 
 /**
  * Created by Lucian on 10.11.2015.
+ * Modified by Dani.
  */
 
 @Repository
@@ -30,12 +31,11 @@ public class MessageDAOImpl implements MessagesDAO {
 
     @Override
     public void add(Message message) {
-        String sql = "insert into message values (:sender, :receiver, :timestamp, :message);";
+        String sql = "INSERT INTO message(sender, receiver, timestamp, message) VALUES (:sender, :receiver, DEFAULT, :message);";
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("sender", message.getSenderUsername());
         namedParameters.put("receiver", message.getReceiverUsername());
         namedParameters.put("message", message.getMessage());
-        namedParameters.put("timestamp", null);
 
         namedParameterJdbcTemplate.update(sql, namedParameters);
     }
@@ -74,7 +74,7 @@ public class MessageDAOImpl implements MessagesDAO {
                 Message message = new Message();
                 message.setSenderUsername(resultSet.getString("sender"));
                 message.setReceiverUsername(resultSet.getString("receiver"));
-                message.setTimestamp(null);
+                message.setTimestamp(resultSet.getTimestamp("timestamp"));
                 message.setMessage(resultSet.getString("message"));
 
                 return message;
@@ -95,8 +95,8 @@ public class MessageDAOImpl implements MessagesDAO {
                 Message message = new Message();
                 message.setSenderUsername(resultSet.getString("sender"));
                 message.setReceiverUsername(resultSet.getString("receiver"));
+                message.setTimestamp(resultSet.getTimestamp("timestamp"));
                 message.setMessage(resultSet.getString("message"));
-                message.setTimestamp(null);
 
                 return message;
             }
