@@ -32,8 +32,6 @@ public class UserControllerImpl implements UserController {
     @Autowired
     private SessionService sessionService;
 
-    //OK, this should work. ok continui eu. finalizez ce mai e.Dar asta zice
-    //ca mai ai ceva eroare
     @Override
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {

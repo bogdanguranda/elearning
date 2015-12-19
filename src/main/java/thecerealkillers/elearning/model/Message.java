@@ -4,6 +4,7 @@ import java.util.Date;
 
 /**
  * Created by Lucian on 09.11.2015.
+ * Modified by Dani
  */
 public class Message {
 
@@ -12,10 +13,9 @@ public class Message {
     private Date timestamp;
     private String message;
 
-    public Message(String senderUsername, String receiverUsername, Date timestamp, String message) {
+    public Message(String senderUsername, String receiverUsername, String message) {
         this.senderUsername = senderUsername;
         this.receiverUsername = receiverUsername;
-        this.timestamp = timestamp;
         this.message = message;
     }
 
