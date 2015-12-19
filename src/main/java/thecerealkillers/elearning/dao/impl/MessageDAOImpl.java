@@ -30,12 +30,11 @@ public class MessageDAOImpl implements MessagesDAO {
 
     @Override
     public void add(Message message) {
-        String sql = "insert into message values (:sender, :receiver, :timestamp, :message);";
+        String sql = "insert into message values (DEFAULT, :sender, :receiver, DEFAULT, :message);";
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("sender", message.getSenderUsername());
         namedParameters.put("receiver", message.getReceiverUsername());
         namedParameters.put("message", message.getMessage());
-        namedParameters.put("timestamp", null);
 
         namedParameterJdbcTemplate.update(sql, namedParameters);
     }

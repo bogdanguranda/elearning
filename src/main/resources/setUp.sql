@@ -137,11 +137,11 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`message` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `sender` VARCHAR(45) NOT NULL COMMENT '',
   `receiver` VARCHAR(45) NOT NULL COMMENT '',
   `timestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   `message` TEXT NULL COMMENT '',
-  PRIMARY KEY (`sender`, `receiver`)  COMMENT '',
   INDEX `username_idx` (`receiver` ASC)  COMMENT '',
   CONSTRAINT `sender_username_fk`
     FOREIGN KEY (`sender`)
