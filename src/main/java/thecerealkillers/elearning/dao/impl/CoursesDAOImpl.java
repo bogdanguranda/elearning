@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.CoursesDAO;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Course;
 
 import java.sql.ResultSet;

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
+import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.service.CoursesService;
 

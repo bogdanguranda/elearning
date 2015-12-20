@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service;
 
+import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
 
 import java.util.List;

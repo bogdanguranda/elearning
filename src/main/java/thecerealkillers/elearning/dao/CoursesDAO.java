@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.dao;
 
 import org.springframework.stereotype.Repository;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Course;
 
 import java.util.List;
