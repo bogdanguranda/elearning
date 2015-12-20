@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.CoursesDAO;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Course;
 
 import java.sql.ResultSet;
@@ -26,69 +27,85 @@ public class CoursesDAOImpl implements CoursesDAO {
     }
 
     @Override
-    public void add(Course course) {
-        String sql = "insert into course values (:title, :about, :details, :owner);";
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("title", course.getTitle());
-        namedParameters.put("about", course.getAbout());
-        namedParameters.put("details", course.getDetails());
-        namedParameters.put("owner", course.getOwner());
+    public void add(Course course) throws DAOException {
+        try {
+            String sql = "insert into course values (:title, :about, :details, :owner);";
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", course.getTitle());
+            namedParameters.put("about", course.getAbout());
+            namedParameters.put("details", course.getDetails());
+            namedParameters.put("owner", course.getOwner());
 
-        namedParameterJdbcTemplate.update(sql, namedParameters);
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
     @Override
-    public void remove(String title) {
-        String sql = "delete from course where title = :title;";
-        Map<String, String> namedParameters = Collections.singletonMap("title", title);
+    public void remove(String title) throws DAOException {
+        try {
+            String sql = "delete from course where title = :title;";
+            Map<String, String> namedParameters = Collections.singletonMap("title", title);
 
-        namedParameterJdbcTemplate.update(sql, namedParameters);
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
     @Override
-    public void update(String title, Course updatedCourse) {
-
+    public void update(String title, Course updatedCourse) throws DAOException {
+        throw new DAOException("NOT YET IMPLEMENTED");
     }
 
     @Override
-    public Course get(String title) {
-        String sql = "select * from course where title = :title;";
-        Map<String, String> namedParameters = Collections.singletonMap("title", title);
+    public Course get(String title) throws DAOException {
+        try {
+            String sql = "select * from course where title = :title;";
+            Map<String, String> namedParameters = Collections.singletonMap("title", title);
 
-        List<Course> courseList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<Course>() {
-            @Override
-            public Course mapRow(ResultSet resultSet, int i) throws SQLException {
-                Course course = new Course();
-                course.setTitle(resultSet.getString("title"));
-                course.setAbout(resultSet.getString("about"));
-                course.setDetails(resultSet.getString("details"));
-                course.setOwner(resultSet.getString("owner"));
+            List<Course> courseList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<Course>() {
+                @Override
+                public Course mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Course course = new Course();
+                    course.setTitle(resultSet.getString("title"));
+                    course.setAbout(resultSet.getString("about"));
+                    course.setDetails(resultSet.getString("details"));
+                    course.setOwner(resultSet.getString("owner"));
 
-                return course;
-            }
-        });
-
-        return courseList.get(0);
+                    return course;
+                }
+            });
+            if (courseList.size() == 0)
+                throw new DAOException("Course " + title + " is not available.");
+            return courseList.get(0);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 
     @Override
-    public List<Course> getAll() {
-        List<Course> courseList;
-        String sql = "select * from course;";
+    public List<Course> getAll() throws DAOException {
+        try {
+            List<Course> courseList;
+            String sql = "select * from course;";
 
-        courseList = namedParameterJdbcTemplate.query(sql, new RowMapper<Course>() {
-            @Override
-            public Course mapRow(ResultSet resultSet, int i) throws SQLException {
-                Course course = new Course();
-                course.setTitle(resultSet.getString("title"));
-                course.setAbout(resultSet.getString("about"));
-                course.setDetails(resultSet.getString("details"));
-                course.setOwner(resultSet.getString("owner"));
+            courseList = namedParameterJdbcTemplate.query(sql, new RowMapper<Course>() {
+                @Override
+                public Course mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Course course = new Course();
+                    course.setTitle(resultSet.getString("title"));
+                    course.setAbout(resultSet.getString("about"));
+                    course.setDetails(resultSet.getString("details"));
+                    course.setOwner(resultSet.getString("owner"));
 
-                return course;
-            }
-        });
-
-        return courseList;
+                    return course;
+                }
+            });
+            return courseList;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
     }
 }
