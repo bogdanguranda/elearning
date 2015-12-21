@@ -1,0 +1,3 @@
+1. Copy .keystore and server.xml in your Tomcat installation folder under conf directory (e.g C:Program Files/Apache Software Foundation/Tomcat 8.0/conf/)
+2. In IntelliJ Idea on Edit Configuration (clicking on the little drop down arrow on the left of the green run arrow, if you have already configured tomcat),
+change JMX port to 8099.
