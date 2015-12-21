@@ -78,35 +78,6 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    /**
-     * Get role for specific username
-     * @param username
-     * @return role
-     * @throws DAOException
-     */
-    @Override
-    public String getRole(String username) throws DAOException {
-        try {
-            String sql = "SELECT role FROM user_role WHERE username = :username;";
-            Map<String, String> namedParameters = Collections.singletonMap("username", username);
-
-            List<String> roleList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("role");
-                }
-            });
-
-            if(roleList.size() == 0) {
-                throw new DAOException("Role does not exist for this username");
-            }
-
-            return roleList.get(0);
-        } catch (Exception ex) {
-            throw new DAOException(ex.getMessage());
-        }
-    }
-
     @Override
     public boolean isUsernameAvailable(String username) throws DAOException {
         try {
@@ -152,10 +123,10 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> getAll() throws DAOException {
+    public List<User> getAllUsers() throws DAOException {
         try {
             List<User> users;
-            String sqlCommand = "select * from user;";
+            String sqlCommand = "SELECT * FROM user;";
 
             users = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<User>() {
                 @Override
@@ -166,8 +137,6 @@ public class UserDAOImpl implements UserDAO {
                     user.setEmail(resultSet.getString("email"));
                     user.setFirstName(resultSet.getString("firstName"));
                     user.setLastName(resultSet.getString("lastName"));
-                    //user.setHash(resultSet.getString("hash"));
-                    //user.setSalt(resultSet.getString("salt"));
                     user.setHash("");
                     user.setSalt("");
 
@@ -196,7 +165,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(String username) throws DAOException {
+    public void deleteAccount(String username) throws DAOException {
 
         try {
             String sqlCommand = "DELETE FROM user WHERE username = :username";

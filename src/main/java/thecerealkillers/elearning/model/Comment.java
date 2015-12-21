@@ -13,6 +13,15 @@ public class Comment {
     private Date timeStamp;
     private String message;
 
+    public Comment() {
+        message = ""; // DO NOT REMOVE THIS LINE !!! (required for URLs exposed by CommentControllerImlp)
+    }
+
+    public Comment(String owner, String message) {
+        this.owner = owner;
+        this.message = message;
+    }
+
     public String getOwner() {
         return owner;
     }
@@ -35,10 +44,6 @@ public class Comment {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Comment() {
-        message = ""; // DO NOT REMOVE THIS LINE !!! (required for URLs exposed by CommentControllerImlp)
     }
 
     @Override

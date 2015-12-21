@@ -5,10 +5,11 @@ import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
 import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.UserController;
-import thecerealkillers.elearning.model.*;
+import thecerealkillers.elearning.service.UserRoleService;
 import thecerealkillers.elearning.validator.UserValidator;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.UserService;
+import thecerealkillers.elearning.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,8 @@ public class UserControllerImpl implements UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private UserRoleService userRoleService;
+    @Autowired
     private SessionService sessionService;
 
     @Override
@@ -39,7 +42,7 @@ public class UserControllerImpl implements UserController {
 
             UserValidator.validateLoginInfo(loginInfo);
             String token = userService.authenticate(loginInfo);
-            String role = userService.getRole(loginInfo.getUsername());
+            String role = userRoleService.getRole(loginInfo.getUsername());
             AuthenticationInfo authenticationInfo = new AuthenticationInfo(token, role);
 
             return new ResponseEntity<>(authenticationInfo, HttpStatus.OK);
@@ -84,7 +87,7 @@ public class UserControllerImpl implements UserController {
         try {
             sessionService.getSessionByToken(token); //if the token is not found an exception will occur
 
-            return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

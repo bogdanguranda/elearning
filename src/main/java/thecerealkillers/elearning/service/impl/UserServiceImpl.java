@@ -1,10 +1,10 @@
 package thecerealkillers.elearning.service.impl;
 
 
-import thecerealkillers.elearning.dao.impl.UserRoleDAO;
 import thecerealkillers.elearning.exceptions.PasswordExpertException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.EmailException;
+import thecerealkillers.elearning.service.UserRoleService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
 import thecerealkillers.elearning.utilities.TokenGenerator;
 import thecerealkillers.elearning.exceptions.DAOException;
@@ -35,11 +35,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
     @Autowired
-    private UserRoleDAO userRoleDAO;
+    private UserStatusDAO userStatusDAO;
     @Autowired
     private SessionDAO sessionDAO;
     @Autowired
-    private UserStatusDAO userStatusDAO;
+    private UserRoleService userRoleService;
+
+
 
     private String siteUrl = "http://localhost:8080/";
     private String validationUrl = siteUrl + "users/confirmation/create/";
@@ -72,10 +74,10 @@ public class UserServiceImpl implements UserService {
 
             throw new ServiceException(ServiceException.FAILED_LOG_IN);
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_LOG_IN);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_LOG_IN + passwordException.getMessage());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN + daoException.getMessage());
         }
     }
 
@@ -92,11 +94,8 @@ public class UserServiceImpl implements UserService {
 
                 userDAO.signUp(new User(username, signUpInfo.getFirstName(), signUpInfo.getLastName(),
                         signUpInfo.getEmail(), passInfo.getHash(), passInfo.getSalt()));
-                System.out.println("pass signUp");
                 userStatusDAO.add(new UserStatus(username, newToken));
-                System.out.println("pass userStatusDAO");
-                userRoleDAO.addRole(username, "student");
-                System.out.println("pass add role");
+                userRoleService.addRole(username, "student");
 
                 String userRealName = signUpInfo.getFirstName() + " " + signUpInfo.getLastName();
                 String tmpUrl = validationUrl + username + "/?id=" + newToken;
@@ -107,31 +106,15 @@ public class UserServiceImpl implements UserService {
             try {
                 deleteUserAccount(signUpInfo.getUsername());
             } catch (DAOException dao_ex) {
-                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT);// + dao_ex.getMessage());
+                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT + dao_ex.getMessage());
             }
 
-            throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP + emailException.getMessage());
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP + passwordException.getMessage());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP);// + daoException.getMessage());
-        }
-    }
-
-    /**
-     * Get role for specific username
-     *
-     * @param username
-     * @return string role
-     * @throws ServiceException
-     */
-    @Override
-    public String getRole(String username) throws ServiceException {
-        try {
-            return userDAO.getRole(username);
-        }catch (DAOException e) {
-            throw new ServiceException(ServiceException.FAILED_GET_ROLE);
+            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP + daoException.getMessage());
         }
     }
 
@@ -152,10 +135,10 @@ public class UserServiceImpl implements UserService {
 
             EmailExpert.sendAccountCreated(user.getEmail(), userRealName);
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_EMAIL_VALIDATION);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_EMAIL_VALIDATION + emailException.getMessage());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_EMAIL_VALIDATION);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_EMAIL_VALIDATION + daoException.getMessage());
         }
 
     }
@@ -186,10 +169,10 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_RESET_REQUEST);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_RESET_REQUEST + emailException.getMessage());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_RESET_REQUEST);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_RESET_REQUEST + daoException.getMessage());
         }
     }
 
@@ -210,13 +193,13 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD + passwordException.getMessage());
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET + emailException.getMessage());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET + daoException.getMessage());
         }
     }
 
@@ -231,39 +214,34 @@ public class UserServiceImpl implements UserService {
 
             EmailExpert.sendPasswordChanged(user.getEmail(), userRealName);
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE + passwordException.getMessage());
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_CHANGE);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_CHANGE + emailException.getMessage());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_CHANGE);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_CHANGE + daoException.getMessage());
         }
     }
 
     @Override
     public User get(String username) throws ServiceException {
         try {
-//            return userDAO.get(username);
-
-            //OR
-///*
             User user = userDAO.get(username);
 
             user.setSalt("");
             user.setHash("");
 
             return user;
-//*/
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());
         }
     }
 
     @Override
-    public List<User> getAll() throws ServiceException {
+    public List<User> getAllUsers() throws ServiceException {
         try {
-            return userDAO.getAll();
+            return userDAO.getAllUsers();
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());
         }
@@ -273,14 +251,14 @@ public class UserServiceImpl implements UserService {
     ///========================================Private methods======================================================
 
     private void passwordChange(User user, String newPassword) throws PasswordExpertException, DAOException {
-        PasswordInfo passInfo = PasswordExpert.newPassword(newPassword, user.getSalt());
+        PasswordInfo passInfo = PasswordExpert.newPassword(newPassword);
 
         userDAO.changePassword(user.getUsername(), passInfo.getHash());
         userStatusDAO.update(user.getUsername(), "");
     }
 
     private void deleteUserAccount(String username) throws DAOException {
-        userDAO.delete(username);
+        userDAO.deleteAccount(username);
         userStatusDAO.accountDeleted(username);
     }
 

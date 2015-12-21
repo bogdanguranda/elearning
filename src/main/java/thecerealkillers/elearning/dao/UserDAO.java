@@ -32,14 +32,6 @@ public interface UserDAO {
     User get(String username) throws DAOException;
 
     /**
-     * Get role for specific user
-     * @param username
-     * @return role
-     * @throws DAOException
-     */
-    String getRole(String username) throws DAOException;
-
-    /**
      * Checks if username is available.
      *
      * @param username
@@ -72,7 +64,7 @@ public interface UserDAO {
      * @return - a list with all users in DB.
      * @throws DAOException if DB problems / other weird problems.
      */
-    List<User> getAll() throws DAOException;
+    List<User> getAllUsers() throws DAOException;
 
     /**
      * Deletes the user account with the username @userName
@@ -80,5 +72,5 @@ public interface UserDAO {
      * @param username
      * @throws DAOException
      */
-    void delete(String username) throws DAOException;
+    void deleteAccount(String username) throws DAOException;
 }

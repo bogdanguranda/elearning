@@ -35,13 +35,6 @@ public interface UserService {
      */
     void signUp(UserSignUpInfo signUpInfo) throws ServiceException;
 
-    /**
-     * Get role for specific username
-     * @param username
-     * @return string role
-     * @throws ServiceException
-     */
-    String getRole(String username) throws ServiceException;
 
     /**
      * Retrieves the user with username
@@ -55,7 +48,7 @@ public interface UserService {
      * Retrieves a list of all the
      * existing users in the database.
      */
-    List<User> getAll() throws ServiceException;
+    List<User> getAllUsers() throws ServiceException;
 
     /**
      * Checks if the token received is right and activates his account
