@@ -25,7 +25,7 @@ public interface AdminController {
     @RequestMapping(value = "/admin/suspendAccount", method = RequestMethod.POST)
     ResponseEntity suspendAccount(@RequestBody AccountSuspensionInfo suspendInfo);
 
-    @RequestMapping(value = "/admin/suspendAccount", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/reactivateAccount", method = RequestMethod.POST)
     ResponseEntity reactivateAccount(@RequestBody AccountSuspensionInfo reactivateInfo);
 
     @RequestMapping(value = "/admin/changeAccountType", method = RequestMethod.POST)
