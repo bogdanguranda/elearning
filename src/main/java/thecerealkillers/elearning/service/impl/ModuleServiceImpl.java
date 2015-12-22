@@ -40,14 +40,11 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public void deleteModule(Module module) throws ServiceException {
         try {
-            //I don't make any checks here since the DELETE cmd
-            //won't fail for any params passed. From client-side
-            //the user will not be able to make a delete request for
-            //an innexistent module, and as for the ones that make a
-            //request from cURL for example, well their request won't
-            //fail neither and this way i'm exposing less security holes.
-            //GG. Story of my life. KTHXBYE.
-            moduleDAO.deleteModule(module);
+            if (moduleDAO.isModuleExistent(module)) {
+                moduleDAO.deleteModule(module);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_MODULE_INNEXISTENT);
+            }
         } catch (DAOException daoException) {
             throw new ServiceException(daoException.getMessage());
         }
@@ -71,6 +68,19 @@ public class ModuleServiceImpl implements ModuleService {
 
             if (moduleDAO.isModuleExistent(module)) {
                 return moduleDAO.get(title, course);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_MODULE_INNEXISTENT);
+            }
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
+
+    @Override
+    public void update(Module module, String newTitle) throws ServiceException {
+        try {
+            if (moduleDAO.isModuleExistent(module)) {
+                moduleDAO.update(module, newTitle);
             } else {
                 throw new ServiceException(ServiceException.FAILED_MODULE_INNEXISTENT);
             }

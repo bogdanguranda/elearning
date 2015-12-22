@@ -37,7 +37,7 @@ public class ServiceException extends Exception {
     public static final String FAILED_COURSE_INNEXISTENT = "The course you are trying to use is innexistent.\n";
 
     public static final String FAILED_MODULE_ALREADY_EXISTS = "The module you are trying to create already exists.\n";
-    public static final String FAILED_MODULE_INNEXISTENT = "The module you are trying to fetch is innexistent.\n";
+    public static final String FAILED_MODULE_INNEXISTENT = "The module you are trying to manipulate is innexistent.\n";
 
     public ServiceException(String message) {
         super(message);

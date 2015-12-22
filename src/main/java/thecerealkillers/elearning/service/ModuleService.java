@@ -21,7 +21,8 @@ public interface ModuleService {
     /**
      * Deletes the module @module from DB.
      * @param module
-     * @throws ServiceException if DAOException encountered.
+     * @throws ServiceException if DAOException encountered /
+     * if the module is innexistent in the DB.
      */
     void deleteModule(Module module) throws ServiceException;
 
@@ -42,4 +43,13 @@ public interface ModuleService {
      * if DAOException encountered.
      */
     Module get(String title, String course) throws ServiceException;
+
+    /**
+     * Renames the module @module to @newTitle
+     * @param module
+     * @param newTitle
+     * @throws ServiceException if module is innexistent in DB /
+     * if DAOException encountered.
+     */
+    void update(Module module, String newTitle) throws ServiceException;
 }
