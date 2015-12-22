@@ -11,7 +11,8 @@ import thecerealkillers.elearning.model.Module;
 import thecerealkillers.elearning.service.ModuleService;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.validator.ModuleValidator;
-import thecerealkillers.elearning.validator.Validator;
+
+import java.util.List;
 
 /**
  * Created by cuvidk on 12/22/2015.
@@ -45,6 +46,48 @@ public class ModuleControllerImpl implements ModuleController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (InvalidModuleException moduleException) {
             return new ResponseEntity<>(moduleException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteModule(@RequestHeader String token, @PathVariable("courseTitle") String courseTitle,
+                                               @RequestParam("moduleTitle") String moduleTitle) {
+        try {
+            sessionService.getSessionByToken(token);
+
+            Module module = new Module();
+            module.setCourse(courseTitle);
+            module.setTitle(moduleTitle);
+
+            moduleService.deleteModule(module);
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token) {
+        try {
+            sessionService.getSessionByToken(token);
+
+            return new ResponseEntity<>(moduleService.getAll(), HttpStatus.OK);
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Module> get(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+                                      @PathVariable("moduleTitle") String moduleTitle) {
+        try {
+            sessionService.getSessionByToken(token);
+
+            Module module = moduleService.get(moduleTitle, courseTitle);
+            return new ResponseEntity<>(module, HttpStatus.OK);
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
