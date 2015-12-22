@@ -26,4 +26,9 @@ public interface ModuleController {
     @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}", method = RequestMethod.GET)
     ResponseEntity<Module> get(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
                                @PathVariable("moduleTitle") String moduleTitle);
+
+    @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.PUT)
+    ResponseEntity<String> renameModule(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+                                        @RequestParam("currentTitle") String currentTitle,
+                                        @RequestParam("newTitle") String newTitle);
 }

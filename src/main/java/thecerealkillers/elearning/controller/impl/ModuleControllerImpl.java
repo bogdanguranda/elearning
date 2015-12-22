@@ -68,6 +68,7 @@ public class ModuleControllerImpl implements ModuleController {
     }
 
     @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.GET)
     public ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token) {
         try {
             sessionService.getSessionByToken(token);
@@ -79,6 +80,7 @@ public class ModuleControllerImpl implements ModuleController {
     }
 
     @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}", method = RequestMethod.GET)
     public ResponseEntity<Module> get(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
                                       @PathVariable("moduleTitle") String moduleTitle) {
         try {
@@ -88,6 +90,23 @@ public class ModuleControllerImpl implements ModuleController {
             return new ResponseEntity<>(module, HttpStatus.OK);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.PUT)
+    public ResponseEntity<String> renameModule(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+                                               @RequestParam("currentTitle") String currentTitle, @RequestParam("newTitle") String newTitle)
+    {
+        try {
+            sessionService.getSessionByToken(token);
+
+            Module module = moduleService.get(currentTitle, courseTitle);
+            moduleService.update(module, newTitle);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ServiceException serviceExcetion) {
+            return new ResponseEntity<>(serviceExcetion.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }
