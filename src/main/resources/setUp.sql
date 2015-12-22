@@ -401,3 +401,18 @@ ENGINE = InnoDB;
 INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
+
+
+
+
+-- dev only start
+INSERT INTO user VALUES('username1', 'firstName', 'lastName', 'email1', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
+INSERT INTO user VALUES('username2', 'firstName', 'lastName', 'email2', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
+INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
+INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
+INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
+INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
+INSERT INTO user_role VALUE ('username1', 'student');
+INSERT INTO user_role VALUE ('username2', 'student');
+INSERT INTO user_role VALUE ('username3', 'student');
+-- dev only end
