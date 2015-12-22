@@ -73,7 +73,7 @@ public class UserControllerImpl implements UserController {
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     public ResponseEntity<User> get(@PathVariable("username") String username, @RequestHeader(value = "token") String token) {
         try {
-             sessionService.getSessionByToken(token); //if the token is not found an exception will occur
+            sessionService.getSessionByToken(token); //if the token is not found an exception will occur
 
             return new ResponseEntity<>(userService.get(username), HttpStatus.OK);
         } catch (ServiceException serviceException) {
@@ -132,7 +132,7 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity changePassword(@RequestBody PasswordChange passwordChange,
                                          @RequestHeader(value = "token") String token) {
         try {
-             sessionService.getSessionByToken(token);
+            sessionService.getSessionByToken(token);
 
             UserValidator.validateLoginInfo(new UserLoginInfo(passwordChange.getUsername(), passwordChange.getNewPassword()));
 

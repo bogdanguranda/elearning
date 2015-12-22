@@ -53,9 +53,10 @@ public interface UserDAO {
      * Changes password for the user with the username @userNames
      *
      * @param username
-     * @param newPassword
+     * @param newSalt
+     * @param newHash
      */
-    void changePassword(String username, String newPassword) throws DAOException;
+    void changePassword(String username, String newSalt, String newHash) throws DAOException;
 
     /**
      * Retrieves a list of all the

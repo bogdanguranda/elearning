@@ -150,11 +150,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void changePassword(String username, String newHash) throws DAOException  {
+    public void changePassword(String username, String newSalt, String newHash) throws DAOException  {
         try {
-            String sqlCommand = "UPDATE user SET hash = :hash WHERE username = :username";
+            String sqlCommand = "UPDATE user SET hash = :hash, salt = :salt WHERE username = :username";
             Map<String, String> namedParameters = new HashMap<>();
 
+            namedParameters.put("salt", newSalt);
             namedParameters.put("hash", newHash);
             namedParameters.put("username", username);
             namedParameterJdbcTemplate.update(sqlCommand, namedParameters);

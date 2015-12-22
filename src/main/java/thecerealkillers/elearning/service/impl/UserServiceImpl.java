@@ -253,7 +253,7 @@ public class UserServiceImpl implements UserService {
     private void passwordChange(User user, String newPassword) throws PasswordExpertException, DAOException {
         PasswordInfo passInfo = PasswordExpert.newPassword(newPassword);
 
-        userDAO.changePassword(user.getUsername(), passInfo.getHash());
+        userDAO.changePassword(user.getUsername(), passInfo.getSalt(), passInfo.getHash());
         userStatusDAO.update(user.getUsername(), "");
     }
 
