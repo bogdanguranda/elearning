@@ -2,12 +2,16 @@ package thecerealkillers.elearning.dao.impl;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import thecerealkillers.elearning.dao.ModuleDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Module;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +54,59 @@ public class ModuleDAOImpl implements ModuleDAO {
             namedParameterJdbcTemplate.update(sql, namedParameters);
         } catch (Exception ex) {
             throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Module> getAll() throws DAOException {
+        try {
+            List<Module> modules;
+            String sqlCommand = "SELECT * FROM Module";
+
+            modules = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<Module>() {
+                @Override
+                public Module mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Module module = new Module();
+
+                    module.setTitle(resultSet.getString("title"));
+                    module.setCourse(resultSet.getString("course"));
+                    module.setDescription(resultSet.getString("description"));
+
+                    return module;
+                }
+            });
+            return modules;
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Module get(String title, String course) throws DAOException {
+        try {
+            List<Module> modules;
+            String sqlCommand = "SELECT * FROM Module WHERE title = :title AND course = :course";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", title);
+            namedParameters.put("course", course);
+
+            modules = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<Module>() {
+                @Override
+                public Module mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Module module = new Module();
+
+                    module.setTitle(resultSet.getString("title"));
+                    module.setCourse(resultSet.getString("course"));
+                    module.setDescription(resultSet.getString("description"));
+
+                    return module;
+                }
+            });
+
+            return modules.get(0);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
         }
     }
 }
