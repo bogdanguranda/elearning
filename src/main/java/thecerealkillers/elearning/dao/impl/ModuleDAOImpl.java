@@ -124,4 +124,36 @@ public class ModuleDAOImpl implements ModuleDAO {
             throw new DAOException(exception.getMessage());
         }
     }
+
+    @Override
+    public boolean isModuleExistent(Module module) throws DAOException {
+        try {
+            List<Module> modules;
+            String sqlCommand = "SELECT * FROM Module WHERE title = :title AND course = :course";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", module.getTitle());
+            namedParameters.put("course", module.getCourse());
+
+            modules = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<Module>() {
+                @Override
+                public Module mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Module module = new Module();
+
+                    module.setTitle(resultSet.getString("title"));
+                    module.setCourse(resultSet.getString("course"));
+                    module.setDescription(resultSet.getString("description"));
+
+                    return module;
+                }
+            });
+
+            if (modules.size() > 0) {
+                return true;
+            }
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+        return false;
+    }
 }

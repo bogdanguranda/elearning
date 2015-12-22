@@ -48,4 +48,13 @@ public interface ModuleDAO {
      * @throws DAOException if DB error.
      */
     void update(Module module, String newTitle) throws DAOException;
+
+    /**
+     * Checks to see if @module already exists
+     * in DB.
+     * @param module
+     * @return true if it exists, false else
+     * @throws DAOException if DB error.
+     */
+    boolean isModuleExistent(Module module) throws DAOException;
 }
