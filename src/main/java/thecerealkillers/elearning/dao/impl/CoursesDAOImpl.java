@@ -110,10 +110,10 @@ public class CoursesDAOImpl implements CoursesDAO {
     }
 
     @Override
-    public boolean isCourseExistent(String title) throws DAOException {
+    public boolean isCourseExistent(Course course) throws DAOException {
         try {
             String sql = "select * from course where title = :title;";
-            Map<String, String> namedParameters = Collections.singletonMap("title", title);
+            Map<String, String> namedParameters = Collections.singletonMap("title", course.getTitle());
 
             List<Course> courseList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<Course>() {
                 @Override
