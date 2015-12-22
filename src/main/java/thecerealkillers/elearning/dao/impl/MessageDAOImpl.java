@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.dao.impl;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -7,12 +8,12 @@ import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.MessagesDAO;
 import thecerealkillers.elearning.model.Message;
 
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lucian on 10.11.2015.
@@ -43,7 +44,7 @@ public class MessageDAOImpl implements MessagesDAO {
     @Override
     public List<Message> getAll() {
         List<Message> messageList;
-        String sql = "select * from message;";
+        String sql = "SELECT * FROM message;";
 
         messageList = namedParameterJdbcTemplate.query(sql, new RowMapper<Message>() {
             @Override

@@ -2,6 +2,7 @@ package thecerealkillers.elearning.dao;
 
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface GroupsDAO {
     void add(Group group) throws DAOException;
 
     void remove(String name) throws DAOException;
+
+    void addCourseGroup(Course course, Group group) throws DAOException;
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.GroupsDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 import thecerealkillers.elearning.service.GroupsService;
 
@@ -43,6 +44,15 @@ public class GroupsServiceImpl implements GroupsService {
             groupsDAO.remove(name);
         } catch (DAOException daoEX) {
             throw new ServiceException(daoEX.getMessage());
+        }
+    }
+
+    @Override
+    public void addCourseGroup(Course course, Group group) throws ServiceException {
+        try {
+            groupsDAO.addCourseGroup(course, group);
+        } catch (DAOException ex) {
+            throw new ServiceException(ex.getMessage());
         }
     }
 }

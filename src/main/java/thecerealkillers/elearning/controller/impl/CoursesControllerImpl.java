@@ -7,22 +7,33 @@ import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.CoursesController;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
+import thecerealkillers.elearning.model.Group;
 import thecerealkillers.elearning.service.CoursesService;
+import thecerealkillers.elearning.service.GroupsService;
 import thecerealkillers.elearning.service.SessionService;
 
 import java.util.List;
 
+/**
+ * Modified by #Lucian and @Pi on 12/22/2015
+ * Modifications Summary:
+ * - added a call to addGroup in createCourse method
+ */
+
 @RestController
 @CrossOrigin
-public class CoursesControllerImpl implements CoursesController{
+public class CoursesControllerImpl implements CoursesController {
 
+    private static final String GROUP = "GROUP_";
     @Autowired
     private CoursesService coursesService;
     @Autowired
     private SessionService sessionService;
+    @Autowired
+    private GroupsService groupsService;
 
     @RequestMapping(value = "/courses", method = RequestMethod.GET)
-    public ResponseEntity<List<Course>> getAllCourses(@RequestHeader(value="token") String token) {
+    public ResponseEntity<List<Course>> getAllCourses(@RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -34,11 +45,14 @@ public class CoursesControllerImpl implements CoursesController{
     }
 
     @RequestMapping(value = "/courses", method = RequestMethod.POST)
-    public ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value="token") String token) {
+    public ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
-
             coursesService.add(course);
+
+            Group group = new Group(GROUP + course.getTitle());
+            groupsService.addGroup(group);
+            groupsService.addCourseGroup(course, group);
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException service_exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,8 +60,8 @@ public class CoursesControllerImpl implements CoursesController{
     }
 
     @RequestMapping(value = "/courses", method = RequestMethod.DELETE)
-    public ResponseEntity deleteCourse(@RequestParam(value="title", required=true) String title,
-                                       @RequestHeader(value="token") String token) {
+    public ResponseEntity deleteCourse(@RequestParam(value = "title", required = true) String title,
+                                       @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 
@@ -59,7 +73,7 @@ public class CoursesControllerImpl implements CoursesController{
     }
 
     @RequestMapping(value = "/courses/{title}", method = RequestMethod.GET)
-    public ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value="token") String token) {
+    public ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
 

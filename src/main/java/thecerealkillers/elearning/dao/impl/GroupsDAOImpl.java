@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.GroupsDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 
 import java.sql.ResultSet;
@@ -22,6 +23,7 @@ import java.util.Map;
 @Repository
 public class GroupsDAOImpl implements GroupsDAO {
 
+    private static final String NO_SUBSCRIBED_GROUPS = "There is no subscribed group for this course";
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -72,6 +74,21 @@ public class GroupsDAOImpl implements GroupsDAO {
             namedParameterJdbcTemplate.update(sql, namedParameters);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void addCourseGroup(Course course, Group group) throws DAOException {
+        try {
+            String sql = "INSERT INTO course_group VALUES (:course, :group);";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("course", course.getTitle());
+            namedParameters.put("group", group.getName());
+
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
         }
     }
 }

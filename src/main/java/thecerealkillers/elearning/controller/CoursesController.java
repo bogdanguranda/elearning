@@ -10,15 +10,16 @@ import java.util.List;
 public interface CoursesController {
 
     @RequestMapping(value = "/courses", method = RequestMethod.GET)
-    ResponseEntity<List<Course>> getAllCourses(@RequestHeader(value="token") String token);
+    ResponseEntity<List<Course>> getAllCourses(@RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/courses", method = RequestMethod.POST)
-    ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value="token") String token);
+    ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/courses", method = RequestMethod.DELETE)
     ResponseEntity deleteCourse(@RequestParam(value = "title", required = true) String title,
-                                @RequestHeader(value="token") String token);
+                                @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/courses/{title}", method = RequestMethod.GET)
-    ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value="token") String token);
+    ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value = "token") String token);
+
 }
