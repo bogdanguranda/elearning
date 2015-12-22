@@ -8,6 +8,8 @@ import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Module;
 import thecerealkillers.elearning.service.ModuleService;
 
+import java.util.List;
+
 /**
  * Created by cuvidk on 12/22/2015.
  */
@@ -30,8 +32,33 @@ public class ModuleServiceImpl implements ModuleService {
             } else {
                 throw new ServiceException(ServiceException.FAILED_COURSE_INEXISTENT);
             }
-        } catch (DAOException exception) {
-            throw new ServiceException(exception.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteModule(Module module) throws ServiceException {
+        try {
+            //I don't make any checks here since the DELETE cmd
+            //won't fail for any params passed. From client-side
+            //the user will not be able to make a delete request for
+            //an innexistent module, and as for the ones that make a
+            //request from cURL for example, well their request won't
+            //fail neither and this way i'm exposing less security holes.
+            //GG. Story of my life. KTHXBYE.
+            moduleDAO.deleteModule(module);
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
+
+    @Override
+    public List<Module> getAll() throws ServiceException {
+        try {
+            return moduleDAO.getAll();
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 }
