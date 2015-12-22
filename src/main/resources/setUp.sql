@@ -398,14 +398,24 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+
+
+
+
+-- ===================================================================
+-- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
+
+-- Adauga rolurile
+-- -------------------------------------------------------------------
 INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
 
--- -----------------------------------------------------
--- Creeaza cont pentru administrator
--- -----------------------------------------------------
+-- Creeaza cont pentru administrator 
+-- -------------------------------------------------------------------
 INSERT INTO user VALUES('CerealKillersAdmin1', 'cereal', 'killers', 'thecerealkillers.pc@gmail.com', 'af212b1d8d174716cc1da021b4c5a9c4f5f1b569c22ddb88660a9f242a58e77e43622af22b5c8178a51efaaf93b2bcb63719b5b5d85eb06e1de19610f5e86d3b', 'SYpspH4x6cwPtBf72UoB8Z4l13O49tfBYmGIcGhfgV5hAJGaBojqk3JnvvToo0u6e7PlFFqsOXyDsefrIWC9BRFnBBJrDbQcSHqDs3LiZGtOjmnL9z71He98bhsjYNxw');
 INSERT INTO user_status VALUES ('CerealKillersAdmin1', TRUE, DEFAULT, '');
 INSERT INTO user_role VALUE ('CerealKillersAdmin1', 'administrator');
--- -----------------------------------------------------
+
+-- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
+-- ===================================================================

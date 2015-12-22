@@ -44,6 +44,12 @@ public class ServiceException extends Exception {
     public static final String FAILED_DAO_ADD_ROLE = "A database error occurred while setting the user's role.\n";
 
 
+    //-------------------------------------------AdminServiceImpl------------------------------------------------------------------------------
+
+    public static final String NOT_IMPLEMENTED = "Not implemented yet.\n";          //Dev only.
+    public static final String FAILED_DAO_ROLE_CHG = "A database error occurred while changing user's role.\n";
+
+
     public ServiceException(String message) {
         super(message);
     }

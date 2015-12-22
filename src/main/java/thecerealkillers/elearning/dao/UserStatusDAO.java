@@ -36,6 +36,13 @@ public interface UserStatusDAO {
     void activateAccount(String username) throws DAOException;
 
     /**
+     * Suspends the account for the user with the username @userName.
+     *
+     * @param username
+     */
+    void suspendAccount(String username) throws DAOException;
+
+    /**
      * Deletes the account status for the user with username @userName
      *
      * @param username

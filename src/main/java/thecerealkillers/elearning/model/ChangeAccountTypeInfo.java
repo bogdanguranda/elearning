@@ -8,6 +8,9 @@ public class ChangeAccountTypeInfo {
     private String accountUsername;
     private String newAccountType;
 
+    public ChangeAccountTypeInfo() {
+    }
+
     public ChangeAccountTypeInfo(String accountUsername, String newAccountType) {
         this.accountUsername = accountUsername;
         this.newAccountType = newAccountType;

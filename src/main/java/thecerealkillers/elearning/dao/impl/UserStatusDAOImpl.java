@@ -1,15 +1,14 @@
 package thecerealkillers.elearning.dao.impl;
 
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.jdbc.core.RowMapper;
-
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.UserStatusDAO;
 import thecerealkillers.elearning.model.UserStatus;
 
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import java.sql.SQLException;
@@ -53,11 +52,13 @@ public class UserStatusDAOImpl implements UserStatusDAO {
         try {
             String sqlCommand;
 
-            if (newToken.compareTo("") == 0)
+            if (newToken.compareTo("") == 0) {
                 sqlCommand = "UPDATE user_status SET token = :newToken, signUpTimestamp =  CAST('2000-01-01' AS DATETIME) " +
                         "WHERE username = :username";
-            else
+                newToken = username;
+            } else {
                 sqlCommand = "UPDATE user_status SET token = :newToken, signUpTimestamp = DEFAULT WHERE username = :username";
+            }
 
             Map<String, String> namedParameters = new HashMap<>();
 
@@ -106,6 +107,23 @@ public class UserStatusDAOImpl implements UserStatusDAO {
 
             namedParameters.put("username", username);
             namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+
+            this.update(username, "");
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void suspendAccount(String username) throws DAOException {
+        try {
+            String sqlCommand = "UPDATE user_status SET active = FALSE WHERE username = :username";
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("username", username);
+            namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+
+            this.update(username, "");
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
