@@ -11,6 +11,8 @@ public class ServiceException extends Exception {
 
     //--------------------------------------------UserServiceImpl------------------------------------------------------------------------------
 
+    public static final String FAILED_ACCOUNT_CREATION = "Failed to create user account.\n";
+
     public static final String FAILED_GET_ROLE = "Failed to get role from DB\n";
     public static final String FAILED_EMAIL_SIGN_UP = "Failed to send email with the validation url.\n";
     public static final String FAILED_DAO_DELETE_ACCOUNT = "A database error occurred while deleting account.\n";
@@ -48,6 +50,8 @@ public class ServiceException extends Exception {
 
     public static final String NOT_IMPLEMENTED = "Not implemented yet.\n";          //Dev only.
     public static final String FAILED_DAO_ROLE_CHG = "A database error occurred while changing user's role.\n";
+
+    public static String FAILED_EMAIL_PASSWORD_SET = "Failed to send email with informations about the account created.\n";
 
 
     public ServiceException(String message) {

@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by cuvidk on 11/8/2015.
  * Modified by Dani
- * - Methods added : validateUserAccount, resetPasswordRequest, resetPassword, changePassword
+ * - Methods added : validateUserAccount, resetPasswordRequest, resetPasswordRequestHandlee, changePassword
  */
 @RestController
 @CrossOrigin
@@ -120,7 +120,7 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity resetPassword(@PathVariable("username") String username,
                                         @RequestParam(value = "id", required = true) String actionID) {
         try {
-            userService.resetPassword(username, actionID);
+            userService.resetPasswordRequestHandler(username, actionID);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ServiceException serviceException) {

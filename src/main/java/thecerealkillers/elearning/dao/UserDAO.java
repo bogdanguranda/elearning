@@ -15,7 +15,6 @@ public interface UserDAO {
     /**
      * Adds a user in the database.
      *
-     * @param user
      * @throws DAOException if DB problems / other weird problems.
      */
     void signUp(User user) throws DAOException;
@@ -23,38 +22,14 @@ public interface UserDAO {
     /**
      * Retrieves the user with the username
      *
-     * @param username
      * @return - The user with username @username
      * @throws DAOException if inexistent username / DB problems /
      *                      other weird problems.
-     * @username
      */
     User get(String username) throws DAOException;
 
     /**
-     * Checks if username is available.
-     *
-     * @param username
-     * @return true if username is available.
-     * @throws DAOException if username not available / DB problems/ etc.
-     */
-    boolean isUsernameAvailable(String username) throws DAOException;
-
-    /**
-     * Checks if email is available.
-     *
-     * @param email
-     * @return true if email is available.
-     * @throws DAOException if email not available / DB problems / etc.
-     */
-    boolean isEmailAvailable(String email) throws DAOException;
-
-    /**
      * Changes password for the user with the username @userNames
-     *
-     * @param username
-     * @param newSalt
-     * @param newHash
      */
     void changePassword(String username, String newSalt, String newHash) throws DAOException;
 
@@ -70,8 +45,15 @@ public interface UserDAO {
     /**
      * Deletes the user account with the username @userName
      *
-     * @param username
      * @throws DAOException
      */
     void deleteAccount(String username) throws DAOException;
+
+    /**
+     * Checks if username and email are available.
+     *
+     * @return true if username and email are available.
+     * @throws DAOException
+     */
+    Boolean isAvailable(String username, String email) throws DAOException;
 }

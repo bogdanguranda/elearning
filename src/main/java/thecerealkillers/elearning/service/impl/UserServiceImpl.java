@@ -4,12 +4,13 @@ package thecerealkillers.elearning.service.impl;
 import thecerealkillers.elearning.exceptions.PasswordExpertException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.EmailException;
-import thecerealkillers.elearning.service.UserRoleService;
 import thecerealkillers.elearning.utilities.PasswordExpert;
 import thecerealkillers.elearning.utilities.TokenGenerator;
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.service.UserRoleService;
 import thecerealkillers.elearning.utilities.EmailExpert;
 import thecerealkillers.elearning.service.UserService;
+import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.dao.UserStatusDAO;
 import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.dao.UserDAO;
@@ -24,10 +25,7 @@ import java.util.List;
 
 /**
  * Created by cuvidk on 11/8/2015.
- * Modified by Dani
- * - Methods modified : authenticate, signUp
- * - Methods added : validateUserAccount, deleteUserAccount, changePasswordRequest, resetPassword, changePassword,
- * validateCriticalToken, resetPasswordRequest, passwordChange
+ * Modified by Dani.
  */
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,7 +38,6 @@ public class UserServiceImpl implements UserService {
     private SessionDAO sessionDAO;
     @Autowired
     private UserRoleService userRoleService;
-
 
 
     private String siteUrl = "http://localhost:8080/";
@@ -82,26 +79,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signUp(UserSignUpInfo signUpInfo) throws ServiceException {
+    public String addAccount(UserSignUpInfo signUpInfo, String userRole) throws ServiceException {
         try {
             String username = signUpInfo.getUsername();
+            String email = signUpInfo.getEmail();
 
-            if (userDAO.isEmailAvailable(signUpInfo.getEmail()) &&
-                    userDAO.isUsernameAvailable(username)) {
+            if (userRole.compareTo(Constants.ADMIN) == 0 && Constants.ROLE_LIST.contains(userRole))
+                throw new ServiceException(ServiceException.INVALID_USER_ROLE);
 
+            if (userDAO.isAvailable(username, email)) {
                 PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
                 String newToken = TokenGenerator.generate();
 
                 userDAO.signUp(new User(username, signUpInfo.getFirstName(), signUpInfo.getLastName(),
-                        signUpInfo.getEmail(), passInfo.getHash(), passInfo.getSalt()));
+                        email, passInfo.getHash(), passInfo.getSalt()));
                 userStatusDAO.add(new UserStatus(username, newToken));
-                userRoleService.addRole(username, "student");
+                userRoleService.addRole(username, userRole);
 
-                String userRealName = signUpInfo.getFirstName() + " " + signUpInfo.getLastName();
-                String tmpUrl = validationUrl + username + "/?id=" + newToken;
-
-                EmailExpert.sendMailValidation(signUpInfo.getEmail(), userRealName, tmpUrl);
+                return newToken;
             }
+
+            throw new ServiceException(ServiceException.FAILED_ACCOUNT_CREATION);
+        } catch (PasswordExpertException passwordException) {
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP + passwordException.getMessage());
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP + daoException.getMessage());
+        }
+    }
+
+    @Override
+    public void signUp(UserSignUpInfo signUpInfo) throws ServiceException {
+        try {
+            String username = signUpInfo.getUsername();
+            String email = signUpInfo.getEmail();
+            String token = addAccount(signUpInfo, Constants.STUDENT);   // Creates the user account and returns the token with which to activate the account.
+
+            String userRealName = signUpInfo.getFirstName() + " " + signUpInfo.getLastName();
+            String tmpUrl = validationUrl + username + "/?id=" + token;
+
+            EmailExpert.sendMailValidation(email, userRealName, tmpUrl);
+
         } catch (EmailException emailException) {
             try {
                 deleteUserAccount(signUpInfo.getUsername());
@@ -110,11 +127,6 @@ public class UserServiceImpl implements UserService {
             }
 
             throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP + emailException.getMessage());
-        } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP + passwordException.getMessage());
-
-        } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP + daoException.getMessage());
         }
     }
 
@@ -177,7 +189,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(String username, String token) throws ServiceException {
+    public void resetPasswordRequestHandler(String username, String token) throws ServiceException {
         try {
             if (userStatusDAO.isAccountActivated(username)) {
                 if (validateCriticalToken(token, CONVERT_TO_MIN, username, changeLinkExpTimeH) == 3) {
@@ -197,6 +209,31 @@ public class UserServiceImpl implements UserService {
 
         } catch (EmailException emailException) {
             throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET + emailException.getMessage());
+
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET + daoException.getMessage());
+        }
+    }
+
+    @Override
+    public void setPassword(String username) throws ServiceException {
+        try {
+            if (userStatusDAO.isAccountActivated(username)) {
+                String newPassword = PasswordExpert.generatePassword();
+                User user = userDAO.get(username);
+
+                String userRealName = user.getFirstName() + " " + user.getLastName();
+                EmailExpert.sendPasswordSet(user.getEmail(), username, newPassword, userRealName);
+
+                passwordChange(user, newPassword);
+            } else {
+                throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
+            }
+        } catch (PasswordExpertException passwordException) {
+            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD + passwordException.getMessage());
+
+        } catch (EmailException emailException) {
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_SET + emailException.getMessage());
 
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET + daoException.getMessage());
@@ -247,6 +284,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void deleteUserAccount(String username) throws DAOException {
+        userDAO.deleteAccount(username);
+        userStatusDAO.accountDeleted(username);
+    }
+
 
     ///========================================Private methods======================================================
 
@@ -255,11 +298,6 @@ public class UserServiceImpl implements UserService {
 
         userDAO.changePassword(user.getUsername(), passInfo.getSalt(), passInfo.getHash());
         userStatusDAO.update(user.getUsername(), "");
-    }
-
-    private void deleteUserAccount(String username) throws DAOException {
-        userDAO.deleteAccount(username);
-        userStatusDAO.accountDeleted(username);
     }
 
     /**

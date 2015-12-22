@@ -3,6 +3,7 @@ package thecerealkillers.elearning.service.impl;
 
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
+import thecerealkillers.elearning.model.AdminSignUpInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.UserSignUpInfo;
@@ -12,6 +13,7 @@ import thecerealkillers.elearning.dao.UserRoleDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import thecerealkillers.elearning.service.UserService;
 
 import java.util.List;
 
@@ -23,15 +25,32 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
+    private UserService userService;
+    @Autowired
     private UserRoleDAO userRoleDAO;
     @Autowired
     private UserStatusDAO userStatusDAO;
 
     @Override
-    public void createAccount(UserSignUpInfo newUser, String userRole) throws ServiceException {
-        //TODO createAccount
+    public void createAccount(AdminSignUpInfo newUser) throws ServiceException {
+        try {
+            userService.addAccount(new UserSignUpInfo(newUser.getUsername(), newUser.getFirstName(), newUser.getLastName(),
+                    "", newUser.getEmail()), newUser.getUserRole());
 
-        throw new ServiceException(ServiceException.NOT_IMPLEMENTED);
+            userStatusDAO.activateAccount(newUser.getUsername());
+            userService.setPassword(newUser.getUsername());
+
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG + daoException.getMessage());
+        } catch (ServiceException serviceException){
+            try {
+                userService.deleteUserAccount(newUser.getUsername());
+            } catch (DAOException dao_ex) {
+                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT + dao_ex.getMessage());
+            }
+
+            throw new ServiceException(serviceException.getMessage());
+        }
     }
 
     @Override

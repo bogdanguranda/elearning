@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service;
 
 
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.PasswordChange;
 import thecerealkillers.elearning.model.UserSignUpInfo;
@@ -12,8 +13,7 @@ import java.util.List;
 
 /**
  * Created by cuvidk on 11/8/2015.
- * Modified by Dani
- * - Methods added : validateUserAccount, resetPasswordRequest, resetPassword, changePassword
+ * Modified by Dani.
  */
 public interface UserService {
     /**
@@ -25,6 +25,9 @@ public interface UserService {
      *                          other weird exception.
      */
     String authenticate(UserLoginInfo loginInfo) throws ServiceException;
+
+    //TODO add comment
+    String addAccount(UserSignUpInfo signUpInfo, String userRole) throws ServiceException;
 
     /**
      * This should create a user if it's not already
@@ -77,7 +80,10 @@ public interface UserService {
      * @param token    = token send in email to make sure action is right
      * @throws ServiceException
      */
-    void resetPassword(String userName, String token) throws ServiceException;
+    void resetPasswordRequestHandler(String userName, String token) throws ServiceException;
+
+    //TODO
+    void setPassword(String username) throws ServiceException;
 
     /**
      * Initiates a authentication procedure with the old password, if it's successful will changes users hash
@@ -87,4 +93,6 @@ public interface UserService {
      * @throws ServiceException
      */
     void changePassword(PasswordChange passwordChange) throws ServiceException;
+
+    void deleteUserAccount(String username) throws DAOException;
 }

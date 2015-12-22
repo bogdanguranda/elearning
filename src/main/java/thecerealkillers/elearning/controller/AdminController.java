@@ -3,7 +3,7 @@ package thecerealkillers.elearning.controller;
 
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
-import thecerealkillers.elearning.model.UserSignUpInfo;
+import thecerealkillers.elearning.model.AdminSignUpInfo;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,10 @@ public interface AdminController {
      * Creates a new account
      *
      * @param newUser  = Information required to create the new account.
-     * @param userRole = The role that the account will have.
      */
     @RequestMapping(value = "/admin/createAccount", method = RequestMethod.POST)
-//    ResponseEntity createAccount(@RequestBody UserSignUpInfo newUser, String userRole, @RequestHeader(value="token") String token);       //This is how final version will be.
-    ResponseEntity createAccount(@RequestBody UserSignUpInfo newUser, String userRole);         //Dev only.
+//    ResponseEntity createAccount(@RequestBody AdminSignUpInfo newUser, @RequestHeader(value="token") String token);       //This is how final version will be.
+    ResponseEntity createAccount(@RequestBody AdminSignUpInfo newUser);         //Dev only.
 
     /**
      * Suspends a user's account.

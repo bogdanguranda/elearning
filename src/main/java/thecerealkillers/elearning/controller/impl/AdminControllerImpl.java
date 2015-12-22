@@ -8,7 +8,7 @@ import thecerealkillers.elearning.utilities.PermissionsExpert;
 import thecerealkillers.elearning.controller.AdminController;
 import thecerealkillers.elearning.utilities.SessionExpert;
 import thecerealkillers.elearning.service.UserRoleService;
-import thecerealkillers.elearning.model.UserSignUpInfo;
+import thecerealkillers.elearning.model.AdminSignUpInfo;
 import thecerealkillers.elearning.service.AdminService;
 import thecerealkillers.elearning.utilities.Constants;
 
@@ -34,8 +34,8 @@ public class AdminControllerImpl implements AdminController {
     private UserRoleService userRoleService;
 
     @Override
-//    public ResponseEntity createAccount(@RequestBody UserSignUpInfo newUser, String userRole, @RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity createAccount(@RequestBody UserSignUpInfo newUser, String userRole) {         //Dev only.
+//    public ResponseEntity createAccount(@RequestBody UserSignUpInfo newUser, @RequestHeader(value = "token") String token) {       //This is how final version will be.
+    public ResponseEntity createAccount(@RequestBody AdminSignUpInfo newUser) {         //Dev only.
         String token = "";         //Dev only.
 
         try {
@@ -43,7 +43,7 @@ public class AdminControllerImpl implements AdminController {
                 String crtUserRole = SessionExpert.getUserRoleByToken(token);
 
                 if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("createAccount", crtUserRole)) {
-                    adminService.createAccount(newUser, userRole);
+                    adminService.createAccount(newUser);
 
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 } else {
@@ -53,7 +53,7 @@ public class AdminControllerImpl implements AdminController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 

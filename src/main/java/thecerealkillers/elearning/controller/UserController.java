@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by cuvidk on 11/8/2015.
  * Modified by Dani
- * - Methods added : validateUserAccount, resetPasswordRequest, resetPassword, changePassword
+ * - Methods added : validateUserAccount, resetPasswordRequest, resetPasswordRequestHandlee, changePassword
  */
 public interface UserController {
 

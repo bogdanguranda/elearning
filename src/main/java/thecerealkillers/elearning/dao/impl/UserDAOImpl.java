@@ -30,6 +30,10 @@ public class UserDAOImpl implements UserDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
+
+    ///=========================================Public methods======================================================
+
     @Override
     public void signUp(User user) throws DAOException {
         try {
@@ -73,50 +77,6 @@ public class UserDAOImpl implements UserDAO {
             if (userList.size() == 0)
                 throw new DAOException("Inexistent user with username: " + username);
             return userList.get(0);
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
-    @Override
-    public boolean isUsernameAvailable(String username) throws DAOException {
-        try {
-            String sql = "select username from user where username = :username;";
-            Map<String, String> namedParameters = Collections.singletonMap("username", username);
-
-            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("username");
-                }
-            });
-
-            if (userList.size() != 0)
-                throw new DAOException("Username " + username + " is not available.");
-
-            return true;
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
-    @Override
-    public boolean isEmailAvailable(String email) throws DAOException {
-        try {
-            String sql = "select username from user where email = :email;";
-            Map<String, String> namedParameters = Collections.singletonMap("email", email);
-
-            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("username");
-                }
-            });
-
-            if (userList.size() != 0)
-                throw new DAOException("Email " + email + " is not available.");
-
-            return true;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
@@ -180,4 +140,54 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public Boolean isAvailable(String username, String email) throws DAOException {
+        return isUsernameAvailable(username) && isEmailAvailable(email);
+    }
+
+
+
+    ///========================================Private methods======================================================
+
+    private boolean isUsernameAvailable(String username) throws DAOException {
+        try {
+            String sql = "select username from user where username = :username;";
+            Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("username");
+                }
+            });
+
+            if (userList.size() != 0)
+                throw new DAOException("Username " + username + " is not available.");
+
+            return true;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+    private boolean isEmailAvailable(String email) throws DAOException {
+        try {
+            String sql = "select username from user where email = :email;";
+            Map<String, String> namedParameters = Collections.singletonMap("email", email);
+
+            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("username");
+                }
+            });
+
+            if (userList.size() != 0)
+                throw new DAOException("Email " + email + " is not available.");
+
+            return true;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
 }

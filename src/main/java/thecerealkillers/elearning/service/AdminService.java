@@ -3,6 +3,7 @@ package thecerealkillers.elearning.service;
 
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
+import thecerealkillers.elearning.model.AdminSignUpInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
 import thecerealkillers.elearning.model.UserSignUpInfo;
 
@@ -16,7 +17,7 @@ public interface AdminService {
 
     //TODO add comments
 
-    void createAccount(UserSignUpInfo newUser, String userRole) throws ServiceException;
+    void createAccount(AdminSignUpInfo newUser) throws ServiceException;
 
     void suspendAccount(AccountSuspensionInfo suspendInfo) throws ServiceException;
 
