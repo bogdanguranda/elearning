@@ -25,6 +25,7 @@ public class EmailExpert {
     private static String XML_RESET_REQ_PASSWD = "resetPasswordRequest";
     private static String XML_CHANGED_PASSWD = "passwordChanged";
     private static String XML_RESET_PASSWD = "passwordReset";
+    private static String XML_SET_PASSWD = "passwordSet";
 
 
     private EmailExpert() {
@@ -55,6 +56,15 @@ public class EmailExpert {
         elementsToInsert.add(newPassword);
 
         sendInformationEmail(XML_RESET_PASSWD, receiverAddress, userRealName, elementsToInsert);
+    }
+
+    public static void sendPasswordSet(String receiverAddress, String username, String newPassword, String userRealName) throws EmailException {
+        ArrayList<String> elementsToInsert = new ArrayList<>();
+
+        elementsToInsert.add(username);
+        elementsToInsert.add(newPassword);
+
+        sendInformationEmail(XML_SET_PASSWD, receiverAddress, userRealName, elementsToInsert);
     }
 
 
