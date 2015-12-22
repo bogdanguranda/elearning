@@ -2,6 +2,7 @@ package thecerealkillers.elearning.controller.impl;
 
 
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.exceptions.SessionExpertException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
 import thecerealkillers.elearning.utilities.PermissionsExpert;
@@ -54,6 +55,9 @@ public class AdminControllerImpl implements AdminController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (SessionExpertException sessionExpertException) {
+            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -82,6 +86,9 @@ public class AdminControllerImpl implements AdminController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (SessionExpertException sessionExpertException) {
+            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -109,7 +116,10 @@ public class AdminControllerImpl implements AdminController {
 
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (SessionExpertException sessionExpertException) {
+            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -137,7 +147,10 @@ public class AdminControllerImpl implements AdminController {
 
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (SessionExpertException sessionExpertException) {
+            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -162,6 +175,9 @@ public class AdminControllerImpl implements AdminController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (SessionExpertException sessionExpertException) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -185,6 +201,9 @@ public class AdminControllerImpl implements AdminController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (SessionExpertException sessionExpertException) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }

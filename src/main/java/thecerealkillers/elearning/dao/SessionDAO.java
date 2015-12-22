@@ -42,4 +42,6 @@ public interface SessionDAO {
      * @throws DAOException if DB problems / etc.
      */
     boolean isSessionAvailable(String username) throws DAOException;
+
+    void deleteSession(String username) throws DAOException;
 }

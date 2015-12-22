@@ -23,6 +23,7 @@ public class ServiceException extends Exception {
     public static final String FAILED_EMAIL_EMAIL_VALIDATION = "Failed to send email to inform the user that his account is activated.\n";
 
     public static final String FAILED_LOG_IN = "Wrong username or password.\n";
+    public static final String FAILED_SESSION_EXPERT = "Failed to create or retrieve session.\n";
     public static final String FAILED_PASSWORD_LOG_IN = "Failed while processing user's password.\n";
     public static final String FAILED_DAO_LOG_IN = "A database error occurred while reading login up data.\n";
 
@@ -48,10 +49,8 @@ public class ServiceException extends Exception {
 
     //-------------------------------------------AdminServiceImpl------------------------------------------------------------------------------
 
-    public static final String NOT_IMPLEMENTED = "Not implemented yet.\n";          //Dev only.
     public static final String FAILED_DAO_ROLE_CHG = "A database error occurred while changing user's role.\n";
-
-    public static String FAILED_EMAIL_PASSWORD_SET = "Failed to send email with informations about the account created.\n";
+    public static final String FAILED_EMAIL_PASSWORD_SET = "Failed to send email with informations about the account created.\n";
 
 
     public ServiceException(String message) {

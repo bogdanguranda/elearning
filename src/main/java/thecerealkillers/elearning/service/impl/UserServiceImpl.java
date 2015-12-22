@@ -1,18 +1,11 @@
 package thecerealkillers.elearning.service.impl;
 
 
-import thecerealkillers.elearning.exceptions.PasswordExpertException;
-import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.exceptions.EmailException;
-import thecerealkillers.elearning.utilities.PasswordExpert;
-import thecerealkillers.elearning.utilities.TokenGenerator;
-import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.exceptions.*;
+import thecerealkillers.elearning.utilities.*;
 import thecerealkillers.elearning.service.UserRoleService;
-import thecerealkillers.elearning.utilities.EmailExpert;
 import thecerealkillers.elearning.service.UserService;
-import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.dao.UserStatusDAO;
-import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.*;
 
@@ -34,8 +27,6 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
     @Autowired
     private UserStatusDAO userStatusDAO;
-    @Autowired
-    private SessionDAO sessionDAO;
     @Autowired
     private UserRoleService userRoleService;
 
@@ -59,14 +50,8 @@ public class UserServiceImpl implements UserService {
 
             if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())
                     && userStatusDAO.isAccountActivated(username)) {
-                if (sessionDAO.isSessionAvailable(username))
-                    return sessionDAO.getSessionByUser(username).getToken();
-                else {
-                    String token = TokenGenerator.generate();
-                    SessionDM session = new SessionDM(username, token, null);
-                    sessionDAO.addSession(session);
-                    return token;
-                }
+
+                return SessionExpert.startOrGetSession(username);
             }
 
             throw new ServiceException(ServiceException.FAILED_LOG_IN);
@@ -75,6 +60,9 @@ public class UserServiceImpl implements UserService {
 
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN + daoException.getMessage());
+
+        } catch (SessionExpertException sessionExpertException) {
+            throw new ServiceException(ServiceException.FAILED_SESSION_EXPERT + sessionExpertException.getMessage());
         }
     }
 
