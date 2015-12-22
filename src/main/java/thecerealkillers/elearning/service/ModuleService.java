@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service;
 
+import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Module;
 
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * Created by cuvidk on 12/22/2015.
  */
+@Service
 public interface ModuleService {
     /**
      * Stores the module @module in DB.

@@ -4,6 +4,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.ModuleDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Module;
@@ -17,6 +18,7 @@ import java.util.Map;
 /**
  * Created by cuvidk on 12/22/2015.
  */
+@Repository
 public class ModuleDAOImpl implements ModuleDAO {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;

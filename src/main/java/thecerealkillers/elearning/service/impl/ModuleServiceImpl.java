@@ -1,5 +1,7 @@
 package thecerealkillers.elearning.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.dao.ModuleDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
@@ -13,8 +15,11 @@ import java.util.List;
 /**
  * Created by cuvidk on 12/22/2015.
  */
+@Service
 public class ModuleServiceImpl implements ModuleService {
+    @Autowired
     private ModuleDAO moduleDAO;
+    @Autowired
     private CoursesDAO coursesDAO;
 
     @Override
@@ -24,7 +29,7 @@ public class ModuleServiceImpl implements ModuleService {
             associatedCourse.setTitle(module.getCourse());
 
             if (coursesDAO.isCourseExistent(associatedCourse)) {
-                if (moduleDAO.isModuleExistent(module)) {
+                if (!moduleDAO.isModuleExistent(module)) {
                     moduleDAO.storeModule(module);
                 } else {
                     throw new ServiceException(ServiceException.FAILED_MODULE_ALREADY_EXISTS);

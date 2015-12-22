@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.dao;
 
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Module;
 
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * Created by cuvidk on 12/22/2015.
  */
+@Repository
 public interface ModuleDAO {
     /**
      * Stores the module @module in the DB.
