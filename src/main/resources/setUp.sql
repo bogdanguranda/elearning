@@ -177,14 +177,8 @@ DROP TABLE IF EXISTS `elearning_db`.`module` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
   `title` VARCHAR(45) NOT NULL COMMENT '',
-  `course` VARCHAR(45) NOT NULL COMMENT '',
-  `description` TEXT NULL COMMENT '',
-  PRIMARY KEY (`title`, `course`)  COMMENT '',
-  CONSTRAINT `module_course_fk`
-    FOREIGN KEY (`course`)
-    REFERENCES `elearning_db`.`course` (`title`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+  `content` TEXT NULL COMMENT '',
+  PRIMARY KEY (`title`)  COMMENT '')
 ENGINE = InnoDB;
 
 
@@ -407,7 +401,6 @@ ENGINE = InnoDB;
 INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
-
 
 
 
