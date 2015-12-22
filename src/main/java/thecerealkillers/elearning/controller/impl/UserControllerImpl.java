@@ -1,19 +1,18 @@
 package thecerealkillers.elearning.controller.impl;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import thecerealkillers.elearning.controller.UserController;
 import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
 import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.controller.UserController;
 import thecerealkillers.elearning.model.*;
-import thecerealkillers.elearning.validator.UserValidator;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.UserService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import thecerealkillers.elearning.validator.UserValidator;
 
 import java.util.List;
 

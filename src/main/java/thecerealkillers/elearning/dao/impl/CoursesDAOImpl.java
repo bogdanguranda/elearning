@@ -108,4 +108,31 @@ public class CoursesDAOImpl implements CoursesDAO {
             throw new DAOException(exception.getMessage());
         }
     }
+
+    @Override
+    public boolean isCourseExistent(Course course) throws DAOException {
+        try {
+            String sql = "select * from course where title = :title;";
+            Map<String, String> namedParameters = Collections.singletonMap("title", course.getTitle());
+
+            List<Course> courseList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<Course>() {
+                @Override
+                public Course mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Course course = new Course();
+                    course.setTitle(resultSet.getString("title"));
+                    course.setAbout(resultSet.getString("about"));
+                    course.setDetails(resultSet.getString("details"));
+                    course.setOwner(resultSet.getString("owner"));
+
+                    return course;
+                }
+            });
+            if (courseList.size() > 0) {
+                return true;
+            }
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+        return false;
+    }
 }
