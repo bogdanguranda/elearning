@@ -109,4 +109,19 @@ public class ModuleDAOImpl implements ModuleDAO {
             throw new DAOException(exception.getMessage());
         }
     }
+
+    @Override
+    public void update(Module module, String newTitle) throws DAOException {
+        try {
+            String sql = "UPDATE module SET title='" + newTitle + "' WHERE title = :title AND course = :course";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", module.getTitle());
+            namedParameters.put("course", module.getCourse());
+
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
 }

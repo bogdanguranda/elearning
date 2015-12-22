@@ -1,6 +1,5 @@
 package thecerealkillers.elearning.dao;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Module;
 
@@ -40,4 +39,13 @@ public interface ModuleDAO {
      * @throws DAOException if DB error.
      */
     Module get(String title, String course) throws DAOException;
+
+    /**
+     * Renames the module @module
+     * to @newTitle.
+     * @param module
+     * @param newTitle
+     * @throws DAOException if DB error.
+     */
+    void update(Module module, String newTitle) throws DAOException;
 }
