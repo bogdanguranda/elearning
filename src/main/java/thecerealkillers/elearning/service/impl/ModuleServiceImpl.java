@@ -30,7 +30,7 @@ public class ModuleServiceImpl implements ModuleService {
                     throw new ServiceException(ServiceException.FAILED_MODULE_ALREADY_EXISTS);
                 }
             } else {
-                throw new ServiceException(ServiceException.FAILED_COURSE_INEXISTENT);
+                throw new ServiceException(ServiceException.FAILED_COURSE_INNEXISTENT);
             }
         } catch (DAOException daoException) {
             throw new ServiceException(daoException.getMessage());
@@ -57,6 +57,23 @@ public class ModuleServiceImpl implements ModuleService {
     public List<Module> getAll() throws ServiceException {
         try {
             return moduleDAO.getAll();
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
+
+    @Override
+    public Module get(String title, String course) throws ServiceException {
+        try {
+            Module module = new Module();
+            module.setTitle(title);
+            module.setCourse(course);
+
+            if (moduleDAO.isModuleExistent(module)) {
+                return moduleDAO.get(title, course);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_MODULE_INNEXISTENT);
+            }
         } catch (DAOException daoException) {
             throw new ServiceException(daoException.getMessage());
         }

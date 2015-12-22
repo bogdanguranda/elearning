@@ -1,6 +1,5 @@
 package thecerealkillers.elearning.service;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Module;
 
@@ -32,4 +31,15 @@ public interface ModuleService {
      * @throws ServiceException if DAOException encountered.
      */
     List<Module> getAll() throws ServiceException;
+
+    /**
+     * Returns the module with the corresponding
+     * title and course.
+     * @param title
+     * @param course
+     * @return the corresponding module.
+     * @throws ServiceException if the module is innexistent in DB /
+     * if DAOException encountered.
+     */
+    Module get(String title, String course) throws ServiceException;
 }

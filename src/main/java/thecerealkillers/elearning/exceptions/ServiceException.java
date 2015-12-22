@@ -34,9 +34,10 @@ public class ServiceException extends Exception {
     public static final String FAILED_DAO_RESET_REQUEST = "A database error occurred while processing password reset request.\n";
     public static final String FAILED_EMAIL_RESET_REQUEST = "Failed to send email with password reset url.\n";
 
-    public static final String FAILED_COURSE_INEXISTENT = "The course you are trying to use is innexistent.\n";
+    public static final String FAILED_COURSE_INNEXISTENT = "The course you are trying to use is innexistent.\n";
 
     public static final String FAILED_MODULE_ALREADY_EXISTS = "The module you are trying to create already exists.\n";
+    public static final String FAILED_MODULE_INNEXISTENT = "The module you are trying to fetch is innexistent.\n";
 
     public ServiceException(String message) {
         super(message);
