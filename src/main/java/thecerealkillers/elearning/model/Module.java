@@ -8,6 +8,8 @@ public class Module {
     private String course;
     private String description;
 
+    public Module() {}
+
     public Module(String title, String course, String description) {
         this.title = title;
         this.course = course;

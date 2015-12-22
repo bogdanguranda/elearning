@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import thecerealkillers.elearning.dao.ModuleDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.model.Message;
 import thecerealkillers.elearning.model.Module;
 
 import java.util.HashMap;
@@ -36,6 +35,21 @@ public class ModuleDAOImpl implements ModuleDAO {
             namedParameterJdbcTemplate.update(sql, namedParameters);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteModule(Module module) throws DAOException {
+        try {
+            String sql = "DELETE FROM module WHERE title= :title AND course= :course";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", module.getTitle());
+            namedParameters.put("course", module.getCourse());
+
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
         }
     }
 }
