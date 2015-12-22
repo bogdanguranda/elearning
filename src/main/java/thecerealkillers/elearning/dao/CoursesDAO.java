@@ -45,4 +45,13 @@ public interface CoursesDAO {
      * @throws DAOException if DB problems / etc.
      */
     List<Course> getAll() throws DAOException;
+
+    /**
+     * Checks if the course with @title is existent
+     * in DB.
+     * @param title
+     * @return true if it exists, false else.
+     * @throws DAOException if DB problems.
+     */
+    boolean isCourseExistent(String title) throws DAOException;
 }
