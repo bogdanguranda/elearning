@@ -7,15 +7,15 @@ package thecerealkillers.elearning.model;
 public class Permission {
     private String operationName;
     private String roleName;
-    private String permission;
+    private Boolean permission;
 
-    public Permission(String operationName, String roleName, String permission) {
+    public Permission() {
+    }
+
+    public Permission(String operationName, String roleName, Boolean permission) {
         this.operationName = operationName;
         this.roleName = roleName;
         this.permission = permission;
-    }
-
-    public Permission() {
     }
 
     public String getOperationName() {
@@ -34,11 +34,11 @@ public class Permission {
         this.roleName = roleName;
     }
 
-    public String getPermission() {
+    public Boolean getPermission() {
         return permission;
     }
 
-    public void setPermission(String permission) {
+    public void setPermission(Boolean permission) {
         this.permission = permission;
     }
 
@@ -69,7 +69,7 @@ public class Permission {
         return "Permission{" +
                 "operationName='" + operationName + '\'' +
                 ", roleName='" + roleName + '\'' +
-                ", permission='" + permission + '\'' +
+                ", permission=" + permission +
                 '}';
     }
 }
