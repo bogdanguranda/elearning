@@ -101,7 +101,7 @@ public class CoursesDAOImpl implements CoursesDAO {
                     course.setAbout(resultSet.getString("about"));
                     course.setDetails(resultSet.getString("details"));
                     course.setOwner(resultSet.getString("owner"));
-
+                    course.setAssociatedGroup(resultSet.getString("associatedGroup"));
                     return course;
                 }
             });
