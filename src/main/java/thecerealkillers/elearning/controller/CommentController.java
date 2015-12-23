@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 
 /**
  * Created by Dani
@@ -22,10 +20,10 @@ public interface CommentController {
             @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/owner", method = RequestMethod.POST)
-    ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
+    ResponseEntity<?> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/thread/{threadTitle}", method = RequestMethod.GET)
-    ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token);
+    ResponseEntity<?> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
     ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
