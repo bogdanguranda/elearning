@@ -41,4 +41,5 @@ public interface GroupsController {
      */
     @RequestMapping(value = "/groups", method = RequestMethod.DELETE)
     ResponseEntity deleteCourse(@RequestParam(value = "name", required = true) String name, @RequestHeader(value = "token") String token);
+
 }

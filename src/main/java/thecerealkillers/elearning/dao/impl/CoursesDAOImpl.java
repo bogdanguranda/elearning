@@ -135,4 +135,142 @@ public class CoursesDAOImpl implements CoursesDAO {
         }
         return false;
     }
+
+    @Override
+    public void enrollUser(String courseTitle, String username) throws DAOException {
+        try {
+            String sql = "SELECT course_group.group FROM course_group WHERE course = :course;";
+            Map<String, String> namedParameters = Collections.singletonMap("course", courseTitle);
+
+            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("group");
+                }
+            });
+
+            if (groupList.size() == 0) {
+                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
+            }
+
+            String groupName = groupList.get(0);
+
+            String sqlINSERT = "INSERT INTO `elearning_db`.`group_user` VALUE (:group, :username);";
+
+            Map<String, String> namedParametersINSERT = new HashMap<>();
+
+            namedParametersINSERT.put("group", groupName);
+            namedParametersINSERT.put("username", username);
+
+            namedParameterJdbcTemplate.update(sqlINSERT, namedParametersINSERT);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean userIsEnrolled(String courseTitle, String username) throws DAOException {
+        try {
+            String sqlSELECT = "SELECT course_group.group FROM course_group WHERE course = :course;";
+            Map<String, String> namedParametersSELECT = Collections.singletonMap("course", courseTitle);
+
+            List<String> groups = namedParameterJdbcTemplate.query(sqlSELECT, namedParametersSELECT, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("group");
+                }
+            });
+
+            if (groups.size() == 0) {
+                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
+            }
+
+            String group = groups.get(0);
+            String sql = "SELECT * FROM elearning_db.group_user WHERE group_user.group = :group AND username = :username;";
+
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("group", group);
+            namedParameters.put("username", username);
+
+            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("group");
+                }
+            });
+
+            return groupList.size() != 0;
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void unEnrollUser(String title, String username) throws DAOException {
+        try {
+            String sql = "SELECT course_group.group FROM course_group WHERE course = :course;";
+            Map<String, String> namedParameters = Collections.singletonMap("course", title);
+
+            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("group");
+                }
+            });
+
+            if (groupList.size() == 0) {
+                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
+            }
+
+            String groupName = groupList.get(0);
+
+            String sqlDELETE = "DELETE FROM `elearning_db`.`group_user` WHERE group_user.group = :group AND username = :username;";
+
+            Map<String, String> namedParametersINSERT = new HashMap<>();
+
+            namedParametersINSERT.put("group", groupName);
+            namedParametersINSERT.put("username", username);
+
+            namedParameterJdbcTemplate.update(sqlDELETE, namedParametersINSERT);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<String> getEnrolled(String title) throws DAOException {
+        try {
+            String sql = "SELECT course_group.group FROM course_group WHERE course = :course;";
+            Map<String, String> namedParameters = Collections.singletonMap("course", title);
+
+            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("group");
+                }
+            });
+
+            if (groupList.size() == 0) {
+                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
+            }
+
+            String groupName = groupList.get(0);
+
+            List<String> users;
+            String sqlSELECT = "SELECT username FROM group_user WHERE group_user.group = :group;";
+            Map<String, String> namedParameterss = Collections.singletonMap("group", groupName);
+
+            users = namedParameterJdbcTemplate.query(sqlSELECT, namedParameterss, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("username");
+                }
+            });
+
+            return users;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
 }

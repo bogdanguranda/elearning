@@ -18,6 +18,8 @@ import java.util.List;
  * Modified by #Lucian and @Pi on 12/22/2015
  * Modifications Summary:
  * - added a call to addGroup in createCourse method
+ * - added enroll function
+ * - added unenroll function
  */
 
 @RestController
@@ -79,6 +81,75 @@ public class CoursesControllerImpl implements CoursesController {
 
             Course course = coursesService.get(title);
             return new ResponseEntity<>(course, HttpStatus.OK);
+        } catch (ServiceException service_exception) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Enroll a user to a course
+     * Checks if the session specified by token is the same
+     * with the session specified by username
+     * Checks if user is already enrolled
+     *
+     * @param token
+     * @param title
+     * @param username
+     * @return
+     */
+    @RequestMapping(value = "courses/enroll", method = RequestMethod.POST)
+    public ResponseEntity enrollUserToCourse(@RequestHeader(value = "token") String token,
+                                             @RequestParam(value = "title", required = true) String title,
+                                             @RequestParam(value = "username", required = true) String username) {
+        try {
+            coursesService.checkEnrollmentCompatibility(token, username);
+            coursesService.enrollUserToCourse(title, username);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ServiceException serviceEX) {
+            return new ResponseEntity<>(serviceEX.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    /**
+     * Checks if the session specified by token is the same
+     * with the session specified by username
+     * Checks if user is already unenrolled
+     *
+     * @param token
+     * @param title
+     * @param username
+     * @return
+     */
+    @RequestMapping(value = "courses/unenroll", method = RequestMethod.POST)
+    public ResponseEntity unEnrollUserFromCourse(@RequestHeader(value = "token") String token,
+                                                 @RequestParam(value = "title", required = true) String title,
+                                                 @RequestParam(value = "username", required = true) String username) {
+        try {
+            coursesService.checkUnEnrollmentCompatibility(token, username);
+            coursesService.unEnrollUserFromCourse(title, username);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ServiceException serviceEX) {
+            return new ResponseEntity<>(serviceEX.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Get users enrolled to course
+     *
+     * @param token
+     * @param title
+     * @return
+     */
+    @RequestMapping(value = "/courses/{title}/users", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> getEnrolledUsers(@RequestHeader(value = "token") String token,
+                                                         @PathVariable("title") String title) {
+        try {
+            sessionService.getSessionByToken(token);
+
+            List<String> users = coursesService.getEnrolled(title);
+            return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (ServiceException service_exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

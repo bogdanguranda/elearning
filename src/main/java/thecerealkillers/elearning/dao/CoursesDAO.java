@@ -54,4 +54,12 @@ public interface CoursesDAO {
      * @throws DAOException if DB problems.
      */
     boolean isCourseExistent(Course course) throws DAOException;
+
+    void enrollUser(String courseTitle, String username) throws DAOException;
+
+    boolean userIsEnrolled(String courseTitle, String username) throws DAOException;
+
+    void unEnrollUser(String title, String username) throws DAOException;
+
+    List<String> getEnrolled(String title) throws DAOException;
 }

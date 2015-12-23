@@ -22,4 +22,17 @@ public interface CoursesController {
     @RequestMapping(value = "/courses/{title}", method = RequestMethod.GET)
     ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value = "token") String token);
 
+    @RequestMapping(value = "courses/enroll", method = RequestMethod.POST)
+    ResponseEntity enrollUserToCourse(@RequestHeader(value = "token") String token,
+                                      @RequestParam(value = "title", required = true) String title,
+                                      @RequestParam(value = "username", required = true) String username);
+
+    @RequestMapping(value = "courses/unenroll", method = RequestMethod.POST)
+    ResponseEntity unEnrollUserFromCourse(@RequestHeader(value = "token") String token,
+                                          @RequestParam(value = "title", required = true) String title,
+                                          @RequestParam(value = "username", required = true) String username);
+
+    @RequestMapping(value = "/courses/{title}/users", method = RequestMethod.GET)
+    ResponseEntity<List<String>> getEnrolledUsers(@RequestHeader(value = "token") String token,
+                                                  @PathVariable("title") String title);
 }
