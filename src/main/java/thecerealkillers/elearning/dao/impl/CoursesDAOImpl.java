@@ -143,7 +143,7 @@ public class CoursesDAOImpl implements CoursesDAO {
         try {
             String groupName = GROUP + courseTitle;
 
-            String sqlINSERT = "INSERT INTO `elearning_db`.`group_user` VALUE (:group, :username);";
+            String sqlINSERT = "INSERT INTO group_user VALUE (:group, :username);";
 
             Map<String, String> namedParametersINSERT = new HashMap<>();
 
@@ -160,7 +160,7 @@ public class CoursesDAOImpl implements CoursesDAO {
     public boolean userIsEnrolled(String courseTitle, String username) throws DAOException {
         try {
             String group = GROUP + courseTitle;
-            String sql = "SELECT * FROM elearning_db.group_user WHERE group_user.group = :group AND username = :username;";
+            String sql = "SELECT * FROM group_user WHERE group_user.group = :group AND username = :username;";
 
             Map<String, String> namedParameters = new HashMap<>();
 
@@ -185,7 +185,7 @@ public class CoursesDAOImpl implements CoursesDAO {
         try {
             String groupName = GROUP + title;
 
-            String sqlDELETE = "DELETE FROM `elearning_db`.`group_user` WHERE group_user.group = :group AND username = :username;";
+            String sqlDELETE = "DELETE FROM group_user WHERE group_user.group = :group AND username = :username;";
 
             Map<String, String> namedParametersINSERT = new HashMap<>();
 

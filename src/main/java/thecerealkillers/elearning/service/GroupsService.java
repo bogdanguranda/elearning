@@ -15,6 +15,4 @@ public interface GroupsService {
     void addGroup(Group group) throws ServiceException;
 
     void removeGroup(String name) throws ServiceException;
-
-    void removeEnrollements(String title) throws ServiceException;
 }

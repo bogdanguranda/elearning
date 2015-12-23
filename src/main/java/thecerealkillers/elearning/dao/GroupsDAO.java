@@ -17,6 +17,4 @@ public interface GroupsDAO {
     void add(Group group) throws DAOException;
 
     void remove(String name) throws DAOException;
-
-    void removeEnrollements(String title) throws DAOException;
 }

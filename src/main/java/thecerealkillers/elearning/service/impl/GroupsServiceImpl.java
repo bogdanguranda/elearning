@@ -45,15 +45,4 @@ public class GroupsServiceImpl implements GroupsService {
             throw new ServiceException(daoEX.getMessage());
         }
     }
-
-    @Override
-    public void removeEnrollements(String title) throws ServiceException {
-        try {
-            groupsDAO.removeEnrollements(title);
-        } catch (DAOException daoEX) {
-            throw new ServiceException(daoEX.getMessage());
-        }
-    }
-
-
 }
