@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.CoursesController;
+import thecerealkillers.elearning.exceptions.InvalidEnrollmentParams;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 import thecerealkillers.elearning.service.CoursesService;
 import thecerealkillers.elearning.service.GroupsService;
 import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.validator.Validator;
 
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class CoursesControllerImpl implements CoursesController {
 
             Group group = new Group(GROUP + course.getTitle());
             groupsService.addGroup(group);
+
             coursesService.add(course);
 
             return new ResponseEntity(HttpStatus.OK);
@@ -107,12 +110,15 @@ public class CoursesControllerImpl implements CoursesController {
         try {
             sessionService.getSessionByToken(token);
 
+            Validator.validateEnrollment(title, username);
             coursesService.checkEnrollmentCompatibility(token, username);
             coursesService.enrollUserToCourse(title, username);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ServiceException serviceEX) {
             return new ResponseEntity<>(serviceEX.getMessage(), HttpStatus.CONFLICT);
+        } catch (InvalidEnrollmentParams invalidEnrollmentParams) {
+            return new ResponseEntity<>(invalidEnrollmentParams.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
@@ -134,12 +140,15 @@ public class CoursesControllerImpl implements CoursesController {
         try {
             sessionService.getSessionByToken(token);
 
+            Validator.validateEnrollment(title, username);
             coursesService.checkUnEnrollmentCompatibility(token, username);
             coursesService.unEnrollUserFromCourse(title, username);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ServiceException serviceEX) {
             return new ResponseEntity<>(serviceEX.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidEnrollmentParams invalidEnrollmentParams) {
+            return new ResponseEntity<>(invalidEnrollmentParams.getMessage(), HttpStatus.CONFLICT);
         }
     }
 

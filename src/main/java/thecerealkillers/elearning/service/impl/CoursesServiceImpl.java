@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.dao.SessionDAO;
+import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
@@ -18,6 +19,8 @@ public class CoursesServiceImpl implements CoursesService {
     private CoursesDAO coursesDAO;
     @Autowired
     private SessionDAO sessionDAO;
+    @Autowired
+    private UserDAO usersDAO;
 
     @Override
     public void add(Course course) throws ServiceException {
@@ -31,6 +34,7 @@ public class CoursesServiceImpl implements CoursesService {
     @Override
     public void remove(String title) throws ServiceException {
         try {
+            coursesDAO.get(title);
             coursesDAO.remove(title);
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());
@@ -64,6 +68,7 @@ public class CoursesServiceImpl implements CoursesService {
     public void enrollUserToCourse(String courseTitle, String username) throws ServiceException {
         try {
             coursesDAO.get(courseTitle);
+            usersDAO.get(username);
             if (!coursesDAO.userIsEnrolled(courseTitle, username)) {
                 coursesDAO.enrollUser(courseTitle, username);
             } else {
@@ -99,6 +104,7 @@ public class CoursesServiceImpl implements CoursesService {
     @Override
     public void unEnrollUserFromCourse(String title, String username) throws ServiceException {
         try {
+            usersDAO.get(username);
             coursesDAO.get(title);
             if (coursesDAO.userIsEnrolled(title, username)) {
                 coursesDAO.unEnrollUser(title, username);
