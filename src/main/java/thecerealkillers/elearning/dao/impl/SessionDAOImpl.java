@@ -1,16 +1,19 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import thecerealkillers.elearning.dao.SessionDAO;
+
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.model.SessionDM;
 
-import java.sql.ResultSet;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.SQLException;
+import java.sql.ResultSet;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +21,11 @@ import java.util.Map;
 
 /**
  * Created by cuvidk on 11/20/2015.
+ * Modified by Dani.
  */
 @Repository
 public class SessionDAOImpl implements SessionDAO {
+
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -54,7 +59,7 @@ public class SessionDAOImpl implements SessionDAO {
                 public SessionDM mapRow(ResultSet resultSet, int i) throws SQLException {
                     SessionDM session = new SessionDM();
 
-                    session.setCreationStamp(resultSet.getDate("creationTimestamp"));
+                    session.setCreationStamp(resultSet.getTimestamp("creationTimestamp"));
                     session.setUsername(resultSet.getString("username"));
                     session.setToken(resultSet.getString("token"));
 
@@ -83,7 +88,7 @@ public class SessionDAOImpl implements SessionDAO {
                     SessionDM session = new SessionDM();
 
                     session.setUsername(resultSet.getString("username"));
-                    session.setCreationStamp(resultSet.getDate("creationTimestamp"));
+                    session.setCreationStamp(resultSet.getTimestamp("creationTimestamp"));
                     session.setToken(resultSet.getString("token"));
 
                     return session;
