@@ -399,6 +399,43 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`operation`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`operation` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`operation` (
+	`operationName` VARCHAR(300) NOT NULL COMMENT '',
+	PRIMARY KEY (`operationName`) COMMENT '',
+	UNIQUE INDEX `operation_operationName_UNIQUE` (`operationName` ASC)  COMMENT '')
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`permission`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`permission` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`permission` (
+  `operationName` VARCHAR(300) NOT NULL COMMENT '',
+  `roleName` VARCHAR(45) NOT NULL COMMENT '',
+  `permission` boolean  NOT NULL DEFAULT FALSE COMMENT '',
+  PRIMARY KEY (`operationName`, `roleName`)  COMMENT '',
+  INDEX `permission_operationName_idx` (`operationName` ASC)  COMMENT '',
+  CONSTRAINT `permission_operationName_fk`
+    FOREIGN KEY (`operationName`)
+    REFERENCES `elearning_db`.`operation` (`operationName`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `permission_roleName_fk`
+    FOREIGN KEY (`roleName`)
+    REFERENCES `elearning_db`.`role` (`name`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+
 
 
 
