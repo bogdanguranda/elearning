@@ -443,11 +443,18 @@ ENGINE = InnoDB;
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
 
 
--- Adauga rolurile
+-- Inserts user roles
 -- -------------------------------------------------------------------
-INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
+INSERT INTO role VALUE ('student');
+
+
+-- Adds admin user account
+-- -------------------------------------------------------------------
+INSERT INTO user VALUES('CerealKillersAdmin1', 'cereal', 'killers', 'thecerealkillers.pc@gmail.com', 'af212b1d8d174716cc1da021b4c5a9c4f5f1b569c22ddb88660a9f242a58e77e43622af22b5c8178a51efaaf93b2bcb63719b5b5d85eb06e1de19610f5e86d3b', 'SYpspH4x6cwPtBf72UoB8Z4l13O49tfBYmGIcGhfgV5hAJGaBojqk3JnvvToo0u6e7PlFFqsOXyDsefrIWC9BRFnBBJrDbQcSHqDs3LiZGtOjmnL9z71He98bhsjYNxw');
+INSERT INTO user_status VALUES ('CerealKillersAdmin1', TRUE, DEFAULT, '');
+INSERT INTO user_role VALUE ('CerealKillersAdmin1', 'administrator');
 
 
 -- Inserts operations START
@@ -498,15 +505,162 @@ INSERT INTO operation VALUES('UserControllerImpl.changePassword');
 
 -- Inserts permissions START
 -- -------------------------------------------------------------------
+-- ##################################################=-AdminControllerImpl START-=############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'student', false);
+-- ###################################################=-AdminControllerImpl END-=#############################################################################
+
+-- #################################################=-CommentControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsForThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsForThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsForThread', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'student', true);
+-- ##################################################=-CommentControllerImpl END-=############################################################################
+
+-- #################################################=-CoursesControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'student', true);
+-- ##################################################=-CoursesControllerImpl END-=############################################################################
+
+-- ###############################################=-ForumThreadControllerImpl START-=#########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadByTitle', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadByTitle', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadByTitle', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsForTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsForTopic', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsForTopic', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThreadByTitle', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThreadByTitle', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThreadByTitle', 'student', false);
+-- ################################################=-ForumThreadControllerImpl END-=##########################################################################
+
+-- #################################################=-MessageControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'student', true);
+-- ##################################################=-MessageControllerImpl END-=############################################################################
+
+-- ##################################################=-TopicControllerImpl START-=############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'student', false);
+-- ###################################################=-TopicControllerImpl END-=#############################################################################
+
+-- ##################################################=-UserControllerImpl START-=#############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'student', true);
+-- ###################################################=-UserControllerImpl END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END
 
-
--- Creeaza cont pentru administrator 
--- -------------------------------------------------------------------
-INSERT INTO user VALUES('CerealKillersAdmin1', 'cereal', 'killers', 'thecerealkillers.pc@gmail.com', 'af212b1d8d174716cc1da021b4c5a9c4f5f1b569c22ddb88660a9f242a58e77e43622af22b5c8178a51efaaf93b2bcb63719b5b5d85eb06e1de19610f5e86d3b', 'SYpspH4x6cwPtBf72UoB8Z4l13O49tfBYmGIcGhfgV5hAJGaBojqk3JnvvToo0u6e7PlFFqsOXyDsefrIWC9BRFnBBJrDbQcSHqDs3LiZGtOjmnL9z71He98bhsjYNxw');
-INSERT INTO user_status VALUES ('CerealKillersAdmin1', TRUE, DEFAULT, '');
-INSERT INTO user_role VALUE ('CerealKillersAdmin1', 'administrator');
 
 -- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
 -- ===================================================================
