@@ -3,18 +3,19 @@ package thecerealkillers.elearning.service.impl;
 
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
-import thecerealkillers.elearning.model.AdminSignUpInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.model.AdminSignUpInfo;
 import thecerealkillers.elearning.model.UserSignUpInfo;
 import thecerealkillers.elearning.service.AdminService;
+import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.dao.UserStatusDAO;
 import thecerealkillers.elearning.dao.UserRoleDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thecerealkillers.elearning.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,8 +27,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private UserService userService;
+    
     @Autowired
     private UserRoleDAO userRoleDAO;
+
     @Autowired
     private UserStatusDAO userStatusDAO;
 
@@ -84,13 +87,13 @@ public class AdminServiceImpl implements AdminService {
     public List<String> getAudit() throws ServiceException {
         //TODO getAudit
 
-        throw new ServiceException(ServiceException.NOT_IMPLEMENTED);
+        return new ArrayList<>();
     }
 
     @Override
     public List<String> getAuditForUser(String username) throws ServiceException {
         //TODO getAuditForUser
 
-        throw new ServiceException(ServiceException.NOT_IMPLEMENTED);
+        return new ArrayList<>();
     }
 }

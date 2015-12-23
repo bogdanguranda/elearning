@@ -1,11 +1,12 @@
 package thecerealkillers.elearning.service.impl;
 
 
-import thecerealkillers.elearning.exceptions.*;
-import thecerealkillers.elearning.utilities.*;
 import thecerealkillers.elearning.service.UserRoleService;
+import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.dao.UserStatusDAO;
+import thecerealkillers.elearning.exceptions.*;
+import thecerealkillers.elearning.utilities.*;
 import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.*;
 
@@ -25,10 +26,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
+
     @Autowired
     private UserStatusDAO userStatusDAO;
+
     @Autowired
     private UserRoleService userRoleService;
+
+    @Autowired
+    private SessionService sessionService;
 
 
     private String siteUrl = "http://localhost:8080/";
@@ -50,8 +56,7 @@ public class UserServiceImpl implements UserService {
 
             if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())
                     && userStatusDAO.isAccountActivated(username)) {
-
-                return SessionExpert.startOrGetSession(username);
+                return sessionService.startOrGetSession(username);
             }
 
             throw new ServiceException(ServiceException.FAILED_LOG_IN);
@@ -60,9 +65,6 @@ public class UserServiceImpl implements UserService {
 
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN + daoException.getMessage());
-
-        } catch (SessionExpertException sessionExpertException) {
-            throw new ServiceException(ServiceException.FAILED_SESSION_EXPERT + sessionExpertException.getMessage());
         }
     }
 
