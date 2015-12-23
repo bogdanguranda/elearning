@@ -2,12 +2,11 @@ package thecerealkillers.elearning.controller.impl;
 
 
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.exceptions.SessionExpertException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
-import thecerealkillers.elearning.utilities.PermissionsExpert;
 import thecerealkillers.elearning.controller.AdminController;
-import thecerealkillers.elearning.utilities.SessionExpert;
+import thecerealkillers.elearning.service.PermissionService;
+import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.UserRoleService;
 import thecerealkillers.elearning.model.AdminSignUpInfo;
 import thecerealkillers.elearning.service.AdminService;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 
 /**
@@ -34,16 +31,21 @@ public class AdminControllerImpl implements AdminController {
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private SessionService sessionService;
+
+    @Autowired
+    private PermissionService permissionService;
+
     @Override
-//    public ResponseEntity createAccount(@RequestBody UserSignUpInfo newUser, @RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity createAccount(@RequestBody AdminSignUpInfo newUser) {         //Dev only.
-        String token = "";         //Dev only.
-
+    @RequestMapping(value = "/admin/createAccount", method = RequestMethod.POST)
+    public ResponseEntity createAccount(@RequestBody AdminSignUpInfo newUser,
+                                        @RequestHeader(value = "token") String token) {
         try {
-            if (SessionExpert.isSessionActive(token)) {
-                String crtUserRole = SessionExpert.getUserRoleByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("createAccount", crtUserRole)) {
+                if (permissionService.isOperationAvailable("AdminControllerImpl.createAccount", crtUserRole)) {
                     adminService.createAccount(newUser);
 
                     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -55,25 +57,21 @@ public class AdminControllerImpl implements AdminController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (SessionExpertException sessionExpertException) {
-            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-//   public ResponseEntity suspendAccount(@RequestBody AccountSuspensionInfo suspendInfo, @RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity suspendAccount(@RequestBody AccountSuspensionInfo suspendInfo) {         //Dev only.
-        String token = "";         //Dev only.
-
+    @RequestMapping(value = "/admin/suspendAccount", method = RequestMethod.POST)
+    public ResponseEntity suspendAccount(@RequestBody AccountSuspensionInfo suspendInfo,
+                                         @RequestHeader(value = "token") String token) {
         try {
             String userRole = userRoleService.getRole(suspendInfo.getAccountUsername());
 
             if (userRole.compareTo(Constants.ADMIN) != 0) {
-                if (SessionExpert.isSessionActive(token)) {
-                    String crtUserRole = SessionExpert.getUserRoleByToken(token);
+                if (sessionService.isSessionActive(token)) {
+                    String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                    if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("suspendAccount", crtUserRole)) {
+                    if (permissionService.isOperationAvailable("AdminControllerImpl.suspendAccount", crtUserRole)) {
                         adminService.suspendAccount(suspendInfo);
 
                         return new ResponseEntity<>(HttpStatus.OK);
@@ -86,25 +84,21 @@ public class AdminControllerImpl implements AdminController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (SessionExpertException sessionExpertException) {
-            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-//    public ResponseEntity reactivateAccount(@RequestBody AccountSuspensionInfo reactivateInfo, @RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity reactivateAccount(@RequestBody AccountSuspensionInfo reactivateInfo) {         //Dev only.
-        String token = "";         //Dev only.
-
+    @RequestMapping(value = "/admin/reactivateAccount", method = RequestMethod.POST)
+    public ResponseEntity reactivateAccount(@RequestBody AccountSuspensionInfo reactivateInfo,
+                                            @RequestHeader(value = "token") String token) {
         try {
             String userRole = userRoleService.getRole(reactivateInfo.getAccountUsername());
 
             if (userRole.compareTo(Constants.ADMIN) != 0) {
-                if (SessionExpert.isSessionActive(token)) {
-                    String crtUserRole = SessionExpert.getUserRoleByToken(token);
+                if (sessionService.isSessionActive(token)) {
+                    String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                    if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("reactivateAccount", crtUserRole)) {
+                    if (permissionService.isOperationAvailable("AdminControllerImpl.reactivateAccount", crtUserRole)) {
                         adminService.reactivateAccount(reactivateInfo);
 
                         return new ResponseEntity<>(HttpStatus.OK);
@@ -117,26 +111,22 @@ public class AdminControllerImpl implements AdminController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (SessionExpertException sessionExpertException) {
-            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-//    public ResponseEntity changeAccountType(@RequestBody ChangeAccountTypeInfo accountTypeInfo, @RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity changeAccountType(@RequestBody ChangeAccountTypeInfo accountInfo) {         //Dev only.
-        String token = "";         //Dev only.
-
+    @RequestMapping(value = "/admin/changeAccountType", method = RequestMethod.POST)
+    public ResponseEntity changeAccountType(@RequestBody ChangeAccountTypeInfo accountTypeInfo,
+                                            @RequestHeader(value = "token") String token) {
         try {
-            String userRole = userRoleService.getRole(accountInfo.getAccountUsername());
+            String userRole = userRoleService.getRole(accountTypeInfo.getAccountUsername());
 
             if (userRole.compareTo(Constants.ADMIN) != 0) {
-                if (SessionExpert.isSessionActive(token)) {
-                    String crtUserRole = SessionExpert.getUserRoleByToken(token);
+                if (sessionService.isSessionActive(token)) {
+                    String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                    if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("changeAccountType", crtUserRole)) {
-                        adminService.changeAccountType(accountInfo);
+                    if (permissionService.isOperationAvailable("AdminControllerImpl.changeAccountType", crtUserRole)) {
+                        adminService.changeAccountType(accountTypeInfo);
 
                         return new ResponseEntity<>(HttpStatus.OK);
                     } else {
@@ -148,22 +138,17 @@ public class AdminControllerImpl implements AdminController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (SessionExpertException sessionExpertException) {
-            return new ResponseEntity<>(sessionExpertException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-//    public ResponseEntity<List<String>> getAudit(@RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity<List<String>> getAudit() {         //Dev only.
-        String token = "";         //Dev only.
-
+    @RequestMapping(value = "/admin/getAudit", method = RequestMethod.GET)
+    public ResponseEntity<?> getAudit(@RequestHeader(value = "token") String token) {
         try {
-            if (SessionExpert.isSessionActive(token)) {
-                String crtUserRole = SessionExpert.getUserRoleByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("getAudit", crtUserRole)) {
+                if (permissionService.isOperationAvailable("AdminControllerImpl.getAudit", crtUserRole)) {
                     adminService.getAudit();
 
                     return new ResponseEntity<>(HttpStatus.OK);
@@ -174,23 +159,18 @@ public class AdminControllerImpl implements AdminController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (SessionExpertException sessionExpertException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-//    public ResponseEntity<List<String>> getAuditForUser(@PathVariable("username") String username, @RequestHeader(value = "token") String token) {       //This is how final version will be.
-    public ResponseEntity<List<String>> getAuditForUser(@PathVariable("username") String username) {         //Dev only.
-        String token = "";         //Dev only.
-
+    @RequestMapping(value = "/admin/getAuditForUser/{username}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAuditForUser(@PathVariable("username") String username, @RequestHeader(value = "token") String token) {
         try {
-            if (SessionExpert.isSessionActive(token)) {
-                String crtUserRole = SessionExpert.getUserRoleByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (crtUserRole.compareTo(Constants.ADMIN) == 0 && PermissionsExpert.isOperationAvailable("getAuditForUser", crtUserRole)) {
+                if (permissionService.isOperationAvailable("AdminControllerImpl.getAuditForUser", crtUserRole)) {
                     adminService.getAuditForUser(username);
 
                     return new ResponseEntity<>(HttpStatus.OK);
@@ -201,10 +181,7 @@ public class AdminControllerImpl implements AdminController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (SessionExpertException sessionExpertException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }
