@@ -20,14 +20,13 @@ public interface UserController {
     ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo);
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    ResponseEntity<String> signUp(@RequestBody UserSignUpInfo signUpInfo);
+    ResponseEntity<?> signUp(@RequestBody UserSignUpInfo signUpInfo);
 
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-    ResponseEntity<User> get(@PathVariable("username") String username,
-                             @RequestHeader(value = "token") String token);
+    ResponseEntity<?> get(@PathVariable("username") String username, @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    ResponseEntity<List<User>> getAll(@RequestHeader(value = "token") String token);
+    ResponseEntity<?> getAll(@RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/users/confirmation/create/{username}", method = RequestMethod.GET)
     ResponseEntity validateUserAccount(
@@ -35,8 +34,7 @@ public interface UserController {
             @RequestParam(value = "id", required = true) String actionID);
 
     @RequestMapping(value = "/users/confirmation/reset/{username}", method = RequestMethod.GET)
-    ResponseEntity resetPasswordRequest(
-            @PathVariable("username") String username);
+    ResponseEntity resetPasswordRequest(@PathVariable("username") String username);
 
     @RequestMapping(value = "/users/password/reset/{username}", method = RequestMethod.GET)
     ResponseEntity resetPassword(

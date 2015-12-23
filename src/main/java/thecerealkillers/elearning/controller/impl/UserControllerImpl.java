@@ -1,9 +1,10 @@
 package thecerealkillers.elearning.controller.impl;
 
 
-import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
 import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
+import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.controller.UserController;
 import thecerealkillers.elearning.service.UserRoleService;
 import thecerealkillers.elearning.validator.UserValidator;
@@ -16,30 +17,31 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 
 /**
  * Created by cuvidk on 11/8/2015.
  * Modified by Dani
- * - Methods added : validateUserAccount, resetPasswordRequest, resetPasswordRequestHandlee, changePassword
  */
-@RestController
 @CrossOrigin
+@RestController
 public class UserControllerImpl implements UserController {
 
     @Autowired
     private UserService userService;
     @Autowired
     private UserRoleService userRoleService;
+
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private PermissionService permissionService;
+
 
     @Override
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {
         try {
-
             UserValidator.validateLoginInfo(loginInfo);
             String token = userService.authenticate(loginInfo);
             String role = userRoleService.getRole(loginInfo.getUsername());
@@ -55,7 +57,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ResponseEntity<String> signUp(@RequestBody UserSignUpInfo signUpInfo) {
+    public ResponseEntity<?> signUp(@RequestBody UserSignUpInfo signUpInfo) {
         try {
             UserValidator.validateSignUpInfo(signUpInfo);
 
@@ -71,31 +73,47 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-    public ResponseEntity<User> get(@PathVariable("username") String username, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> get(@PathVariable("username") String username, @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token); //if the token is not found an exception will occur
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            return new ResponseEntity<>(userService.get(username), HttpStatus.OK);
+                if (permissionService.isOperationAvailable("UserControllerImpl.get", crtUserRole)) {
+                    return new ResponseEntity<>(userService.get(username), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAll(@RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token); //if the token is not found an exception will occur
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+                if (permissionService.isOperationAvailable("UserControllerImpl.getAll", crtUserRole)) {
+                    return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity validateUserAccount(@PathVariable("username") String username,
-                                              @RequestParam(value = "id", required = true) String actionID) {
+    @RequestMapping(value = "/users/confirmation/create/{username}", method = RequestMethod.GET)
+    public ResponseEntity validateUserAccount(@PathVariable("username") String username, @RequestParam(value = "id", required = true) String actionID) {
         try {
             userService.validateUserAccount(username, actionID);
 
@@ -106,6 +124,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
+    @RequestMapping(value = "/users/confirmation/reset/{username}", method = RequestMethod.GET)
     public ResponseEntity resetPasswordRequest(@PathVariable("username") String username) {
         try {
             userService.resetPasswordRequest(username);
@@ -117,8 +136,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity resetPassword(@PathVariable("username") String username,
-                                        @RequestParam(value = "id", required = true) String actionID) {
+    @RequestMapping(value = "/users/password/reset/{username}", method = RequestMethod.GET)
+    public ResponseEntity resetPassword(@PathVariable("username") String username, @RequestParam(value = "id", required = true) String actionID) {
         try {
             userService.resetPasswordRequestHandler(username, actionID);
 
@@ -129,20 +148,28 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity changePassword(@RequestBody PasswordChange passwordChange,
-                                         @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/users/password/change", method = RequestMethod.POST)
+    public ResponseEntity changePassword(@RequestBody PasswordChange passwordChange, @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            UserValidator.validateLoginInfo(new UserLoginInfo(passwordChange.getUsername(), passwordChange.getNewPassword()));
+                if (permissionService.isOperationAvailable("UserControllerImpl.changePassword", crtUserRole)) {
+                    UserValidator.validateLoginInfo(new UserLoginInfo(passwordChange.getUsername(), passwordChange.getNewPassword()));
 
-            userService.changePassword(passwordChange);
-            return new ResponseEntity<>(HttpStatus.OK);
+                    userService.changePassword(passwordChange);
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
-        } catch (InvalidLoginInfoException e) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (InvalidLoginInfoException invalidInfo) {
+            return new ResponseEntity<>(invalidInfo.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }
