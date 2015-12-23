@@ -63,6 +63,7 @@ public class CoursesServiceImpl implements CoursesService {
     @Override
     public void enrollUserToCourse(String courseTitle, String username) throws ServiceException {
         try {
+            coursesDAO.get(courseTitle);
             if (!coursesDAO.userIsEnrolled(courseTitle, username)) {
                 coursesDAO.enrollUser(courseTitle, username);
             } else {
@@ -98,6 +99,7 @@ public class CoursesServiceImpl implements CoursesService {
     @Override
     public void unEnrollUserFromCourse(String title, String username) throws ServiceException {
         try {
+            coursesDAO.get(title);
             if (coursesDAO.userIsEnrolled(title, username)) {
                 coursesDAO.unEnrollUser(title, username);
             } else {
@@ -111,6 +113,7 @@ public class CoursesServiceImpl implements CoursesService {
     @Override
     public List<String> getEnrolled(String title) throws ServiceException {
         try {
+            coursesDAO.get(title);
             return coursesDAO.getEnrolled(title);
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());

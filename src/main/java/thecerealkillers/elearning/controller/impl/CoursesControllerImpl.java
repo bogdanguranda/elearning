@@ -67,9 +67,9 @@ public class CoursesControllerImpl implements CoursesController {
         try {
             sessionService.getSessionByToken(token);
 
-            groupsService.removeEnrollements(GROUP + title);
             coursesService.remove(title);
             groupsService.removeGroup(GROUP + title);
+
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException service_exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -108,7 +108,6 @@ public class CoursesControllerImpl implements CoursesController {
             sessionService.getSessionByToken(token);
 
             coursesService.checkEnrollmentCompatibility(token, username);
-            coursesService.get(title);
             coursesService.enrollUserToCourse(title, username);
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -136,7 +135,6 @@ public class CoursesControllerImpl implements CoursesController {
             sessionService.getSessionByToken(token);
 
             coursesService.checkUnEnrollmentCompatibility(token, username);
-            coursesService.get(title);
             coursesService.unEnrollUserFromCourse(title, username);
 
             return new ResponseEntity<>(HttpStatus.OK);
