@@ -9,6 +9,12 @@ package thecerealkillers.elearning.exceptions;
 public class ServiceException extends Exception {
     public static final String FAILED_GET_ROLE = "Failed to get role from DB\n";
 
+    public static final String CANNOT_UNENROLL_OTHER_USER = "You can only unenroll yourself from a course.\n";
+    public static final String CANNOT_ENROLL_OTHER_USER = "You can only enroll yourself to a course.\n";
+
+    public static final String USER_ALREADY_ENROLLED = "You are already enrolled to this course.\n";
+    public static final String USER_NOT_ENROLLED = "You are not enrolled to this course.\n";
+
     public static final String FAILED_EMAIL_SIGN_UP = "Failed to send email with the validation url.\n";
     public static final String FAILED_DAO_DELETE_ACCOUNT = "A database error occurred while deleting account.\n";
     public static final String FAILED_PASSWORD_SIGN_UP = "Failed while creating salt or generating salt.\n";

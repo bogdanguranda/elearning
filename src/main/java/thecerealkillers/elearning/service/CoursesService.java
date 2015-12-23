@@ -16,4 +16,14 @@ public interface CoursesService {
     Course get(String title) throws ServiceException;
 
     List<Course> getAll() throws ServiceException;
+
+    void enrollUserToCourse(String title, String username) throws ServiceException;
+
+    void checkEnrollmentCompatibility(String token, String username) throws ServiceException;
+
+    void checkUnEnrollmentCompatibility(String token, String username) throws ServiceException;
+
+    void unEnrollUserFromCourse(String title, String username) throws ServiceException;
+
+    List<String> getEnrolled(String title) throws ServiceException;
 }

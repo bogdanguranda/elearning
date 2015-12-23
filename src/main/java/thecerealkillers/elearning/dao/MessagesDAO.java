@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.dao;
 
 import org.springframework.stereotype.Repository;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Message;
 
 import java.util.List;
@@ -12,13 +13,13 @@ import java.util.List;
 @Repository
 public interface MessagesDAO {
 
-    void add(Message message);
+    void add(Message message) throws DAOException;
 
-    List<Message> getAll();
+    List<Message> getAll() throws DAOException;
 
-    List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername);
+    List<Message> getMessagesBetweenUsers(String senderUsername, String receiverUsername) throws DAOException;
 
-    List<Message> getMessagesByUser(String username);
+    List<Message> getMessagesByUser(String username) throws DAOException;
 
-    void delete(String username);
+    void delete(String username) throws DAOException;
 }
