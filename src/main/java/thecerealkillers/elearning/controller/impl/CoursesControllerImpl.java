@@ -1,72 +1,117 @@
 package thecerealkillers.elearning.controller.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 import thecerealkillers.elearning.controller.CoursesController;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.Course;
-import thecerealkillers.elearning.service.CoursesService;
+import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.service.CoursesService;
+import thecerealkillers.elearning.model.Course;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+
+/**
+ * Modified by Dani
+ */
 @RestController
 @CrossOrigin
-public class CoursesControllerImpl implements CoursesController{
+public class CoursesControllerImpl implements CoursesController {
 
     @Autowired
     private CoursesService coursesService;
+
     @Autowired
     private SessionService sessionService;
 
-    @RequestMapping(value = "/courses", method = RequestMethod.GET)
-    public ResponseEntity<List<Course>> getAllCourses(@RequestHeader(value="token") String token) {
-        try {
-            sessionService.getSessionByToken(token);
+    @Autowired
+    private PermissionService permissionService;
 
-            List<Course> courseList = coursesService.getAll();
-            return new ResponseEntity<>(courseList, HttpStatus.OK);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    @RequestMapping(value = "/courses", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCourses(@RequestHeader(value = "token") String token) {
+        try {
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
+
+                if (permissionService.isOperationAvailable("CoursesControllerImpl.getAllCourses", crtUserRole)) {
+                    List<Course> courseList = coursesService.getAll();
+
+                    return new ResponseEntity<>(courseList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @RequestMapping(value = "/courses", method = RequestMethod.POST)
-    public ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value="token") String token) {
+    public ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            coursesService.add(course);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                if (permissionService.isOperationAvailable("CoursesControllerImpl.createCourse", crtUserRole)) {
+                    coursesService.add(course);
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @RequestMapping(value = "/courses", method = RequestMethod.DELETE)
-    public ResponseEntity deleteCourse(@RequestParam(value="title", required=true) String title,
-                                       @RequestHeader(value="token") String token) {
+    public ResponseEntity deleteCourse(@RequestParam(value = "title", required = true) String title,
+                                       @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            coursesService.remove(title);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                if (permissionService.isOperationAvailable("CoursesControllerImpl.deleteCourse", crtUserRole)) {
+                    coursesService.remove(title);
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @RequestMapping(value = "/courses/{title}", method = RequestMethod.GET)
-    public ResponseEntity<Course> getCourse(@PathVariable("title") String title, @RequestHeader(value="token") String token) {
+    public ResponseEntity<?> getCourse(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            Course course = coursesService.get(title);
-            return new ResponseEntity<>(course, HttpStatus.OK);
-        } catch (ServiceException service_exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                if (permissionService.isOperationAvailable("CoursesControllerImpl.getCourse", crtUserRole)) {
+                    Course course = coursesService.get(title);
+                    return new ResponseEntity<>(course, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }
