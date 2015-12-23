@@ -35,26 +35,4 @@ public class GroupsControllerImpl implements GroupsController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @RequestMapping(value = "/groups", method = RequestMethod.POST)
-    public ResponseEntity createGroup(@RequestBody Group group, @RequestHeader(value = "token") String token) {
-        try {
-            sessionService.getSessionByToken(token);
-            groupsService.addGroup(group);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (ServiceException serviceEX) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @RequestMapping(value = "/groups", method = RequestMethod.DELETE)
-    public ResponseEntity deleteCourse(@RequestParam(value = "name", required = true) String name, @RequestHeader(value = "token") String token) {
-        try {
-            sessionService.getSessionByToken(token);
-            groupsService.removeGroup(name);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (ServiceException ex) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 }

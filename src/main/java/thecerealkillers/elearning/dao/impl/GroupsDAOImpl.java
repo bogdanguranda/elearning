@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.GroupsDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 
 import java.sql.ResultSet;
@@ -23,7 +22,6 @@ import java.util.Map;
 @Repository
 public class GroupsDAOImpl implements GroupsDAO {
 
-    private static final String NO_SUBSCRIBED_GROUPS = "There is no subscribed group for this course";
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -70,7 +68,6 @@ public class GroupsDAOImpl implements GroupsDAO {
         try {
             String sql = "DELETE FROM `elearning_db`.`group` WHERE name = :name;";
             Map<String, String> namedParameters = Collections.singletonMap("name", name);
-
             namedParameterJdbcTemplate.update(sql, namedParameters);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -78,17 +75,13 @@ public class GroupsDAOImpl implements GroupsDAO {
     }
 
     @Override
-    public void addCourseGroup(Course course, Group group) throws DAOException {
+    public void removeEnrollements(String title) throws DAOException {
         try {
-            String sql = "INSERT INTO course_group VALUES (:course, :group);";
-
-            Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("course", course.getTitle());
-            namedParameters.put("group", group.getName());
-
-            namedParameterJdbcTemplate.update(sql, namedParameters);
-        } catch (Exception ex) {
-            throw new DAOException(ex.getMessage());
+            String sqlDEL = "DELETE FROM `elearning_db`.`group_user` WHERE `group_user`.`group` = :group;";
+            Map<String, String> namedParameterss = Collections.singletonMap("group", title);
+            namedParameterJdbcTemplate.update(sqlDEL, namedParameterss);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
         }
     }
 }

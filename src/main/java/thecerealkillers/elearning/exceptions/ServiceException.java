@@ -12,7 +12,7 @@ public class ServiceException extends Exception {
     public static final String CANNOT_UNENROLL_OTHER_USER = "You can only unenroll yourself from a course.\n";
     public static final String CANNOT_ENROLL_OTHER_USER = "You can only enroll yourself to a course.\n";
 
-    public static final String USER_ALREADY_ENROLLED = "You are already enrolled te this course.\n";
+    public static final String USER_ALREADY_ENROLLED = "You are already enrolled to this course.\n";
     public static final String USER_NOT_ENROLLED = "You are not enrolled to this course.\n";
 
     public static final String FAILED_EMAIL_SIGN_UP = "Failed to send email with the validation url.\n";

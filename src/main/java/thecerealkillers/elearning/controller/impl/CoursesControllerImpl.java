@@ -50,11 +50,11 @@ public class CoursesControllerImpl implements CoursesController {
     public ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value = "token") String token) {
         try {
             sessionService.getSessionByToken(token);
-            coursesService.add(course);
 
             Group group = new Group(GROUP + course.getTitle());
             groupsService.addGroup(group);
-            groupsService.addCourseGroup(course, group);
+            coursesService.add(course);
+
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException service_exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -67,7 +67,9 @@ public class CoursesControllerImpl implements CoursesController {
         try {
             sessionService.getSessionByToken(token);
 
+            groupsService.removeEnrollements(GROUP + title);
             coursesService.remove(title);
+            groupsService.removeGroup(GROUP + title);
             return new ResponseEntity(HttpStatus.OK);
         } catch (ServiceException service_exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -91,6 +93,7 @@ public class CoursesControllerImpl implements CoursesController {
      * Checks if the session specified by token is the same
      * with the session specified by username
      * Checks if user is already enrolled
+     * Checks if course exists
      *
      * @param token
      * @param title
@@ -102,7 +105,10 @@ public class CoursesControllerImpl implements CoursesController {
                                              @RequestParam(value = "title", required = true) String title,
                                              @RequestParam(value = "username", required = true) String username) {
         try {
+            sessionService.getSessionByToken(token);
+
             coursesService.checkEnrollmentCompatibility(token, username);
+            coursesService.get(title);
             coursesService.enrollUserToCourse(title, username);
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -115,6 +121,7 @@ public class CoursesControllerImpl implements CoursesController {
      * Checks if the session specified by token is the same
      * with the session specified by username
      * Checks if user is already unenrolled
+     * Checks if course exists
      *
      * @param token
      * @param title
@@ -126,7 +133,10 @@ public class CoursesControllerImpl implements CoursesController {
                                                  @RequestParam(value = "title", required = true) String title,
                                                  @RequestParam(value = "username", required = true) String username) {
         try {
+            sessionService.getSessionByToken(token);
+
             coursesService.checkUnEnrollmentCompatibility(token, username);
+            coursesService.get(title);
             coursesService.unEnrollUserFromCourse(title, username);
 
             return new ResponseEntity<>(HttpStatus.OK);

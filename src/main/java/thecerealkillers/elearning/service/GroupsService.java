@@ -1,7 +1,6 @@
 package thecerealkillers.elearning.service;
 
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 
 import java.util.List;
@@ -17,5 +16,5 @@ public interface GroupsService {
 
     void removeGroup(String name) throws ServiceException;
 
-    void addCourseGroup(Course course, Group group) throws ServiceException;
+    void removeEnrollements(String title) throws ServiceException;
 }

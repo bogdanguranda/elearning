@@ -3,11 +3,11 @@ package thecerealkillers.elearning.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
+import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.service.CoursesService;
-import thecerealkillers.elearning.service.SessionService;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class CoursesServiceImpl implements CoursesService {
     @Autowired
     private CoursesDAO coursesDAO;
     @Autowired
-    private SessionService sessionService;
+    private SessionDAO sessionDAO;
 
     @Override
     public void add(Course course) throws ServiceException {
@@ -75,15 +75,23 @@ public class CoursesServiceImpl implements CoursesService {
 
     @Override
     public void checkEnrollmentCompatibility(String token, String username) throws ServiceException {
-        if (!sessionService.getSessionByToken(token).equals(sessionService.getSessionByUser(username))) {
-            throw new ServiceException(ServiceException.CANNOT_ENROLL_OTHER_USER);
+        try {
+            if (!sessionDAO.getSessionByToken(token).equals(sessionDAO.getSessionByUser(username))) {
+                throw new ServiceException(ServiceException.CANNOT_ENROLL_OTHER_USER);
+            }
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
         }
     }
 
     @Override
     public void checkUnEnrollmentCompatibility(String token, String username) throws ServiceException {
-        if (!sessionService.getSessionByToken(token).equals(sessionService.getSessionByUser(username))) {
-            throw new ServiceException(ServiceException.CANNOT_UNENROLL_OTHER_USER);
+        try {
+            if (!sessionDAO.getSessionByToken(token).equals(sessionDAO.getSessionByUser(username))) {
+                throw new ServiceException(ServiceException.CANNOT_UNENROLL_OTHER_USER);
+            }
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
         }
     }
 

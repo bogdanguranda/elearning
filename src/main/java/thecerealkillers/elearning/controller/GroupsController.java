@@ -1,7 +1,10 @@
 package thecerealkillers.elearning.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import thecerealkillers.elearning.model.Group;
 
 import java.util.List;
@@ -21,25 +24,4 @@ public interface GroupsController {
      */
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
     ResponseEntity<List<Group>> getGroups(@RequestHeader(value = "token") String token);
-
-    /**
-     * Create a group
-     *
-     * @param group
-     * @param token
-     * @return
-     */
-    @RequestMapping(value = "/groups", method = RequestMethod.POST)
-    ResponseEntity createGroup(@RequestBody Group group, @RequestHeader(value = "token") String token);
-
-    /**
-     * Delete the specified group
-     *
-     * @param name
-     * @param token
-     * @return
-     */
-    @RequestMapping(value = "/groups", method = RequestMethod.DELETE)
-    ResponseEntity deleteCourse(@RequestParam(value = "name", required = true) String name, @RequestHeader(value = "token") String token);
-
 }

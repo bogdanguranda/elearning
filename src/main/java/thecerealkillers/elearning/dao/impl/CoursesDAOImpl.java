@@ -19,6 +19,7 @@ import java.util.Map;
 @Repository
 public class CoursesDAOImpl implements CoursesDAO {
 
+    private static final String GROUP = "GROUP_";
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -29,12 +30,13 @@ public class CoursesDAOImpl implements CoursesDAO {
     @Override
     public void add(Course course) throws DAOException {
         try {
-            String sql = "insert into course values (:title, :about, :details, :owner);";
+            String sql = "insert into course values (:title, :about, :details, :owner, :associatedGroup);";
             Map<String, String> namedParameters = new HashMap<>();
             namedParameters.put("title", course.getTitle());
             namedParameters.put("about", course.getAbout());
             namedParameters.put("details", course.getDetails());
             namedParameters.put("owner", course.getOwner());
+            namedParameters.put("associatedGroup", GROUP + course.getTitle());
 
             namedParameterJdbcTemplate.update(sql, namedParameters);
         } catch (Exception exception) {
@@ -139,21 +141,7 @@ public class CoursesDAOImpl implements CoursesDAO {
     @Override
     public void enrollUser(String courseTitle, String username) throws DAOException {
         try {
-            String sql = "SELECT course_group.group FROM course_group WHERE course = :course;";
-            Map<String, String> namedParameters = Collections.singletonMap("course", courseTitle);
-
-            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("group");
-                }
-            });
-
-            if (groupList.size() == 0) {
-                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
-            }
-
-            String groupName = groupList.get(0);
+            String groupName = GROUP + courseTitle;
 
             String sqlINSERT = "INSERT INTO `elearning_db`.`group_user` VALUE (:group, :username);";
 
@@ -171,21 +159,7 @@ public class CoursesDAOImpl implements CoursesDAO {
     @Override
     public boolean userIsEnrolled(String courseTitle, String username) throws DAOException {
         try {
-            String sqlSELECT = "SELECT course_group.group FROM course_group WHERE course = :course;";
-            Map<String, String> namedParametersSELECT = Collections.singletonMap("course", courseTitle);
-
-            List<String> groups = namedParameterJdbcTemplate.query(sqlSELECT, namedParametersSELECT, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("group");
-                }
-            });
-
-            if (groups.size() == 0) {
-                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
-            }
-
-            String group = groups.get(0);
+            String group = GROUP + courseTitle;
             String sql = "SELECT * FROM elearning_db.group_user WHERE group_user.group = :group AND username = :username;";
 
             Map<String, String> namedParameters = new HashMap<>();
@@ -209,21 +183,7 @@ public class CoursesDAOImpl implements CoursesDAO {
     @Override
     public void unEnrollUser(String title, String username) throws DAOException {
         try {
-            String sql = "SELECT course_group.group FROM course_group WHERE course = :course;";
-            Map<String, String> namedParameters = Collections.singletonMap("course", title);
-
-            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("group");
-                }
-            });
-
-            if (groupList.size() == 0) {
-                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
-            }
-
-            String groupName = groupList.get(0);
+            String groupName = GROUP + title;
 
             String sqlDELETE = "DELETE FROM `elearning_db`.`group_user` WHERE group_user.group = :group AND username = :username;";
 
@@ -241,21 +201,7 @@ public class CoursesDAOImpl implements CoursesDAO {
     @Override
     public List<String> getEnrolled(String title) throws DAOException {
         try {
-            String sql = "SELECT course_group.group FROM course_group WHERE course = :course;";
-            Map<String, String> namedParameters = Collections.singletonMap("course", title);
-
-            List<String> groupList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("group");
-                }
-            });
-
-            if (groupList.size() == 0) {
-                throw new DAOException(DAOException.NO_SUBSCRIBED_GROUPS);
-            }
-
-            String groupName = groupList.get(0);
+            String groupName = GROUP + title;
 
             List<String> users;
             String sqlSELECT = "SELECT username FROM group_user WHERE group_user.group = :group;";
