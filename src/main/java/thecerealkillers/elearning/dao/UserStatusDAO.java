@@ -3,11 +3,13 @@ package thecerealkillers.elearning.dao;
 
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.UserStatus;
+import org.springframework.stereotype.Repository;
 
 
 /**
  * Created by Dani
  */
+@Repository
 public interface UserStatusDAO {
 
     /**

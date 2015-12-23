@@ -65,6 +65,12 @@ public class ServiceException extends Exception {
     public static final String FAILED_GET_ROBE = "A database error occurred while getting the user's role by his session token.\n";
 
 
+    //------------------------------------------PermissionServiceImpl-----------------------------------------------------------------------------
+
+    public static final String FAILED_GET_PERMISSION = "Failed to get permission for database.\n";
+    public static String FAILED_DET_PERMISSION = "Failed to determine if user has permission to execute this operation.\n";
+
+
     public ServiceException(String message) {
         super(message);
     }

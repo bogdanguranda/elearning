@@ -2,6 +2,7 @@ package thecerealkillers.elearning.dao;
 
 
 import thecerealkillers.elearning.exceptions.DAOException;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.model.User;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * Created by cuvidk on 11/8/2015.
  * Modified by Dani.
  */
+@Repository
 public interface UserDAO {
     /**
      * Adds a user in the database.

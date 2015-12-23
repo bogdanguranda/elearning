@@ -2,11 +2,13 @@ package thecerealkillers.elearning.dao;
 
 
 import thecerealkillers.elearning.exceptions.DAOException;
+import org.springframework.stereotype.Repository;
 
 
 /**
  * Created by Lucian and Dani.
  */
+@Repository
 public interface UserRoleDAO {
 
     /**

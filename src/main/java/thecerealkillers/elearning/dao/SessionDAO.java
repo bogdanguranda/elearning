@@ -1,11 +1,14 @@
 package thecerealkillers.elearning.dao;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.SessionDM;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by cuvidk on 11/20/2015.
  */
+@Repository
 public interface SessionDAO {
     /**
      * Adds @session in the database.

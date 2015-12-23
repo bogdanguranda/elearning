@@ -1,6 +1,8 @@
 package thecerealkillers.elearning.dao;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.model.Comment;
 
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.List;
 /**
  * Created by Dani
  */
+@Repository
 public interface CommentDAO {
 
     /**

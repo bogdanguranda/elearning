@@ -98,8 +98,8 @@ public class CommentDAOImpl implements CommentDAO {
                 public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
                     Comment comment = new Comment();
 
-                    comment.setOwner(resultSet.getString("owner"));
                     comment.setTimeStamp(resultSet.getTimestamp("timeStamp"));
+                    comment.setOwner(resultSet.getString("owner"));
                     comment.setMessage(resultSet.getString("message"));
 
                     return comment;

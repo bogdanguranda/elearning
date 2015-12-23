@@ -1,6 +1,8 @@
 package thecerealkillers.elearning.dao;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.model.Topic;
 
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
 /**
  * Created by Dani
  */
+@Repository
 public interface TopicDAO {
 
     /**

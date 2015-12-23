@@ -1,7 +1,17 @@
 package thecerealkillers.elearning.dao;
 
+
+import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.model.Permission;
+
+import org.springframework.stereotype.Repository;
+
+
 /**
- * Created by Jack on 23-Dec-15.
+ * Created by Dani.
  */
+@Repository
 public interface PermissionDAO {
+
+    Permission getPermission(String operationName, String roleName) throws DAOException;
 }
