@@ -5,6 +5,7 @@ DROP SCHEMA IF EXISTS `elearning_db` ;
 CREATE SCHEMA IF NOT EXISTS `elearning_db` DEFAULT CHARACTER SET utf8 ;
 USE `elearning_db` ;
 
+
 -- -----------------------------------------------------
 -- Table `elearning_db`.`user`
 -- -----------------------------------------------------
@@ -21,6 +22,16 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user` (
   UNIQUE INDEX `email_UNIQUE` (`email` ASC)  COMMENT '')
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`group`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`group` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`group` (
+  `name` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`name`)  COMMENT '')
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `elearning_db`.`course`
@@ -32,13 +43,17 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`course` (
   `about` TEXT NULL DEFAULT NULL COMMENT '',
   `details` TEXT NULL DEFAULT NULL COMMENT '',
   `owner` VARCHAR(45) NULL COMMENT '',
+  `associatedGroup` VARCHAR(45) NOT NULL COMMENT '',
   PRIMARY KEY (`title`)  COMMENT '',
   INDEX `username_idx` (`owner` ASC)  COMMENT '',
   CONSTRAINT `course_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `course_group_name_fk`
+    FOREIGN KEY (`associatedGroup`)
+    REFERENCES `elearning_db`.`group` (`name`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -77,15 +92,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user_role` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `elearning_db`.`group`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`group` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`group` (
-  `name` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -181,11 +187,11 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
   `description` TEXT NULL COMMENT '',
   PRIMARY KEY (`title`, `course`)  COMMENT '',
   CONSTRAINT `module_course_fk`
-    FOREIGN KEY (`course`)
-    REFERENCES `elearning_db`.`course` (`title`)
+  FOREIGN KEY (`course`)
+  REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
+  ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -249,24 +255,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `elearning_db`.`course_group`
 -- -----------------------------------------------------
+-- This does not exist anymore. Left for cleanup purposes.
 DROP TABLE IF EXISTS `elearning_db`.`course_group` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`course_group` (
-  `course` VARCHAR(45) NOT NULL COMMENT '',
-  `group` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`course`, `group`)  COMMENT '',
-  INDEX `name_idx` (`group` ASC)  COMMENT '',
-  CONSTRAINT `course_group_course_title_fk`
-    FOREIGN KEY (`course`)
-    REFERENCES `elearning_db`.`course` (`title`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `course_group_group_name_fk`
-    FOREIGN KEY (`group`)
-    REFERENCES `elearning_db`.`group` (`name`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -407,7 +397,6 @@ ENGINE = InnoDB;
 INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
-
 
 
 

@@ -4,24 +4,26 @@ package thecerealkillers.elearning.validator;
  * Created by cuvidk on 11/14/2015.
  */
 
+import thecerealkillers.elearning.exceptions.InvalidEnrollmentParams;
+
 /**
  * This is a generic validator class for strings.
  */
 public class Validator {
     /**
      * Checks if @value is an empty string
+     *
      * @param value
      * @return true if @value is an empty string, false else
      */
     public static boolean isEmpty(String value) {
-        if (value.length() == 0)
-            return true;
-        return false;
+        return value.length() == 0;
     }
 
     /**
      * Checks if @value is an alphanumeric string
      * (is composed only from numbers and alphabet characters)
+     *
      * @param value
      * @return true if @value is an alphanumeric string, false else
      */
@@ -37,6 +39,7 @@ public class Validator {
 
     /**
      * Checks if @value contains any digit
+     *
      * @param value
      * @return true if @value contains at least 1 digit, false else
      */
@@ -50,6 +53,7 @@ public class Validator {
 
     /**
      * Checks if @value contains any lower-case letter
+     *
      * @param value
      * @return true if @value contains at least 1 lower-case, false else
      */
@@ -63,6 +67,7 @@ public class Validator {
 
     /**
      * Checks if @value contains any upper-case letter
+     *
      * @param value
      * @return true if @value contains at least 1 upper-case, false else
      */
@@ -72,5 +77,17 @@ public class Validator {
                 return true;
         }
         return false;
+    }
+
+    public static void validateEnrollment(String title, String username) throws InvalidEnrollmentParams {
+        String feedback = "";
+        if (title.isEmpty())
+            feedback += "Invalid title. Title cannot be empty.\n";
+        if (username.isEmpty())
+            feedback += "Invalid username. Username cannot be empty.\n";
+
+        if (!"".equals(feedback)) {
+            throw new InvalidEnrollmentParams(feedback);
+        }
     }
 }
