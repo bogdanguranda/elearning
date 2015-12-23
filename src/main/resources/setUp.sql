@@ -442,11 +442,65 @@ ENGINE = InnoDB;
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
 
+
 -- Adauga rolurile
 -- -------------------------------------------------------------------
 INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
+
+
+-- Inserts operations START
+-- -------------------------------------------------------------------
+INSERT INTO operation VALUES('AdminControllerImpl.createAccount');
+INSERT INTO operation VALUES('AdminControllerImpl.suspendAccount');
+INSERT INTO operation VALUES('AdminControllerImpl.reactivateAccount');
+INSERT INTO operation VALUES('AdminControllerImpl.changeAccountType');
+INSERT INTO operation VALUES('AdminControllerImpl.getAudit');
+INSERT INTO operation VALUES('AdminControllerImpl.getAuditForUser');
+
+INSERT INTO operation VALUES('CommentControllerImpl.createComment');
+INSERT INTO operation VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp');
+INSERT INTO operation VALUES('CommentControllerImpl.getCommentsForThread');
+INSERT INTO operation VALUES('CommentControllerImpl.updateComment');
+INSERT INTO operation VALUES('CommentControllerImpl.deleteComment');
+INSERT INTO operation VALUES('CoursesControllerImpl.getAllCourses');
+INSERT INTO operation VALUES('CoursesControllerImpl.createCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.deleteCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.getCourse');
+
+INSERT INTO operation VALUES('ForumThreadControllerImpl.createThread');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getAll');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadByTitle');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsForTopic');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.updateThread');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.deleteThreadByTitle');
+
+INSERT INTO operation VALUES('MessageControllerImpl.createMessage');
+INSERT INTO operation VALUES('MessageControllerImpl.getAllMessages');
+INSERT INTO operation VALUES('MessageControllerImpl.getMessagesBetweenUsers');
+INSERT INTO operation VALUES('MessageControllerImpl.getMessagesByUser');
+INSERT INTO operation VALUES('MessageControllerImpl.deleteUserMessages');
+
+INSERT INTO operation VALUES('TopicControllerImpl.createTopic');
+INSERT INTO operation VALUES('TopicControllerImpl.getAllTopics');
+INSERT INTO operation VALUES('TopicControllerImpl.getTopicByTitle');
+INSERT INTO operation VALUES('TopicControllerImpl.updateTopic');
+INSERT INTO operation VALUES('TopicControllerImpl.deleteTopicByTitle');
+
+INSERT INTO operation VALUES('UserControllerImpl.get');
+INSERT INTO operation VALUES('UserControllerImpl.getAll');
+INSERT INTO operation VALUES('UserControllerImpl.changePassword');
+-- -------------------------------------------------------------------
+-- Inserts operations END
+
+
+-- Inserts permissions START
+-- -------------------------------------------------------------------
+-- -------------------------------------------------------------------
+-- Inserts permissions END
+
 
 -- Creeaza cont pentru administrator 
 -- -------------------------------------------------------------------
