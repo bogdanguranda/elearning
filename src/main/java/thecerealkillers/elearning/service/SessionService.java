@@ -37,6 +37,8 @@ public interface SessionService {
      */
     SessionDM getSessionByToken(String token) throws ServiceException;
 
+    void deleteSession(String username) throws ServiceException;
+
     Boolean isSessionActive(String token);
 
     String getUserRoleByToken(String token) throws ServiceException;

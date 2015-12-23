@@ -66,6 +66,14 @@ public class SessionServiceImpl implements SessionService {
         return true;
     }
 
+    public void deleteSession(String username) throws ServiceException {
+        try {
+            sessionDAO.deleteSession(username);
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(ServiceException.FAILED_DELETE_SESSION + dao_exception.getMessage());
+        }
+    }
+
     public String getUserRoleByToken(String token) throws ServiceException {
         try {
             SessionDM session = sessionDAO.getSessionByToken(token);

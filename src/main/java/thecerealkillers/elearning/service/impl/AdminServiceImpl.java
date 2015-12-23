@@ -27,7 +27,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private UserRoleDAO userRoleDAO;
 
@@ -61,7 +61,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             userStatusDAO.suspendAccount(suspendInfo.getAccountUsername());
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_SUSPEND_ACCOUNT + daoException.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             userStatusDAO.activateAccount(reactivateInfo.getAccountUsername());
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_ACTIVATE_ACCOUNT + daoException.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             userRoleDAO.changeRole(accountTypeInfo.getAccountUsername(), accountTypeInfo.getNewAccountType());
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_CHANGE_ACCOUNT_TYPE + daoException.getMessage());
         }
     }
 

@@ -23,7 +23,6 @@ public class ServiceException extends Exception {
     public static final String FAILED_EMAIL_EMAIL_VALIDATION = "Failed to send email to inform the user that his account is activated.\n";
 
     public static final String FAILED_LOG_IN = "Wrong username or password.\n";
-    public static final String FAILED_SESSION_EXPERT = "Failed to create or retrieve session.\n";
     public static final String FAILED_PASSWORD_LOG_IN = "Failed while processing user's password.\n";
     public static final String FAILED_DAO_LOG_IN = "A database error occurred while reading login up data.\n";
 
@@ -50,7 +49,20 @@ public class ServiceException extends Exception {
     //-------------------------------------------AdminServiceImpl------------------------------------------------------------------------------
 
     public static final String FAILED_DAO_ROLE_CHG = "A database error occurred while changing user's role.\n";
-    public static final String FAILED_EMAIL_PASSWORD_SET = "Failed to send email with informations about the account created.\n";
+    public static final String FAILED_EMAIL_PASSWORD_SET = "Failed to send email with data about the account created.\n";
+    public static final String FAILED_SUSPEND_ACCOUNT = "Failed to suspend the account.\n";
+    public static final String FAILED_ACTIVATE_ACCOUNT = "Failed to activate the account.\n";
+    public static final String FAILED_CHANGE_ACCOUNT_TYPE = "Failed to change the account role.\n";
+
+
+    //------------------------------------------SessionServiceImpl-----------------------------------------------------------------------------
+
+    public static final String FAILED_ADD_SESSION = "An error occurred while saving the session in the database.\n";
+    public static final String FAILED_GET_ADD_SESSION = "Failed to initiate a new session or to get the current one from DB.\n";
+    public static final String FAILED_DELETE_SESSION = "An error occurred while deleting the session.\n";
+    public static final String FAILED_GET_BY_USE = "A database error occurred while getting the session by user.\n";
+    public static final String FAILED_GET_BY_TOKEN = "A database error occurred while getting the session by token.\n";
+    public static final String FAILED_GET_ROBE = "A database error occurred while getting the user's role by his session token.\n";
 
 
     public ServiceException(String message) {
