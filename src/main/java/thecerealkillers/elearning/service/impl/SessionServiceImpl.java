@@ -1,14 +1,16 @@
-package thecerealkillers.elearning.utilities;
+package thecerealkillers.elearning.service.impl;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import thecerealkillers.elearning.dao.impl.SessionDAOImpl;
+import thecerealkillers.elearning.dao.impl.UserRoleDAOImpl;
 import thecerealkillers.elearning.exceptions.SessionExpertException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.UserRoleDAO;
 import thecerealkillers.elearning.model.SessionDM;
 import thecerealkillers.elearning.dao.SessionDAO;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import thecerealkillers.elearning.utilities.TokenGenerator;
 
 import java.util.Date;
 
@@ -17,12 +19,12 @@ import java.util.Date;
  * Created by cuvidk on 11/20/2015.
  * Modified by Dani.
  */
-@Service
-public class SessionExpert {
+@Component
+public class SessionServiceImpl {
     @Autowired
-    private static SessionDAO sessionDAO;
+    private static SessionDAO sessionDAO;// = new SessionDAOImpl();
     @Autowired
-    private static UserRoleDAO userRoleDAO;
+    private static UserRoleDAO userRoleDAO;// = new UserRoleDAOImpl();
 
     /**
      * Adds @session in the database.
@@ -72,7 +74,7 @@ public class SessionExpert {
         return isNotExpired(session.getCreationStamp(), session.getUsername());
     }
 
-    private static Boolean isNotExpired(Date creationTime, String username) throws SessionExpertException {
+    private static  Boolean isNotExpired(Date creationTime, String username) throws SessionExpertException {
         int timeIsValid = 24; // hours
         Date crtTime = new Date();
 
@@ -91,7 +93,7 @@ public class SessionExpert {
         return false;
     }
 
-    public static String getUserRoleByToken(String token) throws SessionExpertException {
+    public  static String getUserRoleByToken(String token) throws SessionExpertException {
         try {
             SessionDM session = sessionDAO.getSessionByToken(token);
 
@@ -101,15 +103,26 @@ public class SessionExpert {
         }
     }
 
-    public static String startOrGetSession(String username) throws SessionExpertException {
-        if (isSessionActive(username)) {
-            return getSessionByUser(username).getToken();
-        } else {
-            String token = TokenGenerator.generate();
+    public static  String startOrGetSession(String username) throws SessionExpertException {
+        System.out.println("startOrGetSession");
+        try {
+            System.out.println("startOrGetSession");
+            sessionDAO.addSession(new SessionDM(username, "dasdas", null));
+            System.out.println("addSession");
+            sessionDAO.isSessionAvailable(username);
+            System.out.println("isSessionAvailable");
+            if (sessionDAO.isSessionAvailable(username)) {
+                return getSessionByUser(username).getToken();
+            } else {
+                String token = TokenGenerator.generate();
+                SessionDM session = new SessionDM(username, token, null);
 
-            addSession(new SessionDM(username, token, null));
+                addSession(session);
 
-            return token;
+                return token;
+            }
+        } catch (DAOException dao_exception) {
+            throw new SessionExpertException(SessionExpertException.FAILED_GET_ADD_SESSION + dao_exception.getMessage());
         }
     }
 }

@@ -388,7 +388,7 @@ DROP TABLE IF EXISTS `elearning_db`.`session` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `token` VARCHAR(36) NULL COMMENT '',
-  `creationTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
+  `creationTimestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
   CONSTRAINT `session_username_fk`
