@@ -5,6 +5,7 @@ DROP SCHEMA IF EXISTS `elearning_db` ;
 CREATE SCHEMA IF NOT EXISTS `elearning_db` DEFAULT CHARACTER SET utf8 ;
 USE `elearning_db` ;
 
+
 -- -----------------------------------------------------
 -- Table `elearning_db`.`user`
 -- -----------------------------------------------------
@@ -19,6 +20,16 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user` (
   `salt` VARCHAR(128) NULL COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `email_UNIQUE` (`email` ASC)  COMMENT '')
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`group`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`group` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`group` (
+  `name` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`name`)  COMMENT '')
 ENGINE = InnoDB;
 
 
@@ -81,15 +92,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user_role` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `elearning_db`.`group`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`group` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`group` (
-  `name` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
