@@ -1,7 +1,9 @@
 package thecerealkillers.elearning.controller.impl;
 
+
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.TopicController;
+import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.TopicService;
 import thecerealkillers.elearning.model.Topic;
@@ -23,74 +25,123 @@ public class TopicControllerImpl implements TopicController {
 
     @Autowired
     private TopicService topicService;
+
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private PermissionService permissionService;
+
+
     @Override
+    @RequestMapping(value = "/topics", method = RequestMethod.POST)
     public ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            topicService.add(newTopic);
+                if (permissionService.isOperationAvailable("TopicControllerImpl.createTopic", crtUserRole)) {
+                    topicService.add(newTopic);
 
-            return new ResponseEntity(HttpStatus.CREATED);
+                    return new ResponseEntity(HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<Topic>> getAllTopics(@RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/topics", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllTopics(@RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            List<Topic> topicList = topicService.getAll();
+                if (permissionService.isOperationAvailable("TopicControllerImpl.getAllTopics", crtUserRole)) {
+                    List<Topic> topicList = topicService.getAll();
 
-            return new ResponseEntity<>(topicList, HttpStatus.OK);
+                    return new ResponseEntity<>(topicList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<Topic> getTopicByTitle(@PathVariable("title") String title,
-                                                 @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
+    public ResponseEntity<?> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            Topic topic = topicService.get(title);
+                if (permissionService.isOperationAvailable("TopicControllerImpl.getTopicByTitle", crtUserRole)) {
+                    Topic topic = topicService.get(title);
 
-            return new ResponseEntity<>(topic, HttpStatus.OK);
+                    return new ResponseEntity<>(topic, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
+    @RequestMapping(value = "/topics/{title}", method = RequestMethod.POST)
     public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic,
                                       @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            topicService.update(title, newTopic);
+                if (permissionService.isOperationAvailable("TopicControllerImpl.updateTopic", crtUserRole)) {
+                    topicService.update(title, newTopic);
 
-            return new ResponseEntity(HttpStatus.OK);
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
+    @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
     public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title,
                                              @RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
 
-            topicService.delete(title);
+                if (permissionService.isOperationAvailable("TopicControllerImpl.deleteTopicByTitle", crtUserRole)) {
+                    topicService.delete(title);
 
-            return new ResponseEntity(HttpStatus.OK);
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

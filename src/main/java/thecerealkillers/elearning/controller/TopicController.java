@@ -3,10 +3,8 @@ package thecerealkillers.elearning.controller;
 
 import thecerealkillers.elearning.model.Topic;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 
 /**
@@ -20,11 +18,11 @@ public interface TopicController {
             @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/topics", method = RequestMethod.GET)
-    ResponseEntity<List<Topic>> getAllTopics(
+    ResponseEntity<?> getAllTopics(
             @RequestHeader(value = "token") String token);
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
-    ResponseEntity<Topic> getTopicByTitle(
+    ResponseEntity<?> getTopicByTitle(
             @PathVariable("title") String title,
             @RequestHeader(value = "token") String token);
 
