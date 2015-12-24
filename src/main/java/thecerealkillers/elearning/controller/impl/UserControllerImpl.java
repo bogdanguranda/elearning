@@ -38,8 +38,9 @@ public class UserControllerImpl implements UserController {
 
             UserValidator.validateLoginInfo(loginInfo);
             String token = userService.authenticate(loginInfo);
-            String role = userService.getRole(loginInfo.getUsername());
-            AuthenticationInfo authenticationInfo = new AuthenticationInfo(token, role);
+            String username = loginInfo.getUsername();
+            String role = userService.getRole(username);
+            AuthenticationInfo authenticationInfo = new AuthenticationInfo(token, role, username);
 
             return new ResponseEntity<>(authenticationInfo, HttpStatus.OK);
         } catch (InvalidLoginInfoException login_exception) {
