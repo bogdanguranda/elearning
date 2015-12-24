@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    public static final String FRONTEND_DOMAIN = "http://localhost:8088";
+    public static final String FRONTEND_DOMAIN = "https://localhost:8088";
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
