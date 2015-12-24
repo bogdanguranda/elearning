@@ -29,11 +29,12 @@ public interface ModuleService {
     void deleteModule(Module module) throws ServiceException;
 
     /**
-     * Returns a list with all the stored modules.
+     * Returns a list with all the stored modules where
+     * course = @course.
      * @return a list with all the modules.
      * @throws ServiceException if DAOException encountered.
      */
-    List<Module> getAll() throws ServiceException;
+    List<Module> getAll(String course) throws ServiceException;
 
     /**
      * Returns the module with the corresponding

@@ -33,7 +33,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void signUp(User user) throws DAOException {
         try {
-            String sqlCommand = "insert into user values(:username, :firstName, :lastName, :email, :hash, :salt);";
+            String sqlCommand = "insert into elearning_db.user values(:username, :firstName, :lastName, :email, :hash, :salt);";
             Map<String, String> namedParameters = new HashMap<>();
 
             namedParameters.put("username", user.getUsername());
@@ -52,7 +52,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User get(String username) throws DAOException {
         try {
-            String sql = "select * from user where username = :username;";
+            String sql = "select * from elearning_db.user where username = :username;";
             Map<String, String> namedParameters = Collections.singletonMap("username", username);
 
             List<User> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<User>() {
@@ -87,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public String getRole(String username) throws DAOException {
         try {
-            String sql = "SELECT role FROM user_role WHERE username = :username;";
+            String sql = "SELECT role FROM elearning_db.user_role WHERE username = :username;";
             Map<String, String> namedParameters = Collections.singletonMap("username", username);
 
             List<String> roleList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
@@ -110,7 +110,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean isUsernameAvailable(String username) throws DAOException {
         try {
-            String sql = "select username from user where username = :username;";
+            String sql = "select username from elearning_db.user where username = :username;";
             Map<String, String> namedParameters = Collections.singletonMap("username", username);
 
             List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
@@ -132,7 +132,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean isEmailAvailable(String email) throws DAOException {
         try {
-            String sql = "select username from user where email = :email;";
+            String sql = "select username from elearning_db.user where email = :email;";
             Map<String, String> namedParameters = Collections.singletonMap("email", email);
 
             List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
@@ -155,7 +155,7 @@ public class UserDAOImpl implements UserDAO {
     public List<User> getAll() throws DAOException {
         try {
             List<User> users;
-            String sqlCommand = "select * from user;";
+            String sqlCommand = "select * from elearning_db.user;";
 
             users = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<User>() {
                 @Override
@@ -183,7 +183,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void changePassword(String username, String newHash) throws DAOException  {
         try {
-            String sqlCommand = "UPDATE user SET hash = :hash WHERE username = :username";
+            String sqlCommand = "UPDATE elearning_db.user SET hash = :hash WHERE username = :username";
             Map<String, String> namedParameters = new HashMap<>();
 
             namedParameters.put("hash", newHash);
@@ -199,7 +199,7 @@ public class UserDAOImpl implements UserDAO {
     public void delete(String username) throws DAOException {
 
         try {
-            String sqlCommand = "DELETE FROM user WHERE username = :username";
+            String sqlCommand = "DELETE FROM elearning_db.user WHERE username = :username";
             Map<String, String> namedParameters = new HashMap<>();
 
             namedParameters.put("username", username);

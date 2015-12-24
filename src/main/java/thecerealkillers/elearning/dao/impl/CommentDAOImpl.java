@@ -33,7 +33,7 @@ public class CommentDAOImpl implements CommentDAO {
     @Override
     public void addComment(String owner, String message, String threadTitle) throws DAOException {
         try {
-            String command = "INSERT INTO comment VALUES (:owner, DEFAULT, :message)";
+            String command = "INSERT INTO elearning_db.comment VALUES (:owner, DEFAULT, :message)";
 
             Date timeStamp = new Date(Calendar.getInstance().getTimeInMillis());
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -54,7 +54,7 @@ public class CommentDAOImpl implements CommentDAO {
     @Override
     public Comment getCommentByOwnerAndTimeStamp(String owner, Date timeStamp) throws DAOException {
         try {
-            String command = "SELECT * FROM comment WHERE owner = :owner AND timeStamp = :timeStamp";
+            String command = "SELECT * FROM elearning_db.comment WHERE owner = :owner AND timeStamp = :timeStamp";
             Map<String, String> namedParameters = new HashMap<>();
 
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

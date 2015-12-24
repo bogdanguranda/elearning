@@ -69,11 +69,12 @@ public class ModuleControllerImpl implements ModuleController {
 
     @Override
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.GET)
-    public ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token) {
+    public ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token,
+                                               @PathVariable("courseTitle") String courseTitle) {
         try {
             sessionService.getSessionByToken(token);
 
-            return new ResponseEntity<>(moduleService.getAll(), HttpStatus.OK);
+            return new ResponseEntity<>(moduleService.getAll(courseTitle), HttpStatus.OK);
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

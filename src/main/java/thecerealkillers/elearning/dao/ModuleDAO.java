@@ -26,11 +26,12 @@ public interface ModuleDAO {
     void deleteModule(Module module) throws DAOException;
 
     /**
-     * Returns all the modules from the DB.
+     * Returns all the modules from the DB
+     * where course title = @course.
      * @return A list of Module.
      * @throws DAOException if DB error.
      */
-    List<Module> getAll() throws DAOException;
+    List<Module> getAll(String course) throws DAOException;
 
     /**
      * Returns the module with the title @title that is

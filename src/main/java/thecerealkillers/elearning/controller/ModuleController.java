@@ -20,7 +20,7 @@ public interface ModuleController {
                                         @RequestParam("moduleTitle") String moduleTitle);
 
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.GET)
-    ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token);
+    ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle);
 
     @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}", method = RequestMethod.GET)
     ResponseEntity<Module> get(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,

@@ -11,6 +11,7 @@ import thecerealkillers.elearning.model.Module;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,12 +61,13 @@ public class ModuleDAOImpl implements ModuleDAO {
     }
 
     @Override
-    public List<Module> getAll() throws DAOException {
+    public List<Module> getAll(String course) throws DAOException {
         try {
             List<Module> modules;
-            String sqlCommand = "SELECT * FROM Module";
+            String sqlCommand = "SELECT * FROM Module WHERE course = :course";
+            Map<String, String> namedParameters = Collections.singletonMap("course", course);
 
-            modules = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<Module>() {
+            modules = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<Module>() {
                 @Override
                 public Module mapRow(ResultSet resultSet, int i) throws SQLException {
                     Module module = new Module();
