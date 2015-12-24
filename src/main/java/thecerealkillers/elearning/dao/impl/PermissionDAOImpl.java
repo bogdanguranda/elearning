@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by Dani.
  */
 @Repository
-public class PermissionDAOImpl implements PermissionDAO{
+public class PermissionDAOImpl implements PermissionDAO {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -37,7 +37,6 @@ public class PermissionDAOImpl implements PermissionDAO{
         try {
             String command = "SELECT * FROM permission WHERE operationName = :operationName AND roleName = :roleName";
             Map<String, String> namedParameters = new HashMap<>();
-
 
             namedParameters.put("operationName", operationName);
             namedParameters.put("roleName", roleName);

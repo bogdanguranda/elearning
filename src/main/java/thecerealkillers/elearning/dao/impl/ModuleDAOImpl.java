@@ -1,22 +1,28 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import thecerealkillers.elearning.dao.ModuleDAO;
+
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.dao.ModuleDAO;
 import thecerealkillers.elearning.model.Module;
 
-import java.sql.ResultSet;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.sql.SQLException;
+import java.sql.ResultSet;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by cuvidk on 12/22/2015.
+ * .
  */
 @Repository
 public class ModuleDAOImpl implements ModuleDAO {
@@ -60,19 +66,20 @@ public class ModuleDAOImpl implements ModuleDAO {
     }
 
     @Override
-    public List<Module> getAll() throws DAOException {
+    public List<Module> getAll(String course) throws DAOException {
         try {
             List<Module> modules;
-            String sqlCommand = "SELECT * FROM Module";
+            String sqlCommand = "SELECT * FROM Module WHERE course = :course";
+            Map<String, String> namedParameters = Collections.singletonMap("course", course);
 
-            modules = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<Module>() {
+            modules = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<Module>() {
                 @Override
                 public Module mapRow(ResultSet resultSet, int i) throws SQLException {
                     Module module = new Module();
 
-                    module.setTitle(resultSet.getString("title"));
                     module.setCourse(resultSet.getString("course"));
                     module.setDescription(resultSet.getString("description"));
+                    module.setTitle(resultSet.getString("title"));
 
                     return module;
                 }
@@ -98,9 +105,9 @@ public class ModuleDAOImpl implements ModuleDAO {
                 public Module mapRow(ResultSet resultSet, int i) throws SQLException {
                     Module module = new Module();
 
+                    module.setDescription(resultSet.getString("description"));
                     module.setTitle(resultSet.getString("title"));
                     module.setCourse(resultSet.getString("course"));
-                    module.setDescription(resultSet.getString("description"));
 
                     return module;
                 }

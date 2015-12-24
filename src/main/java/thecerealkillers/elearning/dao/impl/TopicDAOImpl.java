@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.dao.impl;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.TopicDAO;
 import thecerealkillers.elearning.model.Topic;
@@ -31,6 +32,7 @@ public class TopicDAOImpl implements TopicDAO {
     public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
 
     @Override
     public void add(Topic newTopic) throws DAOException {

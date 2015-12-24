@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.dao.impl;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.ForumThreadDAO;
 import thecerealkillers.elearning.model.ForumThread;
@@ -28,6 +29,7 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
     public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
 
     @Override
     public void add(ForumThread newForumThread, String topicTitle) throws DAOException {
@@ -84,8 +86,8 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                 public ForumThread mapRow(ResultSet resultSet, int i) throws SQLException {
                     ForumThread thread = new ForumThread();
 
-                    thread.setTitle(resultSet.getString("title"));
                     thread.setOwner(resultSet.getString("owner"));
+                    thread.setTitle(resultSet.getString("title"));
 
                     return thread;
                 }

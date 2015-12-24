@@ -33,6 +33,7 @@ public class SessionDAOImpl implements SessionDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
     @Override
     public void addSession(SessionDM session) throws DAOException {
         try {

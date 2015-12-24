@@ -13,30 +13,30 @@ import java.util.List;
 public interface ModuleDAO {
     /**
      * Stores the module @module in the DB.
-     * @param module
+     *
      * @throws DAOException if DB error.
      */
     void storeModule(Module module) throws DAOException;
 
     /**
      * Removes the module @module from DB.
-     * @param module
+     *
      * @throws DAOException if DB error.
      */
     void deleteModule(Module module) throws DAOException;
 
     /**
-     * Returns all the modules from the DB.
+     * Returns all the modules from the DB where course title = @course.
+     *
      * @return A list of Module.
      * @throws DAOException if DB error.
      */
-    List<Module> getAll() throws DAOException;
+    List<Module> getAll(String course) throws DAOException;
 
     /**
      * Returns the module with the title @title that is
      * associated with course @course.
-     * @param title
-     * @param course
+     *
      * @return The corresponding module.
      * @throws DAOException if DB error.
      */
@@ -45,8 +45,7 @@ public interface ModuleDAO {
     /**
      * Renames the module @module
      * to @newTitle.
-     * @param module
-     * @param newTitle
+     *
      * @throws DAOException if DB error.
      */
     void update(Module module, String newTitle) throws DAOException;
@@ -54,7 +53,7 @@ public interface ModuleDAO {
     /**
      * Checks to see if @module already exists
      * in DB.
-     * @param module
+     *
      * @return true if it exists, false else
      * @throws DAOException if DB error.
      */

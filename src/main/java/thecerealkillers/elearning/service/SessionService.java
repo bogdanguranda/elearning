@@ -37,11 +37,33 @@ public interface SessionService {
      */
     SessionDM getSessionByToken(String token) throws ServiceException;
 
+
+    /**
+     * Deletes session for a user.
+     *
+     * @throws ServiceException
+     */
     void deleteSession(String username) throws ServiceException;
 
+
+    /**
+     * Returns trie if session is active, false otherwise.
+     */
     Boolean isSessionActive(String token);
 
+
+    /**
+     * Return a user's role by user's token.
+     *
+     * @throws ServiceException
+     */
     String getUserRoleByToken(String token) throws ServiceException;
 
+
+    /**
+     * Retrieves a user's token session if it exists, if not creates one.
+     *
+     * @throws ServiceException
+     */
     String startOrGetSession(String username) throws ServiceException;
 }

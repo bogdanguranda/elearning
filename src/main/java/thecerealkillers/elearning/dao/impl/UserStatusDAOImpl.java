@@ -33,6 +33,7 @@ public class UserStatusDAOImpl implements UserStatusDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
     @Override
     public void add(UserStatus userStatus) throws DAOException {
         try {

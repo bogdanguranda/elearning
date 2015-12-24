@@ -1,13 +1,15 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import thecerealkillers.elearning.dao.MessagesDAO;
+
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.dao.MessagesDAO;
 import thecerealkillers.elearning.model.Message;
+
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,8 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by Lucian on 10.11.2015.
+ * .
  */
 
 @Repository
@@ -29,6 +33,7 @@ public class MessageDAOImpl implements MessagesDAO {
     public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
 
     @Override
     public void add(Message message) throws DAOException {
@@ -82,8 +87,8 @@ public class MessageDAOImpl implements MessagesDAO {
                 @Override
                 public Message mapRow(ResultSet resultSet, int i) throws SQLException {
                     Message message = new Message();
-                    message.setSenderUsername(resultSet.getString("sender"));
                     message.setReceiverUsername(resultSet.getString("receiver"));
+                    message.setSenderUsername(resultSet.getString("sender"));
                     message.setTimestamp(resultSet.getTimestamp("timestamp"));
                     message.setMessage(resultSet.getString("message"));
 

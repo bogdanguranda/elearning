@@ -19,15 +19,27 @@ public interface CommentController {
             @PathVariable("threadTitle") String threadTitle,
             @RequestHeader(value = "token") String token);
 
+
     @RequestMapping(value = "/comments/owner", method = RequestMethod.POST)
-    ResponseEntity<?> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
+    ResponseEntity<?> getCommentByOwnerAndTimeStamp(
+            @RequestBody Comment comment,
+            @RequestHeader(value = "token") String token);
+
 
     @RequestMapping(value = "/comments/thread/{threadTitle}", method = RequestMethod.GET)
-    ResponseEntity<?> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token);
+    ResponseEntity<?> getCommentsForThread(
+            @PathVariable("threadTitle") String threadTitle,
+            @RequestHeader(value = "token") String token);
+
 
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
-    ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
+    ResponseEntity updateComment(
+            @RequestBody Comment comment,
+            @RequestHeader(value = "token") String token);
+
 
     @RequestMapping(value = "/comments/delete", method = RequestMethod.DELETE)
-    ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
+    ResponseEntity deleteComment(
+            @RequestBody Comment comment,
+            @RequestHeader(value = "token") String token);
 }

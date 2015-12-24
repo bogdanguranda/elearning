@@ -1,19 +1,20 @@
 package thecerealkillers.elearning.controller.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import thecerealkillers.elearning.controller.ModuleController;
+
 import thecerealkillers.elearning.exceptions.InvalidModuleException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.Module;
-import thecerealkillers.elearning.service.ModuleService;
+import thecerealkillers.elearning.controller.ModuleController;
 import thecerealkillers.elearning.service.PermissionService;
-import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.validator.ModuleValidator;
+import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.service.ModuleService;
+import thecerealkillers.elearning.model.Module;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
 
 /**
  * Created by cuvidk on 12/22/2015.
@@ -31,6 +32,7 @@ public class ModuleControllerImpl implements ModuleController {
     @Autowired
     private PermissionService permissionService;
 
+
     @Override
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.POST)
     public ResponseEntity<?> createModule(@RequestBody Module module, @RequestHeader String token,
@@ -40,7 +42,6 @@ public class ModuleControllerImpl implements ModuleController {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("ModuleControllerImpl.createModule", crtUserRole)) {
-
                     //This check is mandatory...It's to much to explain
                     //here. I'll explain face to face or smth.
                     if (!courseTitle.equals(module.getCourse())) {
@@ -51,7 +52,7 @@ public class ModuleControllerImpl implements ModuleController {
 
                     moduleService.storeModule(module);
 
-                    return new ResponseEntity<>(HttpStatus.OK);
+                    return new ResponseEntity<>(HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
@@ -87,20 +88,22 @@ public class ModuleControllerImpl implements ModuleController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
         return null;
     }
 
     @Override
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.GET)
-    public ResponseEntity<?> getAll(@RequestHeader("token") String token) {
+    public ResponseEntity<?> getAll(@PathVariable("courseTitle") String courseTitle, @RequestHeader("token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("ModuleControllerImpl.getAll", crtUserRole)) {
-                    return new ResponseEntity<>(moduleService.getAll(), HttpStatus.OK);
+
+                    return new ResponseEntity<>(moduleService.getAll(courseTitle), HttpStatus.OK);
+
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
@@ -108,7 +111,7 @@ public class ModuleControllerImpl implements ModuleController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -130,7 +133,7 @@ public class ModuleControllerImpl implements ModuleController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -154,7 +157,7 @@ public class ModuleControllerImpl implements ModuleController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

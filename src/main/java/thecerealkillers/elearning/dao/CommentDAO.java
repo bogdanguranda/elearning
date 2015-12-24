@@ -18,9 +18,6 @@ public interface CommentDAO {
     /**
      * Adds a comment in the database
      *
-     * @param owner
-     * @param message
-     * @param threadTitle
      * @throws DAOException
      */
     void addComment(String owner, String message, String threadTitle) throws DAOException;
@@ -28,8 +25,6 @@ public interface CommentDAO {
     /**
      * Retrieves the comment posted by @owner at @timeStamp
      *
-     * @param owner
-     * @param timeStamp
      * @return comment posted by @owner at @timeStamp
      * @throws DAOException
      */
@@ -38,7 +33,6 @@ public interface CommentDAO {
     /**
      * Retrieves a list wits all the comment that are posted on a thread
      *
-     * @param threadTitle
      * @return comments posted in the thread with the title @threadTitle
      * @throws DAOException
      */
@@ -47,9 +41,6 @@ public interface CommentDAO {
     /**
      * Updates the message posted by @owner at @timeStamp with the message stored by @newMessage
      *
-     * @param owner
-     * @param timeStamp
-     * @param newMessage
      * @throws DAOException
      */
     void updateComment(String owner, Date timeStamp, String newMessage) throws DAOException;
@@ -57,8 +48,6 @@ public interface CommentDAO {
     /**
      * Deletes a comment posted by @owner at @timeStamp
      *
-     * @param owner
-     * @param timeStamp
      * @throws DAOException
      */
     void deleteComment(String owner, Date timeStamp) throws DAOException;

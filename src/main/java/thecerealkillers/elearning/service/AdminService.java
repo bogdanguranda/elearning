@@ -15,8 +15,6 @@ import java.util.List;
  */
 public interface AdminService {
 
-    //TODO add comments
-
     void createAccount(AdminSignUpInfo newUser) throws ServiceException;
 
     void suspendAccount(AccountSuspensionInfo suspendInfo) throws ServiceException;

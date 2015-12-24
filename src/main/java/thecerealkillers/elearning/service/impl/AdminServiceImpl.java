@@ -34,6 +34,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private UserStatusDAO userStatusDAO;
 
+
     @Override
     public void createAccount(AdminSignUpInfo newUser) throws ServiceException {
         try {
@@ -45,7 +46,7 @@ public class AdminServiceImpl implements AdminService {
 
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG + daoException.getMessage());
-        } catch (ServiceException serviceException){
+        } catch (ServiceException serviceException) {
             try {
                 userService.deleteUserAccount(newUser.getUsername());
             } catch (DAOException dao_ex) {

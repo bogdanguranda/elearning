@@ -1,8 +1,8 @@
 package thecerealkillers.elearning.service;
 
 
-import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.PasswordChange;
 import thecerealkillers.elearning.model.UserSignUpInfo;
 import thecerealkillers.elearning.model.UserLoginInfo;
@@ -26,7 +26,11 @@ public interface UserService {
      */
     String authenticate(UserLoginInfo loginInfo) throws ServiceException;
 
-    //TODO add comment
+    /**
+     * Adds an user account.
+     *
+     * @throws ServiceException
+     */
     String addAccount(UserSignUpInfo signUpInfo, String userRole) throws ServiceException;
 
     /**
@@ -82,7 +86,12 @@ public interface UserService {
      */
     void resetPasswordRequestHandler(String userName, String token) throws ServiceException;
 
-    //TODO
+    /**
+     * Sets the password for an user account created with addAccount and sends an email to the new user
+     * with his password.
+     *
+     * @throws ServiceException
+     */
     void setPassword(String username) throws ServiceException;
 
     /**
@@ -94,5 +103,10 @@ public interface UserService {
      */
     void changePassword(PasswordChange passwordChange) throws ServiceException;
 
+    /**
+     * Deletes an user account.
+     *
+     * @throws DAOException
+     */
     void deleteUserAccount(String username) throws DAOException;
 }

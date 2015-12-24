@@ -14,7 +14,7 @@ import thecerealkillers.elearning.service.PermissionService;
  * Created by Dani.
  */
 @Service
-public class PermissionServiceImpl implements PermissionService{
+public class PermissionServiceImpl implements PermissionService {
 
     @Autowired
     private PermissionDAO permissionDAO;
@@ -23,9 +23,9 @@ public class PermissionServiceImpl implements PermissionService{
     @Override
     public Permission getPermission(String operationName, String roleName) throws ServiceException {
         try {
-            return permissionDAO.getPermission(operationName,roleName);
+            return permissionDAO.getPermission(operationName, roleName);
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_GET_PERMISSION +daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GET_PERMISSION + daoException.getMessage());
         }
     }
 

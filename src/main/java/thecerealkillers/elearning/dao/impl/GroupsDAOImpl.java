@@ -1,20 +1,24 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import thecerealkillers.elearning.dao.GroupsDAO;
+
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.dao.GroupsDAO;
 import thecerealkillers.elearning.model.Group;
 
-import java.sql.ResultSet;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.sql.SQLException;
+import java.sql.ResultSet;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created with love by Lucian and @Pi on 22.12.2015.
@@ -28,6 +32,7 @@ public class GroupsDAOImpl implements GroupsDAO {
     public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
 
     @Override
     public List<Group> getAll() throws DAOException {

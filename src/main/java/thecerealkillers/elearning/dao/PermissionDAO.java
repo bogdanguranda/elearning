@@ -13,5 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PermissionDAO {
 
+    /**
+     * Retrieves permission for an operation and role.
+     *
+     * @throws DAOException if database does not contain operation and or user role.
+     */
     Permission getPermission(String operationName, String roleName) throws DAOException;
 }

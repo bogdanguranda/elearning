@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.controller;
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.model.Course;
@@ -36,5 +37,5 @@ public interface CoursesController {
 
     @RequestMapping(value = "/courses/{title}/users", method = RequestMethod.GET)
     ResponseEntity<?> getEnrolledUsers(@RequestHeader(value = "token") String token,
-                                                  @PathVariable("title") String title);
+                                       @PathVariable("title") String title);
 }

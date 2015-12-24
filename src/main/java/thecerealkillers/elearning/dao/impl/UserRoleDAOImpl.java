@@ -33,6 +33,7 @@ public class UserRoleDAOImpl implements UserRoleDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
     @Override
     public void addRole(String username, String role) throws DAOException {
         if (role.compareTo(Constants.ADMIN) == 0)

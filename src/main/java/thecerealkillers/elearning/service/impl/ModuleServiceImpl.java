@@ -56,9 +56,16 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<Module> getAll() throws ServiceException {
+    public List<Module> getAll(String course) throws ServiceException {
         try {
-            return moduleDAO.getAll();
+            Course associatedCourse = new Course();
+            associatedCourse.setTitle(course);
+
+            if (coursesDAO.isCourseExistent(associatedCourse)) {
+                return moduleDAO.getAll(course);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_COURSE_INNEXISTENT);
+            }
         } catch (DAOException daoException) {
             throw new ServiceException(daoException.getMessage());
         }

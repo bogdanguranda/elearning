@@ -17,20 +17,24 @@ public interface TopicController {
             @RequestBody Topic newTopic,
             @RequestHeader(value = "token") String token);
 
+
     @RequestMapping(value = "/topics", method = RequestMethod.GET)
     ResponseEntity<?> getAllTopics(
             @RequestHeader(value = "token") String token);
+
 
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
     ResponseEntity<?> getTopicByTitle(
             @PathVariable("title") String title,
             @RequestHeader(value = "token") String token);
 
+
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.POST)
     ResponseEntity updateTopic(
             @PathVariable("title") String title,
             @RequestBody Topic newTopic,
             @RequestHeader(value = "token") String token);
+
 
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
     ResponseEntity deleteTopicByTitle(

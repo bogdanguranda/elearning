@@ -22,14 +22,9 @@ public class ServiceException extends Exception {
     public static final String FAILED_DAO_EMAIL_VALIDATION = "A database error occurred while validating user's email address.\n";
     public static final String FAILED_EMAIL_EMAIL_VALIDATION = "Failed to send email to inform the user that his account is activated.\n";
 
-    public static final String CANNOT_UNENROLL_OTHER_USER = "You can only unenroll yourself from a course.\n";
-    public static final String CANNOT_ENROLL_OTHER_USER = "You can only enroll yourself to a course.\n";
-
     public static final String FAILED_LOG_IN = "Wrong username or password.\n";
     public static final String FAILED_PASSWORD_LOG_IN = "Failed while processing user's password.\n";
     public static final String FAILED_DAO_LOG_IN = "A database error occurred while reading login up data.\n";
-    public static final String USER_ALREADY_ENROLLED = "You are already enrolled to this course.\n";
-    public static final String USER_NOT_ENROLLED = "You are not enrolled to this course.\n";
 
     public static final String FAILED_AUTHENTICATE_PASSWORD_CHANGE = "Failed to authenticate with the username and the password provided.\n";
     public static final String FAILED_DAO_PASSWORD_CHANGE = "A database error occurred while changing password.\n";
@@ -73,13 +68,24 @@ public class ServiceException extends Exception {
     //------------------------------------------PermissionServiceImpl-----------------------------------------------------------------------------
 
     public static final String FAILED_GET_PERMISSION = "Failed to get permission for database.\n";
-    public static String FAILED_DET_PERMISSION = "Failed to determine if user has permission to execute this operation.\n";
+    public static final String FAILED_DET_PERMISSION = "Failed to determine if user has permission to execute this operation.\n";
 
+
+    //------------------------------------------ModuleServiceImpl---------------------------------------------------------------------------------
 
     public static final String FAILED_COURSE_INNEXISTENT = "The course you are trying to use is innexistent.\n";
-
     public static final String FAILED_MODULE_ALREADY_EXISTS = "The module you are trying to create already exists.\n";
     public static final String FAILED_MODULE_INNEXISTENT = "The module you are trying to manipulate is innexistent.\n";
+
+
+    //------------------------------------------CoursesServiceImpl---------------------------------------------------------------------------------
+
+    public static final String CANNOT_UNENROLL_OTHER_USER = "You can only unenroll yourself from a course.\n";
+    public static final String CANNOT_ENROLL_OTHER_USER = "You can only enroll yourself to a course.\n";
+    public static final String USER_ALREADY_ENROLLED = "You are already enrolled to this course.\n";
+    public static final String USER_NOT_ENROLLED = "You are not enrolled to this course.\n";
+
+
 
     public ServiceException(String message) {
         super(message);

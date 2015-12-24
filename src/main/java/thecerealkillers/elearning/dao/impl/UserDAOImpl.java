@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.dao.impl;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.User;

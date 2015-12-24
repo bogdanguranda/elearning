@@ -43,6 +43,7 @@ public class MessageControllerImpl implements MessagesController {
 
                 if (permissionService.isOperationAvailable("MessageControllerImpl.createMessage", crtUserRole)) {
                     messageService.add(message);
+
                     return new ResponseEntity(HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -64,6 +65,7 @@ public class MessageControllerImpl implements MessagesController {
 
                 if (permissionService.isOperationAvailable("MessageControllerImpl.getAllMessages", crtUserRole)) {
                     List<Message> messageList = messageService.getAll();
+
                     return new ResponseEntity<>(messageList, HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -87,6 +89,7 @@ public class MessageControllerImpl implements MessagesController {
 
                 if (permissionService.isOperationAvailable("MessageControllerImpl.getMessagesBetweenUsers", crtUserRole)) {
                     List<Message> messagesBetweenUsers = messageService.getMessagesBetweenUsers(senderUsername, receiverUsername);
+
                     return new ResponseEntity<>(messagesBetweenUsers, HttpStatus.ACCEPTED);
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -108,6 +111,7 @@ public class MessageControllerImpl implements MessagesController {
 
                 if (permissionService.isOperationAvailable("MessageControllerImpl.getMessagesByUser", crtUserRole)) {
                     List<Message> messagesByUser = messageService.getMessagesByUser(username);
+
                     return new ResponseEntity<>(messagesByUser, HttpStatus.ACCEPTED);
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -121,8 +125,7 @@ public class MessageControllerImpl implements MessagesController {
     }
 
     @RequestMapping(value = "/messages", method = RequestMethod.DELETE)
-    public ResponseEntity deleteUserMessages(@RequestParam(value = "username", required = true) String
-                                                     username,
+    public ResponseEntity deleteUserMessages(@RequestParam(value = "username", required = true) String username,
                                              @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
@@ -130,6 +133,7 @@ public class MessageControllerImpl implements MessagesController {
 
                 if (permissionService.isOperationAvailable("MessageControllerImpl.deleteUserMessages", crtUserRole)) {
                     messageService.delete(username);
+
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
