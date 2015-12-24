@@ -12,22 +12,22 @@ import java.util.List;
 @RestController
 public interface ModuleController {
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.POST)
-    ResponseEntity<String> createModule(@RequestBody Module module, @RequestHeader("token") String token,
+    ResponseEntity<?> createModule(@RequestBody Module module, @RequestHeader("token") String token,
                                         @PathVariable("courseTitle") String title);
 
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.DELETE)
-    ResponseEntity<String> deleteModule(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+    ResponseEntity<?> deleteModule(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
                                         @RequestParam("moduleTitle") String moduleTitle);
 
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.GET)
-    ResponseEntity<List<Module>> getAll(@RequestHeader("token") String token);
+    ResponseEntity<?> getAll(@RequestHeader("token") String token);
 
     @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}", method = RequestMethod.GET)
-    ResponseEntity<Module> get(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+    ResponseEntity<?> get(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
                                @PathVariable("moduleTitle") String moduleTitle);
 
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.PUT)
-    ResponseEntity<String> renameModule(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+    ResponseEntity<?> renameModule(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
                                         @RequestParam("currentTitle") String currentTitle,
                                         @RequestParam("newTitle") String newTitle);
 }
