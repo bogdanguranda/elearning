@@ -237,9 +237,9 @@ public class UserServiceImpl implements UserService {
             String userRealName = user.getFirstName() + " " + user.getLastName();
             authenticate(new UserLoginInfo(passwordChange.getUsername(), passwordChange.getOldPassword()));
 
-            passwordChange(user, passwordChange.getNewPassword());
-
             EmailExpert.sendPasswordChanged(user.getEmail(), userRealName);
+
+            passwordChange(user, passwordChange.getNewPassword());
         } catch (PasswordExpertException passwordException) {
             throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE + passwordException.getMessage());
 
