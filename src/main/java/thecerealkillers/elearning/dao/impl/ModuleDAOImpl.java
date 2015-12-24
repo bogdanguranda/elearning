@@ -122,9 +122,10 @@ public class ModuleDAOImpl implements ModuleDAO {
     @Override
     public void update(Module module, String newTitle) throws DAOException {
         try {
-            String sql = "UPDATE module SET title='" + newTitle + "' WHERE title = :title AND course = :course";
+            String sql = "UPDATE module SET title = :newTitle WHERE title = :title AND course = :course";
 
             Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("newTitle", newTitle);
             namedParameters.put("title", module.getTitle());
             namedParameters.put("course", module.getCourse());
 
