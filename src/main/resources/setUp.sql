@@ -5,6 +5,7 @@ DROP SCHEMA IF EXISTS `elearning_db` ;
 CREATE SCHEMA IF NOT EXISTS `elearning_db` DEFAULT CHARACTER SET utf8 ;
 USE `elearning_db` ;
 
+
 -- -----------------------------------------------------
 -- Table `elearning_db`.`user`
 -- -----------------------------------------------------
@@ -21,6 +22,16 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user` (
   UNIQUE INDEX `email_UNIQUE` (`email` ASC)  COMMENT '')
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`group`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`group` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`group` (
+  `name` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`name`)  COMMENT '')
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `elearning_db`.`course`
@@ -32,13 +43,17 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`course` (
   `about` TEXT NULL DEFAULT NULL COMMENT '',
   `details` TEXT NULL DEFAULT NULL COMMENT '',
   `owner` VARCHAR(45) NULL COMMENT '',
+  `associatedGroup` VARCHAR(45) NOT NULL COMMENT '',
   PRIMARY KEY (`title`)  COMMENT '',
   INDEX `username_idx` (`owner` ASC)  COMMENT '',
   CONSTRAINT `course_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `course_group_name_fk`
+    FOREIGN KEY (`associatedGroup`)
+    REFERENCES `elearning_db`.`group` (`name`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -77,15 +92,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`user_role` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `elearning_db`.`group`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`group` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`group` (
-  `name` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -177,9 +183,15 @@ DROP TABLE IF EXISTS `elearning_db`.`module` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
   `title` VARCHAR(45) NOT NULL COMMENT '',
-  `content` TEXT NULL COMMENT '',
-  PRIMARY KEY (`title`)  COMMENT '')
-ENGINE = InnoDB;
+  `course` VARCHAR(45) NOT NULL COMMENT '',
+  `description` TEXT NULL COMMENT '',
+  PRIMARY KEY (`title`, `course`)  COMMENT '',
+  CONSTRAINT `module_course_fk`
+  FOREIGN KEY (`course`)
+  REFERENCES `elearning_db`.`course` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+  ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -243,24 +255,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `elearning_db`.`course_group`
 -- -----------------------------------------------------
+-- This does not exist anymore. Left for cleanup purposes.
 DROP TABLE IF EXISTS `elearning_db`.`course_group` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`course_group` (
-  `course` VARCHAR(45) NOT NULL COMMENT '',
-  `group` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`course`, `group`)  COMMENT '',
-  INDEX `name_idx` (`group` ASC)  COMMENT '',
-  CONSTRAINT `course_group_course_title_fk`
-    FOREIGN KEY (`course`)
-    REFERENCES `elearning_db`.`course` (`title`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `course_group_group_name_fk`
-    FOREIGN KEY (`group`)
-    REFERENCES `elearning_db`.`group` (`name`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -569,6 +565,18 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesCont
 INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'administrator', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'student', true);
 -- ##################################################=-CoursesControllerImpl END-=############################################################################
 
 -- ###############################################=-ForumThreadControllerImpl START-=#########################################################################
@@ -664,3 +672,17 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 
 -- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
 -- ===================================================================
+
+
+
+-- dev only start
+INSERT INTO user VALUES('username1', 'firstName', 'lastName', 'email1', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
+INSERT INTO user VALUES('username2', 'firstName', 'lastName', 'email2', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
+INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
+INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
+INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
+INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
+INSERT INTO user_role VALUE ('username1', 'student');
+INSERT INTO user_role VALUE ('username2', 'student');
+INSERT INTO user_role VALUE ('username3', 'student');
+-- dev only end

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by cuvidk on 11/8/2015.
  * Modified by Dani.
  */
-@Repository
+//@Repository
 public interface UserDAO {
     /**
      * Adds a user in the database.

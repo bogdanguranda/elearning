@@ -2,8 +2,7 @@ package thecerealkillers.elearning.dao;
 
 
 import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.model.ForumThread;
-import org.springframework.stereotype.Repository;
+import thecerealkillers.elearning.model.ForumThread;import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

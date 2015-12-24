@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
  * Created by Dani.
  */
 @Repository
-public interface AuditDAO {
+public interface
+AuditDAO {
 
     //TODO AuditDAO
 }

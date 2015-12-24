@@ -1,8 +1,6 @@
 package thecerealkillers.elearning.dao.impl;
 
 
-import thecerealkillers.elearning.dao.AuditDAO;
-
 import org.springframework.stereotype.Repository;
 
 
@@ -10,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by Dani.
  */
 @Repository
-public class AuditDAOImpl implements AuditDAO{
+public class AuditDAOImpl {
 
     //TODO AuditDAOImpl
 }
