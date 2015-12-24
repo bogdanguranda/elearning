@@ -12,10 +12,9 @@ import org.springframework.http.ResponseEntity;
  */
 public interface CommentController {
 
-    @RequestMapping(value = "/comments/add/{owner}/{threadTitle}", method = RequestMethod.POST)
+    @RequestMapping(value = "/comments/add/{threadTitle}", method = RequestMethod.POST)
     ResponseEntity createComment(
-            @RequestParam(value = "message", required = true) String message,
-            @PathVariable("owner") String owner,
+            @RequestBody Comment comment,
             @PathVariable("threadTitle") String threadTitle,
             @RequestHeader(value = "token") String token);
 

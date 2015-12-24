@@ -34,9 +34,8 @@ public class CommentControllerImpl implements CommentController {
 
 
     @Override
-    @RequestMapping(value = "/comments/add/{owner}/{threadTitle}", method = RequestMethod.POST)
-    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message,
-                                        @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle,
+    @RequestMapping(value = "/comments/add/{threadTitle}", method = RequestMethod.POST)
+    public ResponseEntity createComment(@RequestBody Comment comment, @PathVariable("threadTitle") String threadTitle,
                                         @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
@@ -44,7 +43,7 @@ public class CommentControllerImpl implements CommentController {
 
                 if (permissionService.isOperationAvailable("CommentControllerImpl.createComment", crtUserRole)) {
 
-                    commentService.addComment(owner, message, threadTitle);
+                    commentService.addComment(comment.getOwner(), comment.getMessage(), threadTitle);
 
                     return new ResponseEntity(HttpStatus.CREATED);
                 } else {
