@@ -33,7 +33,7 @@ public class GroupsDAOImpl implements GroupsDAO {
     public List<Group> getAll() throws DAOException {
         try {
             List<Group> groupList;
-            String sqlCommand = "SELECT * FROM group;";
+            String sqlCommand = "SELECT * FROM elearning_db.group;";
 
             groupList = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<Group>() {
                 @Override
@@ -53,7 +53,7 @@ public class GroupsDAOImpl implements GroupsDAO {
     @Override
     public void add(Group group) throws DAOException {
         try {
-            String sqlCommand = "INSERT INTO group VALUE (:name);";
+            String sqlCommand = "INSERT INTO elearning_db.group VALUE (:name);";
             Map<String, String> namedParameters = new HashMap<>();
 
             namedParameters.put("name", group.getName());
@@ -66,7 +66,7 @@ public class GroupsDAOImpl implements GroupsDAO {
     @Override
     public void remove(String name) throws DAOException {
         try {
-            String sql = "DELETE FROM group WHERE name = :name;";
+            String sql = "DELETE FROM elearning_db.group WHERE name = :name;";
             Map<String, String> namedParameters = Collections.singletonMap("name", name);
             namedParameterJdbcTemplate.update(sql, namedParameters);
         } catch (Exception exception) {

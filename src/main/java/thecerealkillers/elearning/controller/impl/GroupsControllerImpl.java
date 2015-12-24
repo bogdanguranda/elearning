@@ -8,6 +8,7 @@ import thecerealkillers.elearning.controller.GroupsController;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Group;
 import thecerealkillers.elearning.service.GroupsService;
+import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
 
 import java.util.List;
@@ -22,17 +23,31 @@ public class GroupsControllerImpl implements GroupsController {
 
     @Autowired
     private GroupsService groupsService;
+
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private PermissionService permissionService;
+
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
-    public ResponseEntity<List<Group>> getGroups(@RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getGroups(@RequestHeader(value = "token") String token) {
         try {
-            sessionService.getSessionByToken(token);
-            List<Group> groupList = groupsService.getAll();
-            return new ResponseEntity<>(groupList, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
+
+                if (permissionService.isOperationAvailable("GroupsControllerImpl.getGroups", crtUserRole)) {
+                    List<Group> groupList = groupsService.getAll();
+
+                    return new ResponseEntity<>(groupList, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

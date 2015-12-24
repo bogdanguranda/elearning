@@ -18,10 +18,7 @@ public interface GroupsController {
 
     /**
      * Get all groups from DB
-     *
-     * @param token
-     * @return
      */
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
-    ResponseEntity<List<Group>> getGroups(@RequestHeader(value = "token") String token);
+    ResponseEntity<?> getGroups(@RequestHeader(value = "token") String token);
 }

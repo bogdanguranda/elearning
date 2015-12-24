@@ -473,6 +473,8 @@ INSERT INTO operation VALUES('CoursesControllerImpl.enrollUserToCourse');
 INSERT INTO operation VALUES('CoursesControllerImpl.unEnrollUserFromCourse');
 INSERT INTO operation VALUES('CoursesControllerImpl.getEnrolledUsers');
 
+INSERT INTO operation VALUES('GroupsControllerImpl.getGroups');
+
 INSERT INTO operation VALUES('ForumThreadControllerImpl.createThread');
 INSERT INTO operation VALUES('ForumThreadControllerImpl.getAll');
 INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser');
@@ -502,7 +504,6 @@ INSERT INTO operation VALUES('ModuleControllerImpl.deleteModule');
 INSERT INTO operation VALUES('ModuleControllerImpl.getAll');
 INSERT INTO operation VALUES('ModuleControllerImpl.get');
 INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
-
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -586,6 +587,12 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesCont
 INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'student', true);
 -- ##################################################=-CoursesControllerImpl END-=############################################################################
+
+-- #################################################=-GroupsControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'student', true);
+-- ###################################################=-GroupsControllerImpl END-=###########################################################################
 
 -- #################################################=-ModuleControllerImpl START-=###########################################################################
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.createModule', 'administrator', false);
