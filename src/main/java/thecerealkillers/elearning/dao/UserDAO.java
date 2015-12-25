@@ -2,7 +2,6 @@ package thecerealkillers.elearning.dao;
 
 
 import thecerealkillers.elearning.exceptions.DAOException;
-import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.model.User;
 
 import java.util.List;
@@ -58,4 +57,18 @@ public interface UserDAO {
      * @throws DAOException
      */
     Boolean isAvailable(String username, String email) throws DAOException;
+
+    /**
+     * Returns true if the database doesn't contain a user with the username = @username, false otherwise
+     *
+     * @throws DAOException
+     */
+    Boolean isUsernameAvailable(String username) throws DAOException;
+
+    /**
+     * Returns true if the database doesn't contain a user with the email = @email, false otherwise
+     *
+     * @throws DAOException
+     */
+    Boolean isEmailAvailable(String email) throws DAOException;
 }

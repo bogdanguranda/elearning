@@ -32,9 +32,6 @@ public class UserDAOImpl implements UserDAO {
     }
 
 
-
-    ///=========================================Public methods======================================================
-
     @Override
     public void signUp(User user) throws DAOException {
         try {
@@ -146,11 +143,8 @@ public class UserDAOImpl implements UserDAO {
         return isUsernameAvailable(username) && isEmailAvailable(email);
     }
 
-
-
-    ///========================================Private methods======================================================
-
-    private boolean isUsernameAvailable(String username) throws DAOException {
+    @Override
+    public Boolean isUsernameAvailable(String username) throws DAOException {
         try {
             String sql = "select username from user where username = :username;";
             Map<String, String> namedParameters = Collections.singletonMap("username", username);
@@ -162,16 +156,14 @@ public class UserDAOImpl implements UserDAO {
                 }
             });
 
-            if (userList.size() != 0)
-                throw new DAOException("Username " + username + " is not available.");
-
-            return true;
+            return userList.size() == 0;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
-    private boolean isEmailAvailable(String email) throws DAOException {
+    @Override
+    public Boolean isEmailAvailable(String email) throws DAOException {
         try {
             String sql = "select username from user where email = :email;";
             Map<String, String> namedParameters = Collections.singletonMap("email", email);
@@ -183,10 +175,7 @@ public class UserDAOImpl implements UserDAO {
                 }
             });
 
-            if (userList.size() != 0)
-                throw new DAOException("Email " + email + " is not available.");
-
-            return true;
+            return userList.size() == 0;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }

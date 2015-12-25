@@ -109,4 +109,11 @@ public interface UserService {
      * @throws DAOException
      */
     void deleteUserAccount(String username) throws DAOException;
+
+    /**
+     * Returns true if an users with the username = @username exists in the database.
+     *
+     * @throws ServiceException
+     */
+    Boolean usernameExists(String username) throws ServiceException;
 }

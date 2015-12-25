@@ -280,6 +280,15 @@ public class UserServiceImpl implements UserService {
         userStatusDAO.accountDeleted(username);
     }
 
+    @Override
+    public Boolean usernameExists(String username) throws ServiceException{
+        try {
+            return !userDAO.isUsernameAvailable(username);
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(dao_exception.getMessage());
+        }
+    }
+
 
     ///========================================Private methods======================================================
 
