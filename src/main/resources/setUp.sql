@@ -398,7 +398,11 @@ INSERT INTO role VALUE ('student');
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
 
-
+INSERT INTO topic VALUES ('General Discussion');
+INSERT INTO topic VALUES ('Courses');
+INSERT INTO topic VALUES ('Books & Tutorials');
+INSERT INTO topic VALUES ('About E-learning');
+INSERT INTO topic VALUES ('Off Topic');
 
 -- dev only start
 INSERT INTO user VALUES('username1', 'firstName', 'lastName', 'email1', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
