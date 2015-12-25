@@ -105,6 +105,7 @@ public class ServiceException extends Exception {
     public static final String GET_THREADS_TOPIC = "An error occurred while getting all the threads that are in the topic.\n";
     public static final String UPDATE_THREAD = "An error occurred while updating the thread.\n";
     public static final String DELETE_THREAD_BY_TITLE = "An error occurred while deleting the thread.\n";
+    public static final String THREAD_ALREADY_EXISTS = "A thread with this name already exists.\n";
 
 
     //------------------------------------------CommentServiceImpl---------------------------------------------------------------------------------

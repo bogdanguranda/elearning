@@ -67,7 +67,7 @@ public class TopicDAOImpl implements TopicDAO {
             });
 
             if (topicList.size() == 0)
-                throw new NotFoundException(NotFoundException.GET_TOPIC);
+                throw new NotFoundException(NotFoundException.NO_TOPIC);
 
             return topicList.get(0);
         } catch (NotFoundException notFound){
@@ -97,7 +97,7 @@ public class TopicDAOImpl implements TopicDAO {
             });
 
             if (topicList.size() == 0)
-                throw new NotFoundException(NotFoundException.GET_TOPICS);
+                throw new NotFoundException(NotFoundException.NO_TOPICS);
 
             return topicList;
         } catch (NotFoundException notFound){

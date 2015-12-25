@@ -78,7 +78,7 @@ public class TopicControllerImpl implements TopicController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
         } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -104,7 +104,7 @@ public class TopicControllerImpl implements TopicController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
         } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -131,7 +131,7 @@ public class TopicControllerImpl implements TopicController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
         } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -157,7 +157,7 @@ public class TopicControllerImpl implements TopicController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
         } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }
