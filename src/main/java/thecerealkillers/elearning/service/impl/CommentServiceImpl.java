@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service.impl;
 
+
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.service.CommentService;
@@ -27,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             commentDAO.addComment(owner, message, threadTitle);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.ADD_COMMENT);
         }
     }
 
@@ -36,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             return commentDAO.getCommentByOwnerAndTimeStamp(owner, timeStamp);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.GET_COMMENT_USER_TIME);
         }
     }
 
@@ -45,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             return commentDAO.getCommentsForThread(threadTitle);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.GET_COMMENTS_THREAD);
         }
     }
 
@@ -54,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             commentDAO.updateComment(owner, timeStamp, newMessage);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.UPDATE_COMMENT);
         }
     }
 
@@ -63,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             commentDAO.deleteComment(owner, timeStamp);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.DELETE_COMMENT);
         }
     }
 }

@@ -61,10 +61,10 @@ public class UserServiceImpl implements UserService {
 
             throw new ServiceException(ServiceException.FAILED_LOG_IN);
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_LOG_IN + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_LOG_IN);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN);
         }
     }
 
@@ -91,9 +91,9 @@ public class UserServiceImpl implements UserService {
 
             throw new ServiceException(ServiceException.FAILED_ACCOUNT_CREATION);
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP);
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP);
         }
     }
 
@@ -113,10 +113,10 @@ public class UserServiceImpl implements UserService {
             try {
                 deleteUserAccount(signUpInfo.getUsername());
             } catch (DAOException dao_ex) {
-                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT + dao_ex.getMessage());
+                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT);
             }
 
-            throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP);
         }
     }
 
@@ -137,10 +137,10 @@ public class UserServiceImpl implements UserService {
 
             EmailExpert.sendAccountCreated(user.getEmail(), userRealName);
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_EMAIL_VALIDATION + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_EMAIL_VALIDATION);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_EMAIL_VALIDATION + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_EMAIL_VALIDATION);
         }
 
     }
@@ -171,10 +171,10 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_RESET_REQUEST + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_RESET_REQUEST);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_RESET_REQUEST + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_RESET_REQUEST);
         }
     }
 
@@ -195,13 +195,13 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);
         }
     }
 
@@ -220,13 +220,13 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_SET + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_SET);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);
         }
     }
 
@@ -241,13 +241,13 @@ public class UserServiceImpl implements UserService {
 
             passwordChange(user, passwordChange.getNewPassword());
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE);
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_CHANGE + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_CHANGE);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_CHANGE + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_CHANGE);
         }
     }
 

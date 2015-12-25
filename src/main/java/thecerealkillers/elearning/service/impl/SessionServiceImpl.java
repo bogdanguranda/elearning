@@ -30,7 +30,7 @@ public class SessionServiceImpl implements SessionService {
         try {
             sessionDAO.addSession(session);
         } catch (DAOException dao_exception) {
-            throw new ServiceException(ServiceException.FAILED_ADD_SESSION + dao_exception.getMessage());
+            throw new ServiceException(ServiceException.FAILED_ADD_SESSION);
         }
     }
 
@@ -38,7 +38,7 @@ public class SessionServiceImpl implements SessionService {
         try {
             return sessionDAO.getSessionByUser(username);
         } catch (DAOException dao_exception) {
-            throw new ServiceException(ServiceException.FAILED_GET_BY_USE + dao_exception.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GET_BY_USE);
         }
     }
 
@@ -46,7 +46,7 @@ public class SessionServiceImpl implements SessionService {
         try {
             return sessionDAO.getSessionByToken(token);
         } catch (DAOException dao_exception) {
-            throw new ServiceException(ServiceException.FAILED_GET_BY_TOKEN + dao_exception.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GET_BY_TOKEN);
         }
     }
 
@@ -70,7 +70,7 @@ public class SessionServiceImpl implements SessionService {
         try {
             sessionDAO.deleteSession(username);
         } catch (DAOException dao_exception) {
-            throw new ServiceException(ServiceException.FAILED_DELETE_SESSION + dao_exception.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DELETE_SESSION);
         }
     }
 
@@ -80,7 +80,7 @@ public class SessionServiceImpl implements SessionService {
 
             return userRoleDAO.getRole(session.getUsername());
         } catch (DAOException dao_exception) {
-            throw new ServiceException(ServiceException.FAILED_GET_ROBE + dao_exception.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GET_ROBE);
         }
     }
 
@@ -96,7 +96,7 @@ public class SessionServiceImpl implements SessionService {
                 return token;
             }
         } catch (DAOException dao_exception) {
-            throw new ServiceException(ServiceException.FAILED_GET_ADD_SESSION + dao_exception.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GET_ADD_SESSION);
         }
     }
 }

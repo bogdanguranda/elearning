@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.controller.impl;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.TopicController;
 import thecerealkillers.elearning.service.PermissionService;
@@ -35,7 +36,8 @@ public class TopicControllerImpl implements TopicController {
 
     @Override
     @RequestMapping(value = "/topics", method = RequestMethod.POST)
-    public ResponseEntity createTopic(@RequestBody Topic newTopic, @RequestHeader(value = "token") String token) {
+    public ResponseEntity createTopic(@RequestBody Topic newTopic,
+                                      @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -74,12 +76,16 @@ public class TopicControllerImpl implements TopicController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
-    public ResponseEntity<?> getTopicByTitle(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getTopicByTitle(@PathVariable("title") String title,
+                                             @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -96,12 +102,16 @@ public class TopicControllerImpl implements TopicController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.POST)
-    public ResponseEntity updateTopic(@PathVariable("title") String title, @RequestBody Topic newTopic,
+    public ResponseEntity updateTopic(@PathVariable("title") String title,
+                                      @RequestBody Topic newTopic,
                                       @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
@@ -119,19 +129,22 @@ public class TopicControllerImpl implements TopicController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
-    public ResponseEntity deleteTopicByTitle(@RequestParam(value = "title", required = true) String title,
+    public ResponseEntity deleteTopicByTitle(@RequestBody Topic newTopic,
                                              @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("TopicControllerImpl.deleteTopicByTitle", crtUserRole)) {
-                    topicService.delete(title);
+                    topicService.delete(newTopic.getTitle());
 
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
@@ -142,6 +155,9 @@ public class TopicControllerImpl implements TopicController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

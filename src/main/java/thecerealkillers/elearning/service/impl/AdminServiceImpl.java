@@ -45,12 +45,12 @@ public class AdminServiceImpl implements AdminService {
             userService.setPassword(newUser.getUsername());
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG);
         } catch (ServiceException serviceException) {
             try {
                 userService.deleteUserAccount(newUser.getUsername());
             } catch (DAOException dao_ex) {
-                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT + dao_ex.getMessage());
+                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT);
             }
 
             throw new ServiceException(serviceException.getMessage());
@@ -62,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             userStatusDAO.suspendAccount(suspendInfo.getAccountUsername());
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_SUSPEND_ACCOUNT + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_SUSPEND_ACCOUNT);
         }
     }
 
@@ -71,7 +71,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             userStatusDAO.activateAccount(reactivateInfo.getAccountUsername());
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_ACTIVATE_ACCOUNT + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_ACTIVATE_ACCOUNT);
         }
     }
 
@@ -80,7 +80,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             userRoleDAO.changeRole(accountTypeInfo.getAccountUsername(), accountTypeInfo.getNewAccountType());
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_CHANGE_ACCOUNT_TYPE + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_CHANGE_ACCOUNT_TYPE);
         }
     }
 

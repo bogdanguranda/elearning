@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service.impl;
 
+
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.service.ForumThreadService;
 import thecerealkillers.elearning.exceptions.DAOException;
@@ -26,7 +27,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             forumThreadDAO.add(newForumThread, topicTitle);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.ADD_FORUM_THREAD);
         }
     }
 
@@ -35,7 +36,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             return forumThreadDAO.getAll();
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.GET_ALL_THREADS);
         }
     }
 
@@ -44,7 +45,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             return forumThreadDAO.getThreadsOwnedByUser(userName);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.GET_THREADS_BY_OWNER);
         }
     }
 
@@ -53,7 +54,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             return forumThreadDAO.getThreadByTitle(threadTitle);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.GET_THREAD_BY_TITLE);
         }
     }
 
@@ -62,7 +63,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             return forumThreadDAO.getThreadsForTopic(topic);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.GET_THREADS_TOPIC);
         }
     }
 
@@ -71,7 +72,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             forumThreadDAO.updateThread(oldTitle, newThread);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.UPDATE_THREAD);
         }
     }
 
@@ -80,7 +81,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             forumThreadDAO.deleteThreadByTitle(threadToDelete);
         } catch (DAOException daoException) {
-            throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(ServiceException.DELETE_THREAD_BY_TITLE);
         }
     }
 }

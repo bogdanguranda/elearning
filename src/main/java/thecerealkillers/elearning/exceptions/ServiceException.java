@@ -86,6 +86,35 @@ public class ServiceException extends Exception {
     public static final String USER_NOT_ENROLLED = "You are not enrolled to this course.\n";
 
 
+    //------------------------------------------TopicServiceImpl-----------------------------------------------------------------------------------
+
+    public static final String FAILED_ADD_TOPIC = "An error occurred while adding the new topic.\n";
+    public static final String FAILED_GET_TOPIC = "An error occurred while getting data about the topic.\n";
+    public static final String FAILED_GET_ALL_TOPICS = "An error occurred while getting data about all the topics.\n";
+    public static final String FAILED_UPDATE_TOPIC = "An error occurred while updating the topic.\n";
+    public static final String FAILED_DELETE_TOPIC = "An error occurred while deleting the topic.\n";
+    public static final String TOPIC_ALREADY_EXISTS = "A topic with this title already exists in the database.\n";
+
+
+    //------------------------------------------ForumThreadServiceImpl-----------------------------------------------------------------------------
+
+    public static final String ADD_FORUM_THREAD = "An error occurred while adding the thread.\n";
+    public static final String GET_ALL_THREADS = "An error occurred while getting all the threads.\n";
+    public static final String GET_THREADS_BY_OWNER = "An error occurred while getting all the threads owned by a specific user.\n";
+    public static final String GET_THREAD_BY_TITLE = "An error occurred while getting thread data.\n";
+    public static final String GET_THREADS_TOPIC = "An error occurred while getting all the threads that are in the topic.\n";
+    public static final String UPDATE_THREAD = "An error occurred while updating the thread.\n";
+    public static final String DELETE_THREAD_BY_TITLE = "An error occurred while deleting the thread.\n";
+
+
+    //------------------------------------------CommentServiceImpl---------------------------------------------------------------------------------
+
+    public static final String ADD_COMMENT = "An error occurred while adding the comment.\n";
+    public static final String GET_COMMENT_USER_TIME = "An error occurred while getting the comment by user and timestamp.\n";
+    public static final String GET_COMMENTS_THREAD = "An error occurred while getting thread comments.\n";
+    public static final String UPDATE_COMMENT = "An error occurred while updating the comment.\n";
+    public static final String DELETE_COMMENT = "An error occurred while deleting the comment.\n";
+
 
     public ServiceException(String message) {
         super(message);

@@ -25,7 +25,7 @@ public class PermissionServiceImpl implements PermissionService {
         try {
             return permissionDAO.getPermission(operationName, roleName);
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_GET_PERMISSION + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GET_PERMISSION);
         }
     }
 
@@ -36,7 +36,7 @@ public class PermissionServiceImpl implements PermissionService {
 
             return permission.getPermission();
         } catch (ServiceException serviceException) {
-            throw new ServiceException(ServiceException.FAILED_DET_PERMISSION + serviceException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DET_PERMISSION);
         }
     }
 }
