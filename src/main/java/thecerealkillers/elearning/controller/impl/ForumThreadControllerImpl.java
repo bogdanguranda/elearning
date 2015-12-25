@@ -2,6 +2,7 @@ package thecerealkillers.elearning.controller.impl;
 
 
 import thecerealkillers.elearning.controller.ForumThreadController;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.service.ForumThreadService;
 import thecerealkillers.elearning.service.PermissionService;
@@ -35,7 +36,9 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
     @Override
     @RequestMapping(value = "/threads/topic/{topic}", method = RequestMethod.POST)
-    public ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic, @RequestHeader(value = "token") String token) {
+    public ResponseEntity createThread(@RequestBody ForumThread newThread,
+                                       @PathVariable("topic") String topic,
+                                       @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -52,6 +55,9 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -74,12 +80,16 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/threads/owner/{threadOwner}", method = RequestMethod.GET)
-    public ResponseEntity<?> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName,
+                                                   @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -96,12 +106,16 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/threads/title/{threadTitle}", method = RequestMethod.GET)
-    public ResponseEntity<?> getThreadByTitle(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getThreadByTitle(@PathVariable("threadTitle") String threadTitle,
+                                              @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -118,12 +132,16 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/threads/topic/{threadTopic}", method = RequestMethod.GET)
-    public ResponseEntity<?> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic, @RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic,
+                                                @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -140,12 +158,17 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    @RequestMapping(value = "/threads/{oldTitle}", method = RequestMethod.POST)
-    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle, @RequestBody ForumThread newThread, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/update/{oldTitle}", method = RequestMethod.POST)
+    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle,
+                                       @RequestBody ForumThread newThread,
+                                       @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -162,12 +185,16 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/threads", method = RequestMethod.DELETE)
-    public ResponseEntity deleteThreadByTitle(@RequestParam(value = "threadTitle", required = true) String threadTitle, @RequestHeader(value = "token") String token) {
+    public ResponseEntity deleteThreadByTitle(@RequestParam(value = "threadTitle", required = true) String threadTitle,
+                                              @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
@@ -184,6 +211,9 @@ public class ForumThreadControllerImpl implements ForumThreadController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

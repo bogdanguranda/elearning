@@ -42,7 +42,7 @@ public interface ForumThreadController {
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/threads/{oldTitle}", method = RequestMethod.POST)
+    @RequestMapping(value = "/threads/update/{oldTitle}", method = RequestMethod.POST)
     ResponseEntity updateThread(
             @PathVariable("oldTitle") String oldTitle,
             @RequestBody ForumThread newThread,

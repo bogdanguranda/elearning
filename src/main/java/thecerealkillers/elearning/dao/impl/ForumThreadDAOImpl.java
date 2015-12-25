@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.dao.impl;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.ForumThreadDAO;
 import thecerealkillers.elearning.model.ForumThread;
@@ -49,12 +50,12 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
     }
 
     @Override
-    public List<ForumThread> getAll() throws DAOException {
+    public List<ForumThread> getAll() throws DAOException, NotFoundException {
         try {
             String command = "SELECT * FROM thread";
-            List<ForumThread> topicList;
+            List<ForumThread> threadList;
 
-            topicList = namedParameterJdbcTemplate.query(command, new RowMapper<ForumThread>() {
+            threadList = namedParameterJdbcTemplate.query(command, new RowMapper<ForumThread>() {
                 @Override
                 public ForumThread mapRow(ResultSet resultSet, int i) throws SQLException {
                     ForumThread thread = new ForumThread();
@@ -66,17 +67,20 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                 }
             });
 
-            if (topicList.size() == 0)
-                throw new DAOException("No threads in the database");
+            if (threadList.size() == 0)
+                throw new NotFoundException(NotFoundException.NO_THREADS);
 
-            return topicList;
+            return threadList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public List<ForumThread> getThreadsOwnedByUser(String userName) throws DAOException {
+    public List<ForumThread> getThreadsOwnedByUser(String userName) throws DAOException, NotFoundException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("owner", userName);
             String command = "SELECT * FROM thread WHERE owner = :owner";
@@ -94,16 +98,19 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
             });
 
             if (threadList.size() == 0)
-                throw new DAOException("No threads owned by :  " + userName);
+                throw new NotFoundException(NotFoundException.NO_THREADS_BY_OWNER);
 
             return threadList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public ForumThread getThreadByTitle(String threadTitle) throws DAOException {
+    public ForumThread getThreadByTitle(String threadTitle) throws DAOException, NotFoundException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("title", threadTitle);
             String command = "SELECT * FROM thread WHERE title = :title";
@@ -121,16 +128,19 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
             });
 
             if (threadList.size() == 0)
-                throw new DAOException("No thread with title :  " + threadTitle);
+                throw new NotFoundException(NotFoundException.NO_THREAD);
 
             return threadList.get(0);
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public List<ForumThread> getThreadsForTopic(String topic) throws DAOException {
+    public List<ForumThread> getThreadsForTopic(String topic) throws DAOException, NotFoundException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("topic", topic);
             String command = "SELECT thread FROM topic_thread WHERE topic = :topic";
@@ -149,9 +159,12 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
             }
 
             if (threadList.size() == 0)
-                throw new DAOException("No threads with topic :  " + topic);
+                throw new NotFoundException(NotFoundException.NO_THREADS_FOR_TOPIC);
 
             return threadList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }

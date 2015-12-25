@@ -2,6 +2,7 @@ package thecerealkillers.elearning.dao;
 
 
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.model.ForumThread;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +30,7 @@ public interface ForumThreadDAO {
      * @return list with all threads stored in the database
      * @throws DAOException
      */
-    List<ForumThread> getAll() throws DAOException;
+    List<ForumThread> getAll() throws DAOException, NotFoundException;
 
     /**
      * Retrieves all the threads owned by a user
@@ -38,7 +39,7 @@ public interface ForumThreadDAO {
      * @return list with all threads owned by the user with username @userName
      * @throws DAOException
      */
-    List<ForumThread> getThreadsOwnedByUser(String userName) throws DAOException;
+    List<ForumThread> getThreadsOwnedByUser(String userName) throws DAOException, NotFoundException;
 
     /**
      * Retrieves a thread by it's title
@@ -47,7 +48,7 @@ public interface ForumThreadDAO {
      * @return thread with title @threadTitle
      * @throws DAOException
      */
-    ForumThread getThreadByTitle(String threadTitle) throws DAOException;
+    ForumThread getThreadByTitle(String threadTitle) throws DAOException, NotFoundException;
 
     /**
      * Retrieves all the thread that are in a topic
@@ -56,7 +57,7 @@ public interface ForumThreadDAO {
      * @return thread with title @topic
      * @throws DAOException
      */
-    List<ForumThread> getThreadsForTopic(String topic) throws DAOException;
+    List<ForumThread> getThreadsForTopic(String topic) throws DAOException, NotFoundException;
 
     /**
      * Updates a thread

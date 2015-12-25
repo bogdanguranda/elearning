@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service;
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.ForumThread;
 
@@ -17,14 +18,14 @@ public interface ForumThreadService {
      * @param newForumThread
      * @param topicTitle
      */
-    void add(ForumThread newForumThread, String topicTitle) throws ServiceException;
+    void add(ForumThread newForumThread, String topicTitle) throws ServiceException, NotFoundException;
 
     /**
      * Retrieves all the threads from the database.
      *
      * @return list with all threads stored in the database
      */
-    List<ForumThread> getAll() throws ServiceException;
+    List<ForumThread> getAll() throws ServiceException, NotFoundException;
 
     /**
      * Retrieves all the threads owned by a user
@@ -32,7 +33,7 @@ public interface ForumThreadService {
      * @param userName
      * @return list with all threads owned by the user with username @userName
      */
-    List<ForumThread> getThreadsOwnedByUser(String userName) throws ServiceException;
+    List<ForumThread> getThreadsOwnedByUser(String userName) throws ServiceException, NotFoundException;
 
     /**
      * Retrieves a thread by it's title
@@ -40,7 +41,7 @@ public interface ForumThreadService {
      * @param threadTitle
      * @return thread with title @threadTitle
      */
-    ForumThread getThreadByTitle(String threadTitle) throws ServiceException;
+    ForumThread getThreadByTitle(String threadTitle) throws ServiceException, NotFoundException;
 
     /**
      * Retrieves all the thread that are in a topic
@@ -48,7 +49,7 @@ public interface ForumThreadService {
      * @param topic
      * @return thread with title @topic
      */
-    List<ForumThread> getThreadsForTopic(String topic) throws ServiceException;
+    List<ForumThread> getThreadsForTopic(String topic) throws ServiceException, NotFoundException;
 
     /**
      * Updates a thread
@@ -56,12 +57,14 @@ public interface ForumThreadService {
      * @param oldTitle
      * @param newThread
      */
-    void updateThread(String oldTitle, ForumThread newThread) throws ServiceException;
+    void updateThread(String oldTitle, ForumThread newThread) throws ServiceException, NotFoundException;
 
     /**
      * Deletes a thread
      *
      * @param threadToDelete
      */
-    void deleteThreadByTitle(String threadToDelete) throws ServiceException;
+    void deleteThreadByTitle(String threadToDelete) throws ServiceException, NotFoundException;
+
+    Boolean exists(String title) throws ServiceException;
 }
