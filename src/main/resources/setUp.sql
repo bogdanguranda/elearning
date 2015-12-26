@@ -299,11 +299,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`thread` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`thread` (
-  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
   `topic` VARCHAR(45) NOT NULL COMMENT '',
   `title` VARCHAR(45) NOT NULL COMMENT '',
   `owner` VARCHAR(45) NOT NULL COMMENT '',
-  INDEX `id_idx` (`id` ASC)  COMMENT '',
+  PRIMARY KEY (`topic`, `title`)  COMMENT '',
   CONSTRAINT `thread_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
@@ -324,8 +323,9 @@ DROP TABLE IF EXISTS `elearning_db`.`comment` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`comment` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
-  `threadID` int NOT NULL COMMENT '',
   `owner` VARCHAR(45) NOT NULL COMMENT '',
+  `topic` VARCHAR(45) NOT NULL COMMENT '',
+  `thread` VARCHAR(45) NOT NULL COMMENT '',
   `message` TEXT NOT NULL COMMENT '',
   `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   INDEX `threadID_idx` (`id` ASC)  COMMENT '',
@@ -334,9 +334,9 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`comment` (
     REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `comment_threadID_fk`
-    FOREIGN KEY (`threadID`)
-    REFERENCES `elearning_db`.`thread` (`id`)
+  CONSTRAINT `comment_topic_fk`
+    FOREIGN KEY (`topic`, `thread`)
+    REFERENCES `elearning_db`.`thread` (`topic`, `title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
