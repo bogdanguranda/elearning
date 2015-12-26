@@ -117,6 +117,11 @@ public class ServiceException extends Exception {
     public static final String DELETE_COMMENT = "An error occurred while deleting the comment.\n";
 
 
+    //------------------------------------------AuditServiceImpl-----------------------------------------------------------------------------------
+
+    public static final String ADD_EVENT = "An error occurred while saving the event.\n";
+
+
     public ServiceException(String message) {
         super(message);
     }

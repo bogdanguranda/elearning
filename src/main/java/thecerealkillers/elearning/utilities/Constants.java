@@ -18,4 +18,5 @@ public class Constants {
         add(TEACHER);
     }};
 
+    public static final String NO_PERMISSION = "User doesn't have permission for this action!";
 }

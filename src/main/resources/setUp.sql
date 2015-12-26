@@ -397,6 +397,33 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`permission` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`audit`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`audit`;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`audit` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `username` VARCHAR(45) NOT NULL COMMENT '',
+  `operationName` VARCHAR(300) NOT NULL COMMENT '',
+  `dataReceived` TEXT NOT NULL COMMENT '',
+  `response` TEXT NOT NULL COMMENT '',
+  `success` BOOLEAN NOT NULL COMMENT '',
+  `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
+  INDEX `threadID_idx` (`id` ASC)  COMMENT '',
+  CONSTRAINT `audit_user_username_fk`
+    FOREIGN KEY (`username`)
+    REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `audit__operationName_fk`
+    FOREIGN KEY (`operationName`)
+    REFERENCES `elearning_db`.`operation` (`operationName`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
