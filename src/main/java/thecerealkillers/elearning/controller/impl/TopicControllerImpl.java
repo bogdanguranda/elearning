@@ -167,10 +167,10 @@ public class TopicControllerImpl implements TopicController {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     topicService.update(title, newTopic);
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + "\nNew data = " + newTopic.toString(), "Topic updated.", true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " + newTopic.toString(), "Topic updated.", true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + "\nNew data = " + newTopic.toString(), Constants.NO_PERMISSION, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " + newTopic.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
