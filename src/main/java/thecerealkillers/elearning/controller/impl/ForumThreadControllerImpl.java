@@ -63,7 +63,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), Constants.THREAD_CREATE_THREAD, true));
                     return new ResponseEntity(HttpStatus.CREATED);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), Constants.NO_PERMISSION, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
@@ -100,7 +100,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.THREAD_GET, true));
                     return new ResponseEntity<>(thread, HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.NO_PERMISSION, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
@@ -137,7 +137,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, Constants.THREAD_GET_IN_TOPIC, true));
                     return new ResponseEntity<>(threadList, HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, Constants.NO_PERMISSION, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
@@ -174,7 +174,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, Constants.THREAD_GET_BY_USER, true));
                     return new ResponseEntity<>(threadList, HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, Constants.NO_PERMISSION, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
@@ -210,7 +210,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.THREAD_GET_ALL, true));
                     return new ResponseEntity<>(threadList, HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
@@ -250,7 +250,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
-                            thread.toString(), Constants.NO_PERMISSION, true));
+                            thread.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
@@ -287,7 +287,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), Constants.THREAD_DELETE, true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), Constants.NO_PERMISSION, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
