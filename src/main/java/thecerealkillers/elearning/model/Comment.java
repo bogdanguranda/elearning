@@ -126,4 +126,14 @@ public class Comment {
                 ", timeStamp=" + timeStampStr +
                 '}';
     }
+
+    public String toString2() {
+        return "Comment{" +
+                "id=" + id +
+                ", owner='" + owner + '\'' +
+                ", topic='" + topic + '\'' +
+                ", thread='" + thread + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

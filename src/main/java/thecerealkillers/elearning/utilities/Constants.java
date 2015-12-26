@@ -40,4 +40,13 @@ public class Constants {
     public static final String THREAD_GET_ALL = "All threads retrieved.";
     public static final String THREAD_UPDATE = "Thread updated.";
     public static final String THREAD_DELETE = "Thread deleted from database.";
+
+
+    //----------------------------------CommentController-----------------------------------------------------------------------------------
+
+    public static final String COMMENT_ADD = "Comment added in database.";
+    public static final String COMMENT_GET = "Comment with the specified id retrieved.";
+    public static final String COMMENT_GET_IN_THREAD = "All comments from the specified thread retrieved.";
+    public static final String COMMENT_UPDATE = "Comment updated.";
+    public static final String COMMENT_DELETE = "Comment deleted from database.";
 }
