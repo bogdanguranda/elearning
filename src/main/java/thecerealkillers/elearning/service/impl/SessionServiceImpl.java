@@ -84,6 +84,17 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
+    @Override
+    public String getUsernameByToken(String token) throws ServiceException {
+        try {
+            SessionDM session = sessionDAO.getSessionByToken(token);
+
+            return session.getUsername();
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(ServiceException.FAILED_GET_ROBE);
+        }
+    }
+
     public String startOrGetSession(String username) throws ServiceException {
         try {
             if (sessionDAO.isSessionAvailable(username)) {

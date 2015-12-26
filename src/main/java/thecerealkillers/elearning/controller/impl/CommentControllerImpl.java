@@ -148,13 +148,19 @@ public class CommentControllerImpl implements CommentController {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
+                String crtUsername = sessionService.getUsernameByToken(token);
+                Comment comment = commentService.getComment(commentID);
 
-                if (permissionService.isOperationAvailable("CommentControllerImpl.deleteComment", crtUserRole)) {
-                    commentService.deleteComment(commentID);
+                if (crtUsername.compareTo(comment.getOwner()) == 0) {
+                    if (permissionService.isOperationAvailable("CommentControllerImpl.deleteComment", crtUserRole)) {
+                        commentService.deleteComment(commentID);
 
-                    return new ResponseEntity(HttpStatus.OK);
+                        return new ResponseEntity(HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                    }
                 } else {
-                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>("Nice try :P.", HttpStatus.UNPROCESSABLE_ENTITY);
                 }
             } else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);

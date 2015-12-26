@@ -51,6 +51,11 @@ public interface SessionService {
      */
     Boolean isSessionActive(String token);
 
+    /**
+     * Retrieves the username of the user for which the token is stored in the database.
+     */
+    String getUsernameByToken(String token) throws ServiceException;
+
 
     /**
      * Return a user's role by user's token.
