@@ -442,12 +442,12 @@ INSERT INTO operation VALUES('CoursesControllerImpl.getEnrolledUsers');
 INSERT INTO operation VALUES('GroupsControllerImpl.getGroups');
 
 INSERT INTO operation VALUES('ForumThreadControllerImpl.createThread');
-INSERT INTO operation VALUES('ForumThreadControllerImpl.getAll');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThread');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsInTopic');
 INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser');
-INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadByTitle');
-INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsForTopic');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getAll');
 INSERT INTO operation VALUES('ForumThreadControllerImpl.updateThread');
-INSERT INTO operation VALUES('ForumThreadControllerImpl.deleteThreadByTitle');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.deleteThread');
 
 INSERT INTO operation VALUES('MessageControllerImpl.createMessage');
 INSERT INTO operation VALUES('MessageControllerImpl.getAllMessages');
@@ -587,29 +587,29 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThread
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'student', true);
 
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'profesor', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'student', true);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'administrator', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'student', true);
 
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadByTitle', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadByTitle', 'profesor', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadByTitle', 'student', true);
-
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsForTopic', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsForTopic', 'profesor', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsForTopic', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'student', true);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'administrator', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'student', true);
 
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThreadByTitle', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThreadByTitle', 'profesor', false);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThreadByTitle', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'student', false);
 -- ################################################=-ForumThreadControllerImpl END-=##########################################################################
 
 -- #################################################=-MessageControllerImpl START-=###########################################################################

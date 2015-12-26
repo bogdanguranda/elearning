@@ -4,10 +4,12 @@ package thecerealkillers.elearning.controller.impl;
 import thecerealkillers.elearning.controller.ForumThreadController;
 import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
 import thecerealkillers.elearning.service.ForumThreadService;
 import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.model.ForumThread;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,16 +37,15 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
 
     @Override
-    @RequestMapping(value = "/threads/topic/{topic}", method = RequestMethod.POST)
+    @RequestMapping(value = "/threads/create", method = RequestMethod.POST)
     public ResponseEntity createThread(@RequestBody ForumThread newThread,
-                                       @PathVariable("topic") String topic,
                                        @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("ForumThreadControllerImpl.createThread", crtUserRole)) {
-                    forumThreadService.add(newThread, topic);
+                    forumThreadService.add(newThread);
 
                     return new ResponseEntity(HttpStatus.CREATED);
                 } else {
@@ -62,14 +63,41 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    @RequestMapping(value = "/threads", method = RequestMethod.GET)
-    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/thread", method = RequestMethod.POST)
+    public ResponseEntity<?> getThread(@RequestBody ForumThreadIdentifier threadIdentifier,
+                                       @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.getAll", crtUserRole)) {
-                    List<ForumThread> threadList = forumThreadService.getAll();
+                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.getThread", crtUserRole)) {
+                    ForumThread thread = forumThreadService.getThread(threadIdentifier.getTitle(), threadIdentifier.getTopic());
+
+                    return new ResponseEntity<>(thread, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/threads/topic/{topicTitle}", method = RequestMethod.GET)
+    public ResponseEntity<?> getThreadsInTopic(@PathVariable("topicTitle") String topicTitle,
+                                               @RequestHeader(value = "token") String token) {
+        try {
+            if (sessionService.isSessionActive(token)) {
+                String crtUserRole = sessionService.getUserRoleByToken(token);
+
+                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.getThreadsInTopic", crtUserRole)) {
+                    List<ForumThread> threadList = forumThreadService.getThreadsInTopic(topicTitle);
 
                     return new ResponseEntity<>(threadList, HttpStatus.OK);
                 } else {
@@ -113,41 +141,14 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    @RequestMapping(value = "/threads/title/{threadTitle}", method = RequestMethod.GET)
-    public ResponseEntity<?> getThreadByTitle(@PathVariable("threadTitle") String threadTitle,
-                                              @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/all", method = RequestMethod.GET)
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.getThreadByTitle", crtUserRole)) {
-                    ForumThread thread = forumThreadService.getThreadByTitle(threadTitle);
-
-                    return new ResponseEntity<>(thread, HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-                }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @Override
-    @RequestMapping(value = "/threads/topic/{threadTopic}", method = RequestMethod.GET)
-    public ResponseEntity<?> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic,
-                                                @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
-
-                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.getThreadsForTopic", crtUserRole)) {
-                    List<ForumThread> threadList = forumThreadService.getThreadsForTopic(threadTopic);
+                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.getAll", crtUserRole)) {
+                    List<ForumThread> threadList = forumThreadService.getAll();
 
                     return new ResponseEntity<>(threadList, HttpStatus.OK);
                 } else {
@@ -165,8 +166,8 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    @RequestMapping(value = "/threads/update/{oldTitle}", method = RequestMethod.POST)
-    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle,
+    @RequestMapping(value = "/threads/update/{newTitle}", method = RequestMethod.POST)
+    public ResponseEntity updateThread(@PathVariable("newTitle") String newTitle,
                                        @RequestBody ForumThread newThread,
                                        @RequestHeader(value = "token") String token) {
         try {
@@ -174,7 +175,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("ForumThreadControllerImpl.updateThread", crtUserRole)) {
-                    forumThreadService.updateThread(oldTitle, newThread);
+                    forumThreadService.updateThread(newTitle, newThread);
 
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
@@ -193,14 +194,14 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
     @Override
     @RequestMapping(value = "/threads", method = RequestMethod.DELETE)
-    public ResponseEntity deleteThreadByTitle(@RequestParam(value = "threadTitle", required = true) String threadTitle,
-                                              @RequestHeader(value = "token") String token) {
+    public ResponseEntity deleteThread(@RequestBody ForumThreadIdentifier threadToDelete,
+                                       @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.deleteThreadByTitle", crtUserRole)) {
-                    forumThreadService.deleteThreadByTitle(threadTitle);
+                if (permissionService.isOperationAvailable("ForumThreadControllerImpl.deleteThread", crtUserRole)) {
+                    forumThreadService.deleteThread(threadToDelete);
 
                     return new ResponseEntity(HttpStatus.OK);
                 } else {

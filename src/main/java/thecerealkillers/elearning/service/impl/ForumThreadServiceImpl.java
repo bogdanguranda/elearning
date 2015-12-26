@@ -3,6 +3,7 @@ package thecerealkillers.elearning.service.impl;
 
 import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
 import thecerealkillers.elearning.service.ForumThreadService;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.ForumThreadDAO;
@@ -33,12 +34,12 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
 
     @Override
-    public void add(ForumThread newForumThread, String topicTitle) throws ServiceException, NotFoundException {
+    public void add(ForumThread newForumThread) throws ServiceException, NotFoundException {
         try {
-            if (!exists(newForumThread.getTitle())) {
+            if (!exists(newForumThread.getTitle(), newForumThread.getTopic())) {
                 if (userService.usernameExists(newForumThread.getOwner())) {
-                    if (topicService.exists(topicTitle)) {
-                        forumThreadDAO.add(newForumThread, topicTitle);
+                    if (topicService.exists(newForumThread.getTopic())) {
+                        forumThreadDAO.add(newForumThread);
                     } else {
                         throw new NotFoundException(NotFoundException.NO_TOPIC);
                     }
@@ -50,6 +51,32 @@ public class ForumThreadServiceImpl implements ForumThreadService {
             }
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.ADD_FORUM_THREAD);
+        }
+    }
+
+    @Override
+    public ForumThread getThread(String threadTitle, String topic) throws ServiceException, NotFoundException {
+        try {
+            if (exists(threadTitle, topic)) {
+                return forumThreadDAO.getThread(threadTitle, topic);
+            } else {
+                throw new NotFoundException(NotFoundException.NO_THREAD);
+            }
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.GET_THREAD_BY_TITLE);
+        }
+    }
+
+    @Override
+    public List<ForumThread> getThreadsInTopic(String topic) throws ServiceException, NotFoundException {
+        try {
+            if (topicService.exists(topic)) {
+                return forumThreadDAO.getThreadsInTopic(topic);
+            } else {
+                throw new NotFoundException(NotFoundException.NO_TOPIC);
+            }
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.GET_THREADS_TOPIC);
         }
     }
 
@@ -76,38 +103,12 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     }
 
     @Override
-    public ForumThread getThreadByTitle(String threadTitle) throws ServiceException, NotFoundException {
+    public void updateThread(String newTitle, ForumThread threadToUpdate) throws ServiceException, NotFoundException {
         try {
-            if (exists(threadTitle)) {
-                return forumThreadDAO.getThreadByTitle(threadTitle);
-            } else {
-                throw new NotFoundException(NotFoundException.NO_THREAD);
-            }
-        } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.GET_THREAD_BY_TITLE);
-        }
-    }
-
-    @Override
-    public List<ForumThread> getThreadsForTopic(String topic) throws ServiceException, NotFoundException {
-        try {
-            if (topicService.exists(topic)) {
-                return forumThreadDAO.getThreadsForTopic(topic);
-            } else {
-                throw new NotFoundException(NotFoundException.NO_TOPIC);
-            }
-        } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.GET_THREADS_TOPIC);
-        }
-    }
-
-    @Override
-    public void updateThread(String oldTitle, ForumThread newThread) throws ServiceException, NotFoundException {
-        try {
-            if (exists(oldTitle)) {
-                if (!exists(newThread.getTitle())) {
-                    if (userService.usernameExists(newThread.getOwner())) {
-                        forumThreadDAO.updateThread(oldTitle, newThread);
+            if (exists(threadToUpdate.getTitle(), threadToUpdate.getTopic())) {
+                if (!exists(newTitle, threadToUpdate.getTopic())) {
+                    if (userService.usernameExists(threadToUpdate.getOwner())) {
+                        forumThreadDAO.updateThread(newTitle, threadToUpdate);
                     } else {
                         throw new NotFoundException(NotFoundException.NO_USER);
                     }
@@ -123,10 +124,10 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     }
 
     @Override
-    public void deleteThreadByTitle(String threadToDelete) throws ServiceException, NotFoundException {
+    public void deleteThread(ForumThreadIdentifier threadToDelete) throws ServiceException, NotFoundException {
         try {
-            if (exists(threadToDelete)) {
-                forumThreadDAO.deleteThreadByTitle(threadToDelete);
+            if (exists(threadToDelete.getTitle(), threadToDelete.getTopic())) {
+                forumThreadDAO.deleteThread(threadToDelete);
             } else {
                 throw new NotFoundException(NotFoundException.NO_THREAD);
             }
@@ -136,9 +137,9 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     }
 
     @Override
-    public Boolean exists(String title) throws ServiceException {
+    public Boolean exists(String title, String topic) throws ServiceException {
         try {
-            forumThreadDAO.getThreadByTitle(title);
+            forumThreadDAO.getThread(title, topic);
 
             return true;
         } catch (NotFoundException e) {

@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.controller;
 
 
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
 import thecerealkillers.elearning.model.ForumThread;
 
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,21 @@ import org.springframework.http.ResponseEntity;
  */
 public interface ForumThreadController {
 
-    @RequestMapping(value = "/threads/topic/{topic}", method = RequestMethod.POST)
+    @RequestMapping(value = "/threads/create", method = RequestMethod.POST)
     ResponseEntity createThread(
             @RequestBody ForumThread newThread,
-            @PathVariable("topic") String topic,
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/threads", method = RequestMethod.GET)
-    ResponseEntity<?> getAll(
+    @RequestMapping(value = "/thread", method = RequestMethod.POST)
+    ResponseEntity<?> getThread(
+            @RequestBody ForumThreadIdentifier threadIdentifier,
+            @RequestHeader(value = "token") String token);
+
+
+    @RequestMapping(value = "/threads/topic/{topicTitle}", method = RequestMethod.GET)
+    ResponseEntity<?> getThreadsInTopic(
+            @PathVariable("topicTitle") String topicTitle,
             @RequestHeader(value = "token") String token);
 
 
@@ -30,27 +37,20 @@ public interface ForumThreadController {
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/threads/title/{threadTitle}", method = RequestMethod.GET)
-    ResponseEntity<?> getThreadByTitle(
-            @PathVariable("threadTitle") String threadTitle,
+    @RequestMapping(value = "/threads/all", method = RequestMethod.GET)
+    ResponseEntity<?> getAll(
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/threads/topic/{threadTopic}", method = RequestMethod.GET)
-    ResponseEntity<?> getThreadsForTopic(
-            @PathVariable("threadTopic") String threadTopic,
-            @RequestHeader(value = "token") String token);
-
-
-    @RequestMapping(value = "/threads/update/{oldTitle}", method = RequestMethod.POST)
+    @RequestMapping(value = "/threads/update/{newTitle}", method = RequestMethod.POST)
     ResponseEntity updateThread(
-            @PathVariable("oldTitle") String oldTitle,
+            @PathVariable("newTitle") String newTitle,
             @RequestBody ForumThread newThread,
             @RequestHeader(value = "token") String token);
 
 
     @RequestMapping(value = "/threads", method = RequestMethod.DELETE)
-    ResponseEntity deleteThreadByTitle(
-            @RequestParam(value = "threadTitle", required = true) String threadTitle,
+    ResponseEntity deleteThread(
+            @RequestBody ForumThreadIdentifier threadToDelete,
             @RequestHeader(value = "token") String token);
 }
