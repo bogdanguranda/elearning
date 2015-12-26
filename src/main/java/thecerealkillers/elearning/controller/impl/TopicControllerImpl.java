@@ -6,7 +6,10 @@ import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.TopicController;
 import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.service.AuditService;
 import thecerealkillers.elearning.service.TopicService;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Topic;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ import java.util.List;
 public class TopicControllerImpl implements TopicController {
 
     @Autowired
+    private AuditService auditService;
+
+    @Autowired
     private TopicService topicService;
 
     @Autowired
@@ -38,19 +44,31 @@ public class TopicControllerImpl implements TopicController {
     @RequestMapping(value = "/topics", method = RequestMethod.POST)
     public ResponseEntity createTopic(@RequestBody Topic newTopic,
                                       @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "TopicControllerImpl.createTopic";
 
-                if (permissionService.isOperationAvailable("TopicControllerImpl.createTopic", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     topicService.add(newTopic);
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), Constants.TOPIC_CREATE_TOPIC, true));
                     return new ResponseEntity(HttpStatus.CREATED);
+
                 } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -60,25 +78,36 @@ public class TopicControllerImpl implements TopicController {
     @Override
     @RequestMapping(value = "/topics", method = RequestMethod.GET)
     public ResponseEntity<?> getAllTopics(@RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "TopicControllerImpl.getAllTopics";
 
-                if (permissionService.isOperationAvailable("TopicControllerImpl.getAllTopics", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     List<Topic> topicList = topicService.getAll();
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.TOPIC_GET_ALL, true));
                     return new ResponseEntity<>(topicList, HttpStatus.OK);
                 } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -86,25 +115,36 @@ public class TopicControllerImpl implements TopicController {
     @RequestMapping(value = "/topics/{title}", method = RequestMethod.GET)
     public ResponseEntity<?> getTopicByTitle(@PathVariable("title") String title,
                                              @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "TopicControllerImpl.getTopicByTitle";
 
-                if (permissionService.isOperationAvailable("TopicControllerImpl.getTopicByTitle", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Topic topic = topicService.get(title);
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, title, Constants.GET_BY_TITLE, true));
                     return new ResponseEntity<>(topic, HttpStatus.OK);
                 } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, title, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -113,25 +153,36 @@ public class TopicControllerImpl implements TopicController {
     public ResponseEntity updateTopic(@PathVariable("title") String title,
                                       @RequestBody Topic newTopic,
                                       @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "TopicControllerImpl.updateTopic";
 
-                if (permissionService.isOperationAvailable("TopicControllerImpl.updateTopic", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     topicService.update(title, newTopic);
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + "\nNew data = " + newTopic.toString(), "Topic updated.", true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + "\nNew data = " + newTopic.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -139,25 +190,36 @@ public class TopicControllerImpl implements TopicController {
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
     public ResponseEntity deleteTopicByTitle(@RequestBody Topic newTopic,
                                              @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "TopicControllerImpl.deleteTopicByTitle";
 
-                if (permissionService.isOperationAvailable("TopicControllerImpl.deleteTopicByTitle", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     topicService.delete(newTopic.getTitle());
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), Constants.TOPIC_DELETE, true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (NotFoundException notFoundException) {
-            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

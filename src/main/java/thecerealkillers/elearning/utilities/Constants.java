@@ -19,4 +19,13 @@ public class Constants {
     }};
 
     public static final String NO_PERMISSION = "User doesn't have permission for this action!";
+
+
+
+    //----------------------------------TopicController-------------------------------------------------------------------------------------
+
+    public static final String TOPIC_CREATE_TOPIC = "Topic added in database.";
+    public static final String TOPIC_GET_ALL = "All topics retrieved form database.";
+    public static final String GET_BY_TITLE = "Topic with the specified title retrieved.";
+    public static final String TOPIC_DELETE = "Topic deleted from database.";
 }
