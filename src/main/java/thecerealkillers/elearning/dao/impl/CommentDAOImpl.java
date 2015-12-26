@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import java.sql.SQLException;
@@ -38,16 +37,11 @@ public class CommentDAOImpl implements CommentDAO {
         try {
             String command = "INSERT INTO comment (`owner`, `topic`, `thread`, `message`, `timestamp`)  VALUES (:owner, :topic, :thread, :message, DEFAULT);";
 
-            Date timeStamp = new Date(Calendar.getInstance().getTimeInMillis());
-            SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String timeStampStr = sdf.format(timeStamp);
-
             Map<String, String> namedParameters = new HashMap<>();
             namedParameters.put("owner", comment.getOwner());
             namedParameters.put("topic", comment.getTopic());
             namedParameters.put("thread", comment.getThread());
             namedParameters.put("message", comment.getMessage());
-            namedParameters.put("timestamp", timeStampStr);
 
             namedParameterJdbcTemplate.update(command, namedParameters);
         } catch (Exception exception) {
