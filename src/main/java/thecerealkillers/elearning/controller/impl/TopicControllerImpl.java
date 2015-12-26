@@ -136,11 +136,11 @@ public class TopicControllerImpl implements TopicController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, title, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, title, notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -176,11 +176,13 @@ public class TopicControllerImpl implements TopicController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " +
+                        newTopic.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " +
+                        newTopic.toString(), notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -190,7 +192,7 @@ public class TopicControllerImpl implements TopicController {
 
     @Override
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
-    public ResponseEntity deleteTopicByTitle(@RequestBody Topic newTopic,
+    public ResponseEntity deleteTopicByTitle(@RequestBody Topic topicToDelete,
                                              @RequestHeader(value = "token") String token) {
         String actionName = "TopicControllerImpl.deleteTopicByTitle";
 
@@ -204,20 +206,20 @@ public class TopicControllerImpl implements TopicController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                    topicService.delete(newTopic.getTitle());
+                    topicService.delete(topicToDelete.getTitle());
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), Constants.TOPIC_DELETE, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, topicToDelete.toString(), Constants.TOPIC_DELETE, true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newTopic.toString(), Constants.NO_PERMISSION, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, topicToDelete.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, topicToDelete.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, topicToDelete.toString(), notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {

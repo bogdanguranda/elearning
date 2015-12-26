@@ -67,11 +67,11 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -104,11 +104,11 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -141,11 +141,11 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -178,11 +178,11 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -254,11 +254,13 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                        thread.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                        thread.toString(), notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -291,11 +293,11 @@ public class ForumThreadControllerImpl implements ForumThreadController {
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {

@@ -38,6 +38,6 @@ public interface TopicController {
 
     @RequestMapping(value = "/topics", method = RequestMethod.DELETE)
     ResponseEntity deleteTopicByTitle(
-            @RequestBody Topic newTopic,
+            @RequestBody Topic topicToDelete,
             @RequestHeader(value = "token") String token);
 }
