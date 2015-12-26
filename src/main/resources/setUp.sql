@@ -289,7 +289,7 @@ DROP TABLE IF EXISTS `elearning_db`.`topic` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`topic` (
   `title` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`title`)  COMMENT '')
+  PRIMARY KEY (`title`) COMMENT '')
 ENGINE = InnoDB;
 
 
@@ -299,13 +299,19 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`thread` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`thread` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `topic` VARCHAR(45) NOT NULL COMMENT '',
   `title` VARCHAR(45) NOT NULL COMMENT '',
-  `owner` VARCHAR(45) NULL COMMENT '',
-  PRIMARY KEY (`title`)  COMMENT '',
-  INDEX `username_idx` (`owner` ASC)  COMMENT '',
+  `owner` VARCHAR(45) NOT NULL COMMENT '',
+  INDEX `id_idx` (`id` ASC)  COMMENT '',
   CONSTRAINT `thread_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `thread_topic_fk`
+    FOREIGN KEY (`topic`)
+    REFERENCES `elearning_db`.`topic` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -317,60 +323,20 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`comment` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`comment` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `threadID` int NOT NULL COMMENT '',
   `owner` VARCHAR(45) NOT NULL COMMENT '',
+  `message` TEXT NOT NULL COMMENT '',
   `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
-  `message` TEXT NULL COMMENT '',
-  PRIMARY KEY (`owner`, `timestamp`)  COMMENT '',
+  INDEX `threadID_idx` (`id` ASC)  COMMENT '',
   CONSTRAINT `comment_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `elearning_db`.`thread_comment`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`thread_comment` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`thread_comment` (
-  `thread` VARCHAR(45) NOT NULL COMMENT '',
-  `commentOwner` VARCHAR(45) NOT NULL COMMENT '',
-  `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
-  PRIMARY KEY (`thread`, `commentOwner`, `timestamp`)  COMMENT '',
-  INDEX `owner_idx` (`commentOwner` ASC, `timestamp` ASC)  COMMENT '',
-  CONSTRAINT `thread_comment_thread_title_fk`
-    FOREIGN KEY (`thread`)
-    REFERENCES `elearning_db`.`thread` (`title`)
-    ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `thread_comment_composite_fk`
-    FOREIGN KEY (`commentOwner` , `timestamp`)
-    REFERENCES `elearning_db`.`comment` (`owner` , `timestamp`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `elearning_db`.`topic_thread`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`topic_thread` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`topic_thread` (
-  `topic` VARCHAR(45) NOT NULL COMMENT '',
-  `thread` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`topic`, `thread`)  COMMENT '',
-  INDEX `title_idx` (`thread` ASC)  COMMENT '',
-  CONSTRAINT `topic_thread_topic_title_fk`
-    FOREIGN KEY (`topic`)
-    REFERENCES `elearning_db`.`topic` (`title`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `topic_thread_thread_title_fk`
-    FOREIGN KEY (`thread`)
-    REFERENCES `elearning_db`.`thread` (`title`)
+  CONSTRAINT `comment_threadID_fk`
+    FOREIGN KEY (`threadID`)
+    REFERENCES `elearning_db`.`thread` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -670,8 +636,8 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('MessageCont
 
 -- ##################################################=-TopicControllerImpl START-=############################################################################
 INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'profesor', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'student', false);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'administrator', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'profesor', true);
