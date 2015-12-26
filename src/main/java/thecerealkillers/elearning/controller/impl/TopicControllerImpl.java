@@ -129,7 +129,7 @@ public class TopicControllerImpl implements TopicController {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Topic topic = topicService.get(title);
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, title, Constants.GET_BY_TITLE, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, title, Constants.TOPIC_GET_BY_TITLE, true));
                     return new ResponseEntity<>(topic, HttpStatus.OK);
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, title, Constants.NO_PERMISSION, false));
@@ -167,10 +167,12 @@ public class TopicControllerImpl implements TopicController {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     topicService.update(title, newTopic);
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " + newTopic.toString(), "Topic updated.", true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " +
+                            newTopic.toString(), Constants.TOPIC_UPDATE, true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " + newTopic.toString(), Constants.NO_PERMISSION, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Title = " + title + " | New data = " +
+                            newTopic.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {

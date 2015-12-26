@@ -26,6 +26,18 @@ public class Constants {
 
     public static final String TOPIC_CREATE_TOPIC = "Topic added in database.";
     public static final String TOPIC_GET_ALL = "All topics retrieved form database.";
-    public static final String GET_BY_TITLE = "Topic with the specified title retrieved.";
+    public static final String TOPIC_GET_BY_TITLE = "Topic with the specified title retrieved.";
+    public static final String TOPIC_UPDATE = "Topic updated.";
     public static final String TOPIC_DELETE = "Topic deleted from database.";
+
+
+    //----------------------------------ThreadController------------------------------------------------------------------------------------
+
+    public static final String THREAD_CREATE_THREAD = "Thread added in database.";
+    public static final String THREAD_GET = "Thread retrieved.";
+    public static final String THREAD_GET_IN_TOPIC = "All threads in the specified topic retrieved.";
+    public static final String THREAD_GET_BY_USER = "All threads owned by the specified user retrieved.";
+    public static final String THREAD_GET_ALL = "All threads retrieved.";
+    public static final String THREAD_UPDATE = "Thread updated.";
+    public static final String THREAD_DELETE = "Thread deleted from database.";
 }
