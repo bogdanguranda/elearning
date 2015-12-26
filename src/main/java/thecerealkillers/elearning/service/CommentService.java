@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.service;
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Comment;
 
@@ -12,51 +13,59 @@ import java.util.List;
  */
 public interface CommentService {
 
+
     /**
      * Adds a comment in the database
      *
-     * @param owner
-     * @param message
-     * @param threadTitle
      * @throws ServiceException
+     * @throws NotFoundException
      */
-    void addComment(String owner, String message, String threadTitle) throws ServiceException;
+    void addComment(Comment comment) throws ServiceException, NotFoundException;
+
 
     /**
-     * Retrieves the comment posted by @owner at @timeStamp
+     * Retrieves the comment posted by @owner at @timeStamp in @threadTitle
      *
-     * @param owner
-     * @param timeStamp
      * @return comment posted by @owner at @timeStamp
      * @throws ServiceException
+     * @throws NotFoundException
      */
-    Comment getCommentByOwnerAndTimeStamp(String owner, Date timeStamp) throws ServiceException;
+    Comment getComment(Integer commentID) throws ServiceException, NotFoundException;
+
 
     /**
      * Retrieves a list wits all the comment that are posted on a thread
      *
-     * @param threadTitle
      * @return comments posted in the thread with the title @threadTitle
      * @throws ServiceException
+     * @throws NotFoundException
      */
-    List<Comment> getCommentsForThread(String threadTitle) throws ServiceException;
+    List<Comment> getCommentsInThread(String threadTitle, String topicTitle) throws ServiceException, NotFoundException;
+
 
     /**
      * Updates the message posted by @owner at @timeStamp with the message stored by @newMessage
      *
-     * @param owner
-     * @param timeStamp
-     * @param newMessage
      * @throws ServiceException
+     * @throws NotFoundException
      */
-    void updateComment(String owner, Date timeStamp, String newMessage) throws ServiceException;
+    void updateComment(Integer commentID, String newMessage) throws ServiceException, NotFoundException;
+
 
     /**
-     * Deletes a comment posted by @owner at @timeStamp
+     * Deletes a comment posted by @owner at @timeStamp in @threadTitle
      *
-     * @param owner
-     * @param timeStamp
      * @throws ServiceException
+     * @throws NotFoundException
      */
-    void deleteComment(String owner, Date timeStamp) throws ServiceException;
+    void deleteComment(Integer commentID) throws ServiceException, NotFoundException;
+
+
+    /**
+     * Returns true if database contains a comment posted by owner at timestamp in @threadTitle
+     *
+     * @throws ServiceException
+     * @throws NotFoundException
+     */
+    Boolean exists(Integer commentID) throws ServiceException, NotFoundException;
 }

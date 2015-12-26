@@ -1,11 +1,12 @@
 package thecerealkillers.elearning.dao;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.DAOException;
-import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.model.Comment;
 
-import java.util.Date;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 
@@ -20,7 +21,7 @@ public interface CommentDAO {
      *
      * @throws DAOException
      */
-    void addComment(String owner, String message, String threadTitle) throws DAOException;
+    void addComment(Comment comment) throws DAOException;
 
     /**
      * Retrieves the comment posted by @owner at @timeStamp
@@ -28,7 +29,7 @@ public interface CommentDAO {
      * @return comment posted by @owner at @timeStamp
      * @throws DAOException
      */
-    Comment getCommentByOwnerAndTimeStamp(String owner, Date timeStamp) throws DAOException;
+    Comment getComment(Integer commentID) throws DAOException, NotFoundException;
 
     /**
      * Retrieves a list wits all the comment that are posted on a thread
@@ -36,19 +37,19 @@ public interface CommentDAO {
      * @return comments posted in the thread with the title @threadTitle
      * @throws DAOException
      */
-    List<Comment> getCommentsForThread(String threadTitle) throws DAOException;
+    List<Comment> getCommentsInThread(String threadTitle, String topicTitle) throws DAOException, NotFoundException;
 
     /**
      * Updates the message posted by @owner at @timeStamp with the message stored by @newMessage
      *
      * @throws DAOException
      */
-    void updateComment(String owner, Date timeStamp, String newMessage) throws DAOException;
+    void updateComment(Integer commentID, String newMessage) throws DAOException;
 
     /**
      * Deletes a comment posted by @owner at @timeStamp
      *
      * @throws DAOException
      */
-    void deleteComment(String owner, Date timeStamp) throws DAOException;
+    void deleteComment(Integer commentID) throws DAOException;
 }

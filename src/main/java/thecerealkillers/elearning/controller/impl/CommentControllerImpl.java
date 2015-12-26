@@ -2,8 +2,11 @@ package thecerealkillers.elearning.controller.impl;
 
 
 import thecerealkillers.elearning.controller.CommentController;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
 import thecerealkillers.elearning.service.PermissionService;
+import thecerealkillers.elearning.model.CommentUpdateInfo;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.CommentService;
 import thecerealkillers.elearning.model.Comment;
@@ -24,18 +27,18 @@ import java.util.List;
 public class CommentControllerImpl implements CommentController {
 
     @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
     private CommentService commentService;
 
     @Autowired
     private SessionService sessionService;
 
-    @Autowired
-    private PermissionService permissionService;
-
 
     @Override
-    @RequestMapping(value = "/comments/add/{threadTitle}", method = RequestMethod.POST)
-    public ResponseEntity createComment(@RequestBody Comment comment, @PathVariable("threadTitle") String threadTitle,
+    @RequestMapping(value = "/comments", method = RequestMethod.POST)
+    public ResponseEntity createComment(@RequestBody Comment comment,
                                         @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
@@ -43,7 +46,7 @@ public class CommentControllerImpl implements CommentController {
 
                 if (permissionService.isOperationAvailable("CommentControllerImpl.createComment", crtUserRole)) {
 
-                    commentService.addComment(comment.getOwner(), comment.getMessage(), threadTitle);
+                    commentService.addComment(comment);
 
                     return new ResponseEntity(HttpStatus.CREATED);
                 } else {
@@ -54,18 +57,22 @@ public class CommentControllerImpl implements CommentController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    @RequestMapping(value = "/comments/owner", method = RequestMethod.POST)
-    public ResponseEntity<?> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/{commentID}", method = RequestMethod.GET)
+    public ResponseEntity<?> getComment(@PathVariable("commentID") Integer commentID,
+                                        @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (permissionService.isOperationAvailable("CommentControllerImpl.getCommentByOwnerAndTimeStamp", crtUserRole)) {
-                    Comment com = commentService.getCommentByOwnerAndTimeStamp(comment.getOwner(), comment.getTimeStamp());
+                if (permissionService.isOperationAvailable("CommentControllerImpl.getComment", crtUserRole)) {
+                    Comment com = commentService.getComment(commentID);
 
                     return new ResponseEntity<>(com, HttpStatus.OK);
                 } else {
@@ -76,19 +83,22 @@ public class CommentControllerImpl implements CommentController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    @RequestMapping(value = "/comments/thread/{threadTitle}", method = RequestMethod.GET)
-    public ResponseEntity<?> getCommentsForThread(@PathVariable("threadTitle") String threadTitle,
-                                                  @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/thread", method = RequestMethod.POST)
+    public ResponseEntity<?> getCommentsInThread(@RequestBody ForumThreadIdentifier threadInfo,
+                                                 @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
-                if (permissionService.isOperationAvailable("CommentControllerImpl.getCommentsForThread", crtUserRole)) {
-                    List<Comment> commentList = commentService.getCommentsForThread(threadTitle);
+                if (permissionService.isOperationAvailable("CommentControllerImpl.getCommentsInThread", crtUserRole)) {
+                    List<Comment> commentList = commentService.getCommentsInThread(threadInfo.getTitle(), threadInfo.getTopic());
 
                     return new ResponseEntity<>(commentList, HttpStatus.OK);
                 } else {
@@ -99,18 +109,22 @@ public class CommentControllerImpl implements CommentController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
-    public ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
+    public ResponseEntity updateComment(@RequestBody CommentUpdateInfo commentUpdateInfo,
+                                        @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("CommentControllerImpl.updateComment", crtUserRole)) {
-                    commentService.updateComment(comment.getOwner(), comment.getTimeStamp(), comment.getMessage());
+                    commentService.updateComment(commentUpdateInfo.getCommentID(), commentUpdateInfo.getNewMessage());
 
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
@@ -121,18 +135,22 @@ public class CommentControllerImpl implements CommentController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    @RequestMapping(value = "/comments/delete", method = RequestMethod.DELETE)
-    public ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/{commentID}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteComment(@PathVariable("commentID") Integer commentID,
+                                        @RequestHeader(value = "token") String token) {
         try {
             if (sessionService.isSessionActive(token)) {
                 String crtUserRole = sessionService.getUserRoleByToken(token);
 
                 if (permissionService.isOperationAvailable("CommentControllerImpl.deleteComment", crtUserRole)) {
-                    commentService.deleteComment(comment.getOwner(), comment.getTimeStamp());
+                    commentService.deleteComment(commentID);
 
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
@@ -143,6 +161,9 @@ public class CommentControllerImpl implements CommentController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        } catch (NotFoundException notFoundException) {
+            return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -426,8 +426,8 @@ INSERT INTO operation VALUES('AdminControllerImpl.getAudit');
 INSERT INTO operation VALUES('AdminControllerImpl.getAuditForUser');
 
 INSERT INTO operation VALUES('CommentControllerImpl.createComment');
-INSERT INTO operation VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp');
-INSERT INTO operation VALUES('CommentControllerImpl.getCommentsForThread');
+INSERT INTO operation VALUES('CommentControllerImpl.getComment');
+INSERT INTO operation VALUES('CommentControllerImpl.getCommentsInThread');
 INSERT INTO operation VALUES('CommentControllerImpl.updateComment');
 INSERT INTO operation VALUES('CommentControllerImpl.deleteComment');
 
@@ -507,13 +507,13 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('CommentCont
 INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'student', true);
 
-INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp', 'profesor', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentByOwnerAndTimeStamp', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'student', true);
 
-INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsForThread', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsForThread', 'profesor', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsForThread', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'student', true);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'administrator', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'profesor', true);

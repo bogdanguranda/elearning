@@ -1,5 +1,6 @@
 package thecerealkillers.elearning.model;
 
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,18 +10,32 @@ import java.util.Date;
  */
 public class Comment {
 
+    private Integer id;
     private String owner;
-    private Date timeStamp;
+    private String topic;
+    private String thread;
     private String message;
+    private Date timeStamp;
 
     public Comment() {
-        message = ""; // DO NOT REMOVE THIS LINE !!! (required for URLs exposed by CommentControllerImlp)
     }
 
-    public Comment(String owner, String message) {
+    public Comment(String owner, String topic, String thread, String message) {
         this.owner = owner;
+        this.topic = topic;
+        this.thread = thread;
         this.message = message;
     }
+
+    /*
+    public Comment(String owner, String topic, String thread, String message, Date timeStamp) {
+        this.owner = owner;
+        this.topic = topic;
+        this.thread = thread;
+        this.message = message;
+        this.timeStamp = timeStamp;
+    }
+    */
 
     public String getOwner() {
         return owner;
@@ -30,12 +45,20 @@ public class Comment {
         this.owner = owner;
     }
 
-    public Date getTimeStamp() {
-        return timeStamp;
+    public String getTopic() {
+        return topic;
     }
 
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getThread() {
+        return thread;
+    }
+
+    public void setThread(String thread) {
+        this.thread = thread;
     }
 
     public String getMessage() {
@@ -46,16 +69,20 @@ public class Comment {
         this.message = message;
     }
 
-    @Override
-    public String toString() {
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String timeStampStr = sdf.format(timeStamp);
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
 
-        return "Comment{" +
-                "owner='" + owner + '\'' +
-                ", timeStamp=" + timeStampStr +
-                ", message='" + message + '\'' +
-                '}';
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
@@ -65,17 +92,38 @@ public class Comment {
 
         Comment comment = (Comment) o;
 
-        if (!owner.equals(comment.owner)) return false;
-        if (!timeStamp.equals(comment.timeStamp)) return false;
-        return message.equals(comment.message);
+        if (id != null ? !id.equals(comment.id) : comment.id != null) return false;
+        if (owner != null ? !owner.equals(comment.owner) : comment.owner != null) return false;
+        if (topic != null ? !topic.equals(comment.topic) : comment.topic != null) return false;
+        if (thread != null ? !thread.equals(comment.thread) : comment.thread != null) return false;
+        if (message != null ? !message.equals(comment.message) : comment.message != null) return false;
+        return timeStamp != null ? timeStamp.equals(comment.timeStamp) : comment.timeStamp == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = owner.hashCode();
-        result = 31 * result + timeStamp.hashCode();
-        result = 31 * result + message.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (topic != null ? topic.hashCode() : 0);
+        result = 31 * result + (thread != null ? thread.hashCode() : 0);
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (timeStamp != null ? timeStamp.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStampStr = sdf.format(timeStamp);
+
+        return "Comment{" +
+                "id=" + id +
+                ", owner='" + owner + '\'' +
+                ", topic='" + topic + '\'' +
+                ", thread='" + thread + '\'' +
+                ", message='" + message + '\'' +
+                ", timeStamp=" + timeStampStr +
+                '}';
     }
 }
