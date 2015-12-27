@@ -217,7 +217,8 @@ public class CommentControllerImpl implements CommentController {
                         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                     }
                 } else {
-                    return new ResponseEntity<>("Nice try :P.", HttpStatus.UNPROCESSABLE_ENTITY);
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), Constants.TOKEN_DIFFERENT_USERNAME, false));
+                    return new ResponseEntity<>(Constants.TOKEN_DIFFERENT_USERNAME, HttpStatus.UNPROCESSABLE_ENTITY);
                 }
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), serviceException.getMessage(), false));

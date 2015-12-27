@@ -57,4 +57,9 @@ public class Constants {
     public static final String ADMIN_SUSPEND = "User account suspended.";
     public static final String ADMIN_REACTIVATE = "User account reactivate.";
     public static final String ADMIN_CHANGE_TYPE = "User account's type was changed.";
+
+
+    //----------------------------------BreachAttempt---------------------------------------------------------------------------------------
+
+    public static final String TOKEN_DIFFERENT_USERNAME = "Nice try :P.";
 }
