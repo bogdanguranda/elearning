@@ -32,7 +32,7 @@ public class AuditServiceImpl implements AuditService {
                 auditDAO.addEvent(auditItem);
             }
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.ADD_EVENT + daoException.getMessage());
+            throw new ServiceException(ServiceException.ADD_EVENT);
         }
     }
 }
