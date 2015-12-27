@@ -115,5 +115,5 @@ public interface UserService {
      *
      * @throws ServiceException
      */
-    Boolean usernameExists(String username) throws ServiceException;
+    Boolean exists(String username) throws ServiceException;
 }

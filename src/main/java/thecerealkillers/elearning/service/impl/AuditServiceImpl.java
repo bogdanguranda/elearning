@@ -1,7 +1,6 @@
 package thecerealkillers.elearning.service.impl;
 
 
-import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.service.AuditService;
@@ -29,7 +28,7 @@ public class AuditServiceImpl implements AuditService {
     @Override
     public void addEvent(AuditItem auditItem) throws ServiceException {
         try {
-            if (userService.usernameExists(auditItem.getUsername())) {
+            if (userService.exists(auditItem.getUsername())) {
                 auditDAO.addEvent(auditItem);
             }
         } catch (DAOException daoException) {

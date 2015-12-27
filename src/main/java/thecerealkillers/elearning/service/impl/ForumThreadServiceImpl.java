@@ -37,7 +37,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     public void add(ForumThread newForumThread) throws ServiceException, NotFoundException {
         try {
             if (!exists(newForumThread.getTitle(), newForumThread.getTopic())) {
-                if (userService.usernameExists(newForumThread.getOwner())) {
+                if (userService.exists(newForumThread.getOwner())) {
                     if (topicService.exists(newForumThread.getTopic())) {
                         forumThreadDAO.add(newForumThread);
                     } else {
@@ -92,7 +92,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     @Override
     public List<ForumThread> getThreadsOwnedByUser(String userName) throws ServiceException, NotFoundException {
         try {
-            if (userService.usernameExists(userName)) {
+            if (userService.exists(userName)) {
                 return forumThreadDAO.getThreadsOwnedByUser(userName);
             } else {
                 throw new NotFoundException(NotFoundException.NO_USER);
@@ -107,7 +107,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         try {
             if (exists(threadToUpdate.getTitle(), threadToUpdate.getTopic())) {
                 if (!exists(newTitle, threadToUpdate.getTopic())) {
-                    if (userService.usernameExists(threadToUpdate.getOwner())) {
+                    if (userService.exists(threadToUpdate.getOwner())) {
                         forumThreadDAO.updateThread(newTitle, threadToUpdate);
                     } else {
                         throw new NotFoundException(NotFoundException.NO_USER);

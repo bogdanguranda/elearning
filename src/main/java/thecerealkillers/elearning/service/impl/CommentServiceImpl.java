@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             if (topicService.exists(comment.getTopic())) {
                 if (forumThreadService.exists(comment.getThread(), comment.getTopic())) {
-                    if (userService.usernameExists(comment.getOwner())) {
+                    if (userService.exists(comment.getOwner())) {
                         commentDAO.addComment(comment);
                     } else {
                         throw new NotFoundException(NotFoundException.NO_USER);

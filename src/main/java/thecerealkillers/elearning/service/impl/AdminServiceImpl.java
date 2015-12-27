@@ -16,9 +16,6 @@ import thecerealkillers.elearning.dao.UserRoleDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Created by Dani.
@@ -60,7 +57,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void suspendAccount(AccountSuspensionInfo suspendInfo) throws ServiceException, NotFoundException {
         try {
-            if (userService.usernameExists(suspendInfo.getAccountUsername())) {
+            if (userService.exists(suspendInfo.getAccountUsername())) {
                 userStatusDAO.suspendAccount(suspendInfo.getAccountUsername());
             } else {
                 throw new NotFoundException(NotFoundException.NO_USER);
@@ -73,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void reactivateAccount(AccountSuspensionInfo reactivateInfo) throws ServiceException, NotFoundException {
         try {
-            if (userService.usernameExists(reactivateInfo.getAccountUsername())) {
+            if (userService.exists(reactivateInfo.getAccountUsername())) {
                 userStatusDAO.activateAccount(reactivateInfo.getAccountUsername());
             } else {
                 throw new NotFoundException(NotFoundException.NO_USER);
@@ -86,7 +83,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void changeAccountType(ChangeAccountTypeInfo accountTypeInfo) throws ServiceException, NotFoundException {
         try {
-            if (userService.usernameExists(accountTypeInfo.getAccountUsername())) {
+            if (userService.exists(accountTypeInfo.getAccountUsername())) {
                 userRoleDAO.changeRole(accountTypeInfo.getAccountUsername(), accountTypeInfo.getNewAccountType());
             } else {
                 throw new NotFoundException(NotFoundException.NO_USER);

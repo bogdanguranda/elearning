@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean usernameExists(String username) throws ServiceException{
+    public Boolean exists(String username) throws ServiceException{
         try {
             return !userDAO.isUsernameAvailable(username);
         } catch (DAOException dao_exception) {
