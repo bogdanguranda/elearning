@@ -289,7 +289,7 @@ DROP TABLE IF EXISTS `elearning_db`.`topic` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`topic` (
   `title` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`title`)  COMMENT '')
+  PRIMARY KEY (`title`) COMMENT '')
 ENGINE = InnoDB;
 
 
@@ -299,13 +299,18 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`thread` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`thread` (
+  `topic` VARCHAR(45) NOT NULL COMMENT '',
   `title` VARCHAR(45) NOT NULL COMMENT '',
-  `owner` VARCHAR(45) NULL COMMENT '',
-  PRIMARY KEY (`title`)  COMMENT '',
-  INDEX `username_idx` (`owner` ASC)  COMMENT '',
+  `owner` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`topic`, `title`)  COMMENT '',
   CONSTRAINT `thread_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `thread_topic_fk`
+    FOREIGN KEY (`topic`)
+    REFERENCES `elearning_db`.`topic` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -317,60 +322,21 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`comment` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`comment` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
   `owner` VARCHAR(45) NOT NULL COMMENT '',
+  `topic` VARCHAR(45) NOT NULL COMMENT '',
+  `thread` VARCHAR(45) NOT NULL COMMENT '',
+  `message` TEXT NOT NULL COMMENT '',
   `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
-  `message` TEXT NULL COMMENT '',
-  PRIMARY KEY (`owner`, `timestamp`)  COMMENT '',
+  INDEX `threadID_idx` (`id` ASC)  COMMENT '',
   CONSTRAINT `comment_user_username_fk`
     FOREIGN KEY (`owner`)
     REFERENCES `elearning_db`.`user` (`username`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `elearning_db`.`thread_comment`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`thread_comment` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`thread_comment` (
-  `thread` VARCHAR(45) NOT NULL COMMENT '',
-  `commentOwner` VARCHAR(45) NOT NULL COMMENT '',
-  `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
-  PRIMARY KEY (`thread`, `commentOwner`, `timestamp`)  COMMENT '',
-  INDEX `owner_idx` (`commentOwner` ASC, `timestamp` ASC)  COMMENT '',
-  CONSTRAINT `thread_comment_thread_title_fk`
-    FOREIGN KEY (`thread`)
-    REFERENCES `elearning_db`.`thread` (`title`)
-    ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `thread_comment_composite_fk`
-    FOREIGN KEY (`commentOwner` , `timestamp`)
-    REFERENCES `elearning_db`.`comment` (`owner` , `timestamp`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `elearning_db`.`topic_thread`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`topic_thread` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`topic_thread` (
-  `topic` VARCHAR(45) NOT NULL COMMENT '',
-  `thread` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`topic`, `thread`)  COMMENT '',
-  INDEX `title_idx` (`thread` ASC)  COMMENT '',
-  CONSTRAINT `topic_thread_topic_title_fk`
-    FOREIGN KEY (`topic`)
-    REFERENCES `elearning_db`.`topic` (`title`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `topic_thread_thread_title_fk`
-    FOREIGN KEY (`thread`)
-    REFERENCES `elearning_db`.`thread` (`title`)
+  CONSTRAINT `comment_topic_fk`
+    FOREIGN KEY (`topic`, `thread`)
+    REFERENCES `elearning_db`.`thread` (`topic`, `title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -384,7 +350,7 @@ DROP TABLE IF EXISTS `elearning_db`.`session` ;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `token` VARCHAR(36) NULL COMMENT '',
-  `creationTimestamp` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
+  `creationTimestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
   PRIMARY KEY (`username`)  COMMENT '',
   UNIQUE INDEX `token_UNIQUE` (`token` ASC)  COMMENT '',
   CONSTRAINT `session_username_fk`
@@ -394,15 +360,421 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`session` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-INSERT INTO role VALUE ('student');
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`operation`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`operation` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`operation` (
+	`operationName` VARCHAR(300) NOT NULL COMMENT '',
+	PRIMARY KEY (`operationName`) COMMENT '',
+	UNIQUE INDEX `operation_operationName_UNIQUE` (`operationName` ASC)  COMMENT '')
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`permission`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`permission` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`permission` (
+  `operationName` VARCHAR(300) NOT NULL COMMENT '',
+  `roleName` VARCHAR(45) NOT NULL COMMENT '',
+  `permission` boolean  NOT NULL DEFAULT FALSE COMMENT '',
+  PRIMARY KEY (`operationName`, `roleName`)  COMMENT '',
+  INDEX `permission_operationName_idx` (`operationName` ASC)  COMMENT '',
+  CONSTRAINT `permission_operationName_fk`
+    FOREIGN KEY (`operationName`)
+    REFERENCES `elearning_db`.`operation` (`operationName`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `permission_roleName_fk`
+    FOREIGN KEY (`roleName`)
+    REFERENCES `elearning_db`.`role` (`name`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`audit`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`audit`;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`audit` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `username` VARCHAR(45) NOT NULL COMMENT '',
+  `operationName` VARCHAR(300) NOT NULL COMMENT '',
+  `dataReceived` TEXT NOT NULL COMMENT '',
+  `response` TEXT NOT NULL COMMENT '',
+  `success` BOOLEAN NOT NULL COMMENT '',
+  `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',
+  INDEX `threadID_idx` (`id` ASC)  COMMENT '',
+  CONSTRAINT `audit_user_username_fk`
+    FOREIGN KEY (`username`)
+    REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `audit__operationName_fk`
+    FOREIGN KEY (`operationName`)
+    REFERENCES `elearning_db`.`operation` (`operationName`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+
+-- ===================================================================
+-- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
+
+
+-- Inserts user roles
+-- -------------------------------------------------------------------
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('profesor');
+INSERT INTO role VALUE ('student');
+INSERT INTO role VALUE ('mock');
 
+
+-- Adds admin user account
+-- -------------------------------------------------------------------
+INSERT INTO user VALUES('CerealKillersAdmin1', 'cereal', 'killers', 'thecerealkillers.pc@gmail.com', 'af212b1d8d174716cc1da021b4c5a9c4f5f1b569c22ddb88660a9f242a58e77e43622af22b5c8178a51efaaf93b2bcb63719b5b5d85eb06e1de19610f5e86d3b', 'SYpspH4x6cwPtBf72UoB8Z4l13O49tfBYmGIcGhfgV5hAJGaBojqk3JnvvToo0u6e7PlFFqsOXyDsefrIWC9BRFnBBJrDbQcSHqDs3LiZGtOjmnL9z71He98bhsjYNxw');
+INSERT INTO user_status VALUES ('CerealKillersAdmin1', TRUE, DEFAULT, '');
+INSERT INTO user_role VALUE ('CerealKillersAdmin1', 'administrator');
+
+
+-- Adds mock user account in order to store in audit table an event for
+-- which it's not possible to determine an username.
+-- -------------------------------------------------------------------
+INSERT INTO user VALUES(':anonymousUser:', 'firstName', 'lastName', 'mockUserEmail', '', '');
+INSERT INTO user_status VALUES (':anonymousUser:', FALSE, CAST('2009-05-25' AS DATETIME), 'mockUser');
+INSERT INTO user_role VALUE (':anonymousUser:', 'mock');
+
+
+-- Inserts operations START
+-- -------------------------------------------------------------------
+INSERT INTO operation VALUES('AdminControllerImpl.createAccount');
+INSERT INTO operation VALUES('AdminControllerImpl.suspendAccount');
+INSERT INTO operation VALUES('AdminControllerImpl.reactivateAccount');
+INSERT INTO operation VALUES('AdminControllerImpl.changeAccountType');
+INSERT INTO operation VALUES('AdminControllerImpl.getAudit');
+INSERT INTO operation VALUES('AdminControllerImpl.getAuditForUser');
+
+INSERT INTO operation VALUES('CommentControllerImpl.createComment');
+INSERT INTO operation VALUES('CommentControllerImpl.getComment');
+INSERT INTO operation VALUES('CommentControllerImpl.getCommentsInThread');
+INSERT INTO operation VALUES('CommentControllerImpl.updateComment');
+INSERT INTO operation VALUES('CommentControllerImpl.deleteComment');
+
+INSERT INTO operation VALUES('CoursesControllerImpl.getAllCourses');
+INSERT INTO operation VALUES('CoursesControllerImpl.createCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.deleteCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.getCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.enrollUserToCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.unEnrollUserFromCourse');
+INSERT INTO operation VALUES('CoursesControllerImpl.getEnrolledUsers');
+
+INSERT INTO operation VALUES('GroupsControllerImpl.getGroups');
+
+INSERT INTO operation VALUES('ForumThreadControllerImpl.createThread');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThread');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsInTopic');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.getAll');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.updateThread');
+INSERT INTO operation VALUES('ForumThreadControllerImpl.deleteThread');
+
+INSERT INTO operation VALUES('MessageControllerImpl.createMessage');
+INSERT INTO operation VALUES('MessageControllerImpl.getAllMessages');
+INSERT INTO operation VALUES('MessageControllerImpl.getMessagesBetweenUsers');
+INSERT INTO operation VALUES('MessageControllerImpl.getMessagesByUser');
+INSERT INTO operation VALUES('MessageControllerImpl.deleteUserMessages');
+
+INSERT INTO operation VALUES('TopicControllerImpl.createTopic');
+INSERT INTO operation VALUES('TopicControllerImpl.getAllTopics');
+INSERT INTO operation VALUES('TopicControllerImpl.getTopicByTitle');
+INSERT INTO operation VALUES('TopicControllerImpl.updateTopic');
+INSERT INTO operation VALUES('TopicControllerImpl.deleteTopicByTitle');
+
+INSERT INTO operation VALUES('UserControllerImpl.authenticate');
+INSERT INTO operation VALUES('UserControllerImpl.signOut');
+INSERT INTO operation VALUES('UserControllerImpl.signUp');
+INSERT INTO operation VALUES('UserControllerImpl.get');
+INSERT INTO operation VALUES('UserControllerImpl.getAll');
+INSERT INTO operation VALUES('UserControllerImpl.validateUserAccount');
+INSERT INTO operation VALUES('UserControllerImpl.resetPasswordRequest');
+INSERT INTO operation VALUES('UserControllerImpl.resetPassword');
+INSERT INTO operation VALUES('UserControllerImpl.changePassword');
+
+
+INSERT INTO operation VALUES('ModuleControllerImpl.createModule');
+INSERT INTO operation VALUES('ModuleControllerImpl.deleteModule');
+INSERT INTO operation VALUES('ModuleControllerImpl.getAll');
+INSERT INTO operation VALUES('ModuleControllerImpl.get');
+INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
+-- -------------------------------------------------------------------
+-- Inserts operations END
+
+
+-- Inserts permissions START
+-- -------------------------------------------------------------------
+-- ##################################################=-AdminControllerImpl START-=############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.createAccount', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.suspendAccount', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.reactivateAccount', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.changeAccountType', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAudit', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('AdminControllerImpl.getAuditForUser', 'mock', false);
+-- ###################################################=-AdminControllerImpl END-=#############################################################################
+
+-- #################################################=-CommentControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.createComment', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getComment', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.getCommentsInThread', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.updateComment', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CommentControllerImpl.deleteComment', 'mock', false);
+-- ##################################################=-CommentControllerImpl END-=############################################################################
+
+-- #################################################=-CoursesControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getAllCourses', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.createCourse', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.deleteCourse', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getCourse', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.enrollUserToCourse', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.unEnrollUserFromCourse', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('CoursesControllerImpl.getEnrolledUsers', 'mock', false);
+-- ##################################################=-CoursesControllerImpl END-=############################################################################
+
+-- #################################################=-GroupsControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('GroupsControllerImpl.getGroups', 'mock', false);
+-- ###################################################=-GroupsControllerImpl END-=###########################################################################
+
+-- #################################################=-ModuleControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.createModule', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.createModule', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.createModule', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.createModule', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.deleteModule', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.deleteModule', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.deleteModule', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.deleteModule', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.getAll', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.getAll', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.get', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.get', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.get', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.get', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'mock', false);
+-- ###################################################=-ModuleControllerImpl END-=###########################################################################
+
+-- ###############################################=-ForumThreadControllerImpl START-=#########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThread', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsInTopic', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getThreadsOwnedByUser', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.getAll', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.updateThread', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.deleteThread', 'mock', false);
+-- ################################################=-ForumThreadControllerImpl END-=##########################################################################
+
+-- #################################################=-MessageControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.createMessage', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getAllMessages', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesBetweenUsers', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.getMessagesByUser', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('MessageControllerImpl.deleteUserMessages', 'mock', false);
+-- ##################################################=-MessageControllerImpl END-=############################################################################
+
+-- ##################################################=-TopicControllerImpl START-=############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.createTopic', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getAllTopics', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.getTopicByTitle', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.updateTopic', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'profesor', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'student', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('TopicControllerImpl.deleteTopicByTitle', 'mock', false);
+-- ###################################################=-TopicControllerImpl END-=#############################################################################
+
+-- ##################################################=-UserControllerImpl START-=#############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.get', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.getAll', 'mock', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'student', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'mock', false);
+-- ###################################################=-UserControllerImpl END-=##############################################################################
+-- -------------------------------------------------------------------
+-- Inserts permissions END
+
+
+-- Inserts topic START
+-- -------------------------------------------------------------------
 INSERT INTO topic VALUES ('General Discussion');
 INSERT INTO topic VALUES ('Courses');
 INSERT INTO topic VALUES ('Books & Tutorials');
 INSERT INTO topic VALUES ('About E-learning');
 INSERT INTO topic VALUES ('Off Topic');
+-- -------------------------------------------------------------------
+-- Inserts topic END
+
+
+-- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
+-- ===================================================================
+
+
 
 -- dev only start
 INSERT INTO user VALUES('username1', 'firstName', 'lastName', 'email1', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');

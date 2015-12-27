@@ -1,12 +1,13 @@
 package thecerealkillers.elearning.controller;
 
+
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
+import thecerealkillers.elearning.model.CommentUpdateInfo;
 import thecerealkillers.elearning.model.Comment;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 
 /**
@@ -14,22 +15,33 @@ import java.util.List;
  */
 public interface CommentController {
 
-    @RequestMapping(value = "/comments/add/{owner}/{threadTitle}", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/comments", method = RequestMethod.POST)
     ResponseEntity createComment(
-            @RequestParam(value = "message", required = true) String message,
-            @PathVariable("owner") String owner,
-            @PathVariable("threadTitle") String threadTitle,
+            @RequestBody Comment comment,
             @RequestHeader(value = "token") String token);
 
-    @RequestMapping(value = "/comments/owner", method = RequestMethod.POST)
-    ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
 
-    @RequestMapping(value = "/comments/thread/{threadTitle}", method = RequestMethod.GET)
-    ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token);
+    @RequestMapping(value = "/comments/{commentID}", method = RequestMethod.GET)
+    ResponseEntity<?> getComment(
+            @PathVariable("commentID") Integer commentID,
+            @RequestHeader(value = "token") String token);
+
+
+    @RequestMapping(value = "/comments/thread", method = RequestMethod.POST)
+    ResponseEntity<?> getCommentsInThread(
+            @RequestBody ForumThreadIdentifier threadInfo,
+            @RequestHeader(value = "token") String token);
+
 
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
-    ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
+    ResponseEntity updateComment(
+            @RequestBody CommentUpdateInfo commentUpdateInfo,
+            @RequestHeader(value = "token") String token);
 
-    @RequestMapping(value = "/comments/delete", method = RequestMethod.DELETE)
-    ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token);
+
+    @RequestMapping(value = "/comments/{commentID}", method = RequestMethod.DELETE)
+    ResponseEntity deleteComment(
+            @PathVariable("commentID") Integer commentID,
+            @RequestHeader(value = "token") String token);
 }

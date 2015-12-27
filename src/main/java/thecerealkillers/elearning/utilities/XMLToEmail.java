@@ -30,9 +30,6 @@ public class XMLToEmail {
     private static String FIELD_LIST_NAME = "fields";
 
 
-
-    ///=========================================Public methods======================================================
-
     /**
      * Calls all the required methods to read and convert from XML to Email, setting subject and the email body for
      * the returned email. If the email format requires also will add user name and the url in the places determined
@@ -69,8 +66,6 @@ public class XMLToEmail {
     }
 
 
-
-    ///========================================Private methods======================================================
 
     /**
      * Retrieves data that will be displayed in the footer of the email

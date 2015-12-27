@@ -3,11 +3,13 @@ package thecerealkillers.elearning.dao;
 
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.UserStatus;
+import org.springframework.stereotype.Repository;
 
 
 /**
  * Created by Dani
  */
+@Repository
 public interface UserStatusDAO {
 
     /**
@@ -34,6 +36,13 @@ public interface UserStatusDAO {
      * @param username
      */
     void activateAccount(String username) throws DAOException;
+
+    /**
+     * Suspends the account for the user with the username @userName.
+     *
+     * @param username
+     */
+    void suspendAccount(String username) throws DAOException;
 
     /**
      * Deletes the account status for the user with username @userName

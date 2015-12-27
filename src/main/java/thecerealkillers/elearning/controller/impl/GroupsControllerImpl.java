@@ -1,19 +1,27 @@
 package thecerealkillers.elearning.controller.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 import thecerealkillers.elearning.controller.GroupsController;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.Group;
-import thecerealkillers.elearning.service.GroupsService;
+import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.service.GroupsService;
+import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.model.AuditItem;
+import thecerealkillers.elearning.model.Group;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+
 /**
  * Created with love by Lucian and @Pi on 22.12.2015.
+ * Modified by Dani.
  */
 
 @RestController
@@ -21,18 +29,47 @@ import java.util.List;
 public class GroupsControllerImpl implements GroupsController {
 
     @Autowired
+    private AuditService auditService;
+
+    @Autowired
     private GroupsService groupsService;
+
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private PermissionService permissionService;
+
+
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
-    public ResponseEntity<List<Group>> getGroups(@RequestHeader(value = "token") String token) {
+    public ResponseEntity<?> getGroups(@RequestHeader(value = "token") String token) {
+        String actionName = "GroupsControllerImpl.getGroups";
+
         try {
-            sessionService.getSessionByToken(token);
-            List<Group> groupList = groupsService.getAll();
-            return new ResponseEntity<>(groupList, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "", Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    List<Group> groupList = groupsService.getAll();
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.GROUPS_GET_ALL, true));
+                    return new ResponseEntity<>(groupList, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

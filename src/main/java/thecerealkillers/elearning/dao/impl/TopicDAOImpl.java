@@ -1,5 +1,7 @@
 package thecerealkillers.elearning.dao.impl;
 
+
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.TopicDAO;
 import thecerealkillers.elearning.model.Topic;
@@ -32,6 +34,7 @@ public class TopicDAOImpl implements TopicDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
     @Override
     public void add(Topic newTopic) throws DAOException {
         try {
@@ -47,7 +50,7 @@ public class TopicDAOImpl implements TopicDAO {
     }
 
     @Override
-    public Topic get(String title) throws DAOException {
+    public Topic get(String title) throws DAOException, NotFoundException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("title", title);
             String command = "SELECT * FROM topic WHERE title = :title";
@@ -64,16 +67,20 @@ public class TopicDAOImpl implements TopicDAO {
             });
 
             if (topicList.size() == 0)
-                throw new DAOException("No topic with title :  " + title);
+                throw new NotFoundException(NotFoundException.NO_TOPIC);
 
             return topicList.get(0);
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
+
     }
 
     @Override
-    public List<Topic> getAll() throws DAOException {
+    public List<Topic> getAll() throws DAOException, NotFoundException {
         try {
             String command = "SELECT * FROM topic";
             List<Topic> topicList;
@@ -90,9 +97,12 @@ public class TopicDAOImpl implements TopicDAO {
             });
 
             if (topicList.size() == 0)
-                throw new DAOException("No topics in the database");
+                throw new NotFoundException(NotFoundException.NO_TOPICS);
 
             return topicList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }

@@ -1,9 +1,17 @@
 package thecerealkillers.elearning.controller.impl;
 
+
 import thecerealkillers.elearning.controller.CommentController;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.service.CommentService;
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
+import thecerealkillers.elearning.service.PermissionService;
+import thecerealkillers.elearning.model.CommentUpdateInfo;
 import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.service.CommentService;
+import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,72 +30,211 @@ import java.util.List;
 public class CommentControllerImpl implements CommentController {
 
     @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
     private CommentService commentService;
+
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private AuditService auditService;
+
+
     @Override
-    public ResponseEntity createComment(@RequestParam(value = "message", required = true) String message, @PathVariable("owner") String owner, @PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments", method = RequestMethod.POST)
+    public ResponseEntity createComment(@RequestBody Comment comment,
+                                        @RequestHeader(value = "token") String token) {
+        String actionName = "CommentControllerImpl.createComment";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, comment.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            commentService.addComment(owner, message, threadTitle);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity(HttpStatus.CREATED);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    commentService.addComment(comment);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, comment.toString2(), Constants.COMMENT_ADD, true));
+                    return new ResponseEntity(HttpStatus.CREATED);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, comment.toString2(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, comment.toString2(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, comment.toString2(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<Comment> getCommentByOwnerAndTimeStamp(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/{commentID}", method = RequestMethod.GET)
+    public ResponseEntity<?> getComment(@PathVariable("commentID") Integer commentID,
+                                        @RequestHeader(value = "token") String token) {
+        String actionName = "CommentControllerImpl.getComment";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, commentID.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            Comment com = commentService.getCommentByOwnerAndTimeStamp(comment.getOwner(), comment.getTimeStamp());
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity<>(com, HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    Comment com = commentService.getComment(commentID);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), Constants.COMMENT_GET, true));
+                    return new ResponseEntity<>(com, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<Comment>> getCommentsForThread(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/thread", method = RequestMethod.POST)
+    public ResponseEntity<?> getCommentsInThread(@RequestBody ForumThreadIdentifier threadInfo,
+                                                 @RequestHeader(value = "token") String token) {
+        String actionName = "CommentControllerImpl.getCommentsInThread";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, threadInfo.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            List<Comment> commentList = commentService.getCommentsForThread(threadTitle);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity<>(commentList, HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    List<Comment> commentList = commentService.getCommentsInThread(threadInfo.getTitle(), threadInfo.getTopic());
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), Constants.COMMENT_GET_IN_THREAD, true));
+                    return new ResponseEntity<>(commentList, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity updateComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/update", method = RequestMethod.POST)
+    public ResponseEntity updateComment(@RequestBody CommentUpdateInfo commentUpdateInfo,
+                                        @RequestHeader(value = "token") String token) {
+        String actionName = "CommentControllerImpl.updateComment";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, commentUpdateInfo.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            commentService.updateComment(comment.getOwner(), comment.getTimeStamp(), comment.getMessage());
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity(HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    commentService.updateComment(commentUpdateInfo.getCommentID(), commentUpdateInfo.getNewMessage());
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, commentUpdateInfo.toString(), Constants.COMMENT_UPDATE, true));
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, commentUpdateInfo.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, commentUpdateInfo.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, commentUpdateInfo.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity deleteComment(@RequestBody Comment comment, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/comments/{commentID}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteComment(@PathVariable("commentID") Integer commentID,
+                                        @RequestHeader(value = "token") String token) {
+        String actionName = "CommentControllerImpl.deleteComment";
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, commentID.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            commentService.deleteComment(comment.getOwner(), comment.getTimeStamp());
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity(HttpStatus.OK);
+            try {
+                Comment comment = commentService.getComment(commentID);
+
+                if (usernameForToken.compareTo(comment.getOwner()) == 0) {
+                    if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                        commentService.deleteComment(commentID);
+
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), Constants.COMMENT_DELETE, true));
+                        return new ResponseEntity(HttpStatus.OK);
+                    } else {
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), Constants.NO_PERMISSION, false));
+                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                    }
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), Constants.TOKEN_DIFFERENT_USERNAME, false));
+                    return new ResponseEntity<>(Constants.TOKEN_DIFFERENT_USERNAME, HttpStatus.UNPROCESSABLE_ENTITY);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, commentID.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

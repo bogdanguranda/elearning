@@ -1,7 +1,9 @@
 package thecerealkillers.elearning.dao.impl;
 
+
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.UserDAO;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.model.User;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -30,10 +32,11 @@ public class UserDAOImpl implements UserDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
     @Override
     public void signUp(User user) throws DAOException {
         try {
-            String sqlCommand = "insert into elearning_db.user values(:username, :firstName, :lastName, :email, :hash, :salt);";
+            String sqlCommand = "insert into user values(:username, :firstName, :lastName, :email, :hash, :salt);";
             Map<String, String> namedParameters = new HashMap<>();
 
             namedParameters.put("username", user.getUsername());
@@ -50,9 +53,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User get(String username) throws DAOException {
+    public User get(String username) throws DAOException, NotFoundException {
         try {
-            String sql = "select * from elearning_db.user where username = :username;";
+            String sql = "select * from user where username = :username;";
             Map<String, String> namedParameters = Collections.singletonMap("username", username);
 
             List<User> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<User>() {
@@ -70,92 +73,23 @@ public class UserDAOImpl implements UserDAO {
                     return user;
                 }
             });
+
             if (userList.size() == 0)
-                throw new DAOException("Inexistent user with username: " + username);
+                throw new NotFoundException(NotFoundException.NO_USER);
+
             return userList.get(0);
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
-    /**
-     * Get role for specific username
-     * @param username
-     * @return role
-     * @throws DAOException
-     */
-    @Override
-    public String getRole(String username) throws DAOException {
-        try {
-            String sql = "SELECT role FROM elearning_db.user_role WHERE username = :username;";
-            Map<String, String> namedParameters = Collections.singletonMap("username", username);
-
-            List<String> roleList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("role");
-                }
-            });
-
-            if(roleList.size() == 0) {
-                throw new DAOException("Role does not exist for this username");
-            }
-
-            return roleList.get(0);
-        } catch (Exception ex) {
-            throw new DAOException(ex.getMessage());
-        }
-    }
-
-    @Override
-    public boolean isUsernameAvailable(String username) throws DAOException {
-        try {
-            String sql = "select username from elearning_db.user where username = :username;";
-            Map<String, String> namedParameters = Collections.singletonMap("username", username);
-
-            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("username");
-                }
-            });
-
-            if (userList.size() != 0)
-                throw new DAOException("Username " + username + " is not available.");
-
-            return true;
+        } catch (NotFoundException notFound) {
+            throw notFound;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public boolean isEmailAvailable(String email) throws DAOException {
-        try {
-            String sql = "select username from elearning_db.user where email = :email;";
-            Map<String, String> namedParameters = Collections.singletonMap("email", email);
-
-            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("username");
-                }
-            });
-
-            if (userList.size() != 0)
-                throw new DAOException("Email " + email + " is not available.");
-
-            return true;
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
-    @Override
-    public List<User> getAll() throws DAOException {
+    public List<User> getAllUsers() throws DAOException, NotFoundException {
         try {
             List<User> users;
-            String sqlCommand = "select * from elearning_db.user;";
+            String sqlCommand = "SELECT * FROM user;";
 
             users = namedParameterJdbcTemplate.query(sqlCommand, new RowMapper<User>() {
                 @Override
@@ -166,14 +100,13 @@ public class UserDAOImpl implements UserDAO {
                     user.setEmail(resultSet.getString("email"));
                     user.setFirstName(resultSet.getString("firstName"));
                     user.setLastName(resultSet.getString("lastName"));
-                    //user.setHash(resultSet.getString("hash"));
-                    //user.setSalt(resultSet.getString("salt"));
                     user.setHash("");
                     user.setSalt("");
 
                     return user;
                 }
             });
+
             return users;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
@@ -181,11 +114,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void changePassword(String username, String newHash) throws DAOException  {
+    public void changePassword(String username, String newSalt, String newHash) throws DAOException {
         try {
-            String sqlCommand = "UPDATE elearning_db.user SET hash = :hash WHERE username = :username";
+            String sqlCommand = "UPDATE user SET hash = :hash, salt = :salt WHERE username = :username";
             Map<String, String> namedParameters = new HashMap<>();
 
+            namedParameters.put("salt", newSalt);
             namedParameters.put("hash", newHash);
             namedParameters.put("username", username);
             namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
@@ -196,10 +130,10 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(String username) throws DAOException {
+    public void deleteAccount(String username) throws DAOException {
 
         try {
-            String sqlCommand = "DELETE FROM elearning_db.user WHERE username = :username";
+            String sqlCommand = "DELETE FROM user WHERE username = :username";
             Map<String, String> namedParameters = new HashMap<>();
 
             namedParameters.put("username", username);
@@ -210,4 +144,46 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public Boolean isAvailable(String username, String email) throws DAOException {
+        return isUsernameAvailable(username) && isEmailAvailable(email);
+    }
+
+    @Override
+    public Boolean isUsernameAvailable(String username) throws DAOException {
+        try {
+            String sql = "select username from user where username = :username;";
+            Map<String, String> namedParameters = Collections.singletonMap("username", username);
+
+            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("username");
+                }
+            });
+
+            return userList.size() == 0;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public Boolean isEmailAvailable(String email) throws DAOException {
+        try {
+            String sql = "select username from user where email = :email;";
+            Map<String, String> namedParameters = Collections.singletonMap("email", email);
+
+            List<String> userList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("username");
+                }
+            });
+
+            return userList.size() == 0;
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
 }

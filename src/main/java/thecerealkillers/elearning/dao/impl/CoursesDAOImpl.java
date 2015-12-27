@@ -1,20 +1,24 @@
 package thecerealkillers.elearning.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
+
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Course;
 
-import java.sql.ResultSet;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.sql.SQLException;
+import java.sql.ResultSet;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Repository
 public class CoursesDAOImpl implements CoursesDAO {
@@ -26,6 +30,7 @@ public class CoursesDAOImpl implements CoursesDAO {
     public void setDataSource(DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
 
     @Override
     public void add(Course course) throws DAOException {
@@ -71,9 +76,10 @@ public class CoursesDAOImpl implements CoursesDAO {
                 @Override
                 public Course mapRow(ResultSet resultSet, int i) throws SQLException {
                     Course course = new Course();
+
+                    course.setDetails(resultSet.getString("details"));
                     course.setTitle(resultSet.getString("title"));
                     course.setAbout(resultSet.getString("about"));
-                    course.setDetails(resultSet.getString("details"));
                     course.setOwner(resultSet.getString("owner"));
 
                     return course;
@@ -205,9 +211,9 @@ public class CoursesDAOImpl implements CoursesDAO {
 
             List<String> users;
             String sqlSELECT = "SELECT username FROM group_user WHERE group_user.group = :group;";
-            Map<String, String> namedParameterss = Collections.singletonMap("group", groupName);
+            Map<String, String> namedParameters = Collections.singletonMap("group", groupName);
 
-            users = namedParameterJdbcTemplate.query(sqlSELECT, namedParameterss, new RowMapper<String>() {
+            users = namedParameterJdbcTemplate.query(sqlSELECT, namedParameters, new RowMapper<String>() {
                 @Override
                 public String mapRow(ResultSet resultSet, int i) throws SQLException {
                     return resultSet.getString("username");

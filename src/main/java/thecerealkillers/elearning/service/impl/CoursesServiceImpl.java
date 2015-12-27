@@ -1,24 +1,30 @@
 package thecerealkillers.elearning.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import thecerealkillers.elearning.exceptions.NotFoundException;
+import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.service.CoursesService;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.dao.UserDAO;
-import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
-import thecerealkillers.elearning.service.CoursesService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 public class CoursesServiceImpl implements CoursesService {
 
     @Autowired
     private CoursesDAO coursesDAO;
+
     @Autowired
     private SessionDAO sessionDAO;
+
     @Autowired
     private UserDAO usersDAO;
 
@@ -65,7 +71,7 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     @Override
-    public void enrollUserToCourse(String courseTitle, String username) throws ServiceException {
+    public void enrollUserToCourse(String courseTitle, String username) throws ServiceException, NotFoundException {
         try {
             coursesDAO.get(courseTitle);
             usersDAO.get(username);
@@ -102,7 +108,7 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     @Override
-    public void unEnrollUserFromCourse(String title, String username) throws ServiceException {
+    public void unEnrollUserFromCourse(String title, String username) throws ServiceException, NotFoundException {
         try {
             usersDAO.get(username);
             coursesDAO.get(title);

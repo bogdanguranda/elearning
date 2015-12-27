@@ -1,5 +1,7 @@
 package thecerealkillers.elearning.dao.impl;
 
+
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.ForumThreadDAO;
 import thecerealkillers.elearning.model.ForumThread;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
 
 import java.sql.SQLException;
 import java.sql.ResultSet;
@@ -29,52 +32,56 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
     @Override
-    public void add(ForumThread newForumThread, String topicTitle) throws DAOException {
+    public void add(ForumThread newForumThread) throws DAOException {
         try {
-            String command = "INSERT INTO thread VALUES (:threadTitle, :owner)";
+            String command = "INSERT INTO thread (`title`, `topic`, `owner`) VALUES (:title, :topic, :owner);";
 
             Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("threadTitle", newForumThread.getTitle());
+            namedParameters.put("title", newForumThread.getTitle());
+            namedParameters.put("topic", newForumThread.getTopic());
             namedParameters.put("owner", newForumThread.getOwner());
 
             namedParameterJdbcTemplate.update(command, namedParameters);
-
-            addThreadToTopic(newForumThread.getTitle(), topicTitle);
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public List<ForumThread> getAll() throws DAOException {
+    public List<ForumThread> getAll() throws DAOException, NotFoundException {
         try {
             String command = "SELECT * FROM thread";
-            List<ForumThread> topicList;
+            List<ForumThread> threadList;
 
-            topicList = namedParameterJdbcTemplate.query(command, new RowMapper<ForumThread>() {
+            threadList = namedParameterJdbcTemplate.query(command, new RowMapper<ForumThread>() {
                 @Override
                 public ForumThread mapRow(ResultSet resultSet, int i) throws SQLException {
                     ForumThread thread = new ForumThread();
 
                     thread.setTitle(resultSet.getString("title"));
+                    thread.setTopic(resultSet.getString("topic"));
                     thread.setOwner(resultSet.getString("owner"));
 
                     return thread;
                 }
             });
 
-            if (topicList.size() == 0)
-                throw new DAOException("No threads in the database");
+            if (threadList.size() == 0)
+                throw new NotFoundException(NotFoundException.NO_THREADS);
 
-            return topicList;
+            return threadList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public List<ForumThread> getThreadsOwnedByUser(String userName) throws DAOException {
+    public List<ForumThread> getThreadsOwnedByUser(String userName) throws DAOException, NotFoundException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("owner", userName);
             String command = "SELECT * FROM thread WHERE owner = :owner";
@@ -84,6 +91,7 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                 public ForumThread mapRow(ResultSet resultSet, int i) throws SQLException {
                     ForumThread thread = new ForumThread();
 
+                    thread.setTopic(resultSet.getString("topic"));
                     thread.setTitle(resultSet.getString("title"));
                     thread.setOwner(resultSet.getString("owner"));
 
@@ -92,19 +100,25 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
             });
 
             if (threadList.size() == 0)
-                throw new DAOException("No threads owned by :  " + userName);
+                throw new NotFoundException(NotFoundException.NO_THREADS_BY_OWNER);
 
             return threadList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public ForumThread getThreadByTitle(String threadTitle) throws DAOException {
+    public ForumThread getThread(String threadTitle, String topicTitle) throws DAOException, NotFoundException {
         try {
-            Map<String, String> namedParameters = Collections.singletonMap("title", threadTitle);
-            String command = "SELECT * FROM thread WHERE title = :title";
+            String command = "SELECT * FROM thread WHERE title = :title AND topic = :topic;";
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("title", threadTitle);
+            namedParameters.put("topic", topicTitle);
 
             List<ForumThread> threadList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<ForumThread>() {
                 @Override
@@ -113,57 +127,65 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
 
                     thread.setTitle(resultSet.getString("title"));
                     thread.setOwner(resultSet.getString("owner"));
+                    thread.setTopic(resultSet.getString("topic"));
 
                     return thread;
                 }
             });
 
             if (threadList.size() == 0)
-                throw new DAOException("No thread with title :  " + threadTitle);
+                throw new NotFoundException(NotFoundException.NO_THREAD);
 
             return threadList.get(0);
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public List<ForumThread> getThreadsForTopic(String topic) throws DAOException {
+    public List<ForumThread> getThreadsInTopic(String topic) throws DAOException, NotFoundException {
         try {
             Map<String, String> namedParameters = Collections.singletonMap("topic", topic);
-            String command = "SELECT thread FROM topic_thread WHERE topic = :topic";
+            String command = "SELECT * FROM thread WHERE topic = :topic";
 
-            List<String> threadTitleList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<String>() {
+            List<ForumThread> threadList = namedParameterJdbcTemplate.query(command, namedParameters, new RowMapper<ForumThread>() {
                 @Override
-                public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("thread");
+                public ForumThread mapRow(ResultSet resultSet, int i) throws SQLException {
+                    ForumThread thread = new ForumThread();
+
+                    thread.setOwner(resultSet.getString("owner"));
+                    thread.setTitle(resultSet.getString("title"));
+                    thread.setTopic(resultSet.getString("topic"));
+
+                    return thread;
                 }
             });
 
-            List<ForumThread> threadList = new ArrayList<>();
-
-            for (String title : threadTitleList) {
-                threadList.add(getThreadByTitle(title));
-            }
-
             if (threadList.size() == 0)
-                throw new DAOException("No threads with topic :  " + topic);
+                throw new NotFoundException(NotFoundException.NO_THREADS_FOR_TOPIC);
 
             return threadList;
+        } catch (NotFoundException notFound){
+            throw notFound;
+
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public void updateThread(String oldTitle, ForumThread newThread) throws DAOException {
+    public void updateThread(String newTitle, ForumThread thread) throws DAOException {
         try {
-            String command = "UPDATE thread SET title = :newTitle, owner = :newOwner WHERE title = :oldTitle";
+            String command = "UPDATE thread SET title = :newTitle WHERE title = :oldTitle AND topic = :topic";
 
             Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("oldTitle", oldTitle);
-            namedParameters.put("newTitle", newThread.getTitle());
-            namedParameters.put("newOwner", newThread.getOwner());
+
+            namedParameters.put("oldTitle", thread.getTitle());
+            namedParameters.put("newTitle", newTitle);
+            namedParameters.put("topic", thread.getTopic());
 
             namedParameterJdbcTemplate.update(command, namedParameters);
         } catch (Exception exception) {
@@ -172,24 +194,13 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
     }
 
     @Override
-    public void deleteThreadByTitle(String threadToDelete) throws DAOException {
+    public void deleteThread(ForumThreadIdentifier threadToDelete) throws DAOException {
         try {
-            String command = "DELETE FROM thread WHERE title = :title";
-            Map<String, String> namedParameters = Collections.singletonMap("title", threadToDelete);
-
-            namedParameterJdbcTemplate.update(command, namedParameters);
-        } catch (Exception exception) {
-            throw new DAOException(exception.getMessage());
-        }
-    }
-
-    private void addThreadToTopic(String threadTitle, String topicTitle) throws DAOException {
-        try {
-            String command = "INSERT INTO topic_thread VALUES (:topicTitle, :threadTitle)";
-
+            String command = "DELETE FROM thread WHERE title = :title AND topic = :topic";
             Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("topicTitle", topicTitle);
-            namedParameters.put("threadTitle", threadTitle);
+
+            namedParameters.put("title", threadToDelete.getTitle());
+            namedParameters.put("topic", threadToDelete.getTopic());
 
             namedParameterJdbcTemplate.update(command, namedParameters);
         } catch (Exception exception) {

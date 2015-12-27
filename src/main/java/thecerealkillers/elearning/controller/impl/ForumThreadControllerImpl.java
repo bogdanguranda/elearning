@@ -1,10 +1,18 @@
 package thecerealkillers.elearning.controller.impl;
 
+
 import thecerealkillers.elearning.controller.ForumThreadController;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.model.ForumThreadIdentifier;
 import thecerealkillers.elearning.service.ForumThreadService;
+import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.model.ForumThread;
+import thecerealkillers.elearning.model.AuditItem;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,97 +31,285 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
     @Autowired
     private ForumThreadService forumThreadService;
+
+    @Autowired
+    private PermissionService permissionService;
+
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private AuditService auditService;
+
+
     @Override
-    public ResponseEntity createThread(@RequestBody ForumThread newThread, @PathVariable("topic") String topic, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/create", method = RequestMethod.POST)
+    public ResponseEntity createThread(@RequestBody ForumThread newThread,
+                                       @RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.createThread";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, newThread.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            forumThreadService.add(newThread, topic);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity(HttpStatus.CREATED);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    forumThreadService.add(newThread);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), Constants.THREAD_CREATE_THREAD, true));
+                    return new ResponseEntity(HttpStatus.CREATED);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newThread.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getAll(@RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/thread", method = RequestMethod.POST)
+    public ResponseEntity<?> getThread(@RequestBody ForumThreadIdentifier threadIdentifier,
+                                       @RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.getThread";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, threadIdentifier.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            List<ForumThread> threadList = forumThreadService.getAll();
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity<>(threadList, HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    ForumThread thread = forumThreadService.getThread(threadIdentifier.getTitle(), threadIdentifier.getTopic());
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.THREAD_GET, true));
+                    return new ResponseEntity<>(thread, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/topic/{topicTitle}", method = RequestMethod.GET)
+    public ResponseEntity<?> getThreadsInTopic(@PathVariable("topicTitle") String topicTitle,
+                                               @RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.getThreadsInTopic";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, topicTitle, Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            List<ForumThread> threadList = forumThreadService.getThreadsOwnedByUser(userName);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity<>(threadList, HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    List<ForumThread> threadList = forumThreadService.getThreadsInTopic(topicTitle);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, Constants.THREAD_GET_IN_TOPIC, true));
+                    return new ResponseEntity<>(threadList, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, topicTitle, notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<ForumThread> getThreadByTitle(@PathVariable("threadTitle") String threadTitle, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/owner/{threadOwner}", method = RequestMethod.GET)
+    public ResponseEntity<?> getThreadsOwnedByUser(@PathVariable("threadOwner") String userName,
+                                                   @RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.getThreadsOwnedByUser";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, userName, Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            ForumThread thread = forumThreadService.getThreadByTitle(threadTitle);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity<>(thread, HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    List<ForumThread> threadList = forumThreadService.getThreadsOwnedByUser(userName);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, Constants.THREAD_GET_BY_USER, true));
+                    return new ResponseEntity<>(threadList, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, userName, notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity<List<ForumThread>> getThreadsForTopic(@PathVariable("threadTopic") String threadTopic, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/all", method = RequestMethod.GET)
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.getAll";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "", Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            List<ForumThread> threadList = forumThreadService.getThreadsForTopic(threadTopic);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity<>(threadList, HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    List<ForumThread> threadList = forumThreadService.getAll();
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.THREAD_GET_ALL, true));
+                    return new ResponseEntity<>(threadList, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity updateThread(@PathVariable("oldTitle") String oldTitle, @RequestBody ForumThread newThread, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads/update/{newTitle}", method = RequestMethod.POST)
+    public ResponseEntity updateThread(@PathVariable("newTitle") String newTitle,
+                                       @RequestBody ForumThread thread,
+                                       @RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.updateThread";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                        thread.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            forumThreadService.updateThread(oldTitle, newThread);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity(HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    forumThreadService.updateThread(newTitle, thread);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                            thread.toString(), Constants.THREAD_UPDATE, true));
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                            thread.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                        thread.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                        thread.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @Override
-    public ResponseEntity deleteThreadByTitle(@RequestParam(value = "threadTitle", required = true) String threadTitle, @RequestHeader(value = "token") String token) {
+    @RequestMapping(value = "/threads", method = RequestMethod.DELETE)
+    public ResponseEntity deleteThread(@RequestBody ForumThreadIdentifier threadToDelete,
+                                       @RequestHeader(value = "token") String token) {
+        String actionName = "ForumThreadControllerImpl.deleteThread";
+
         try {
-            sessionService.getSessionByToken(token);
+            if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, threadToDelete.toString(), Constants.SESSION_EXPIRED, false));
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            forumThreadService.deleteThreadByTitle(threadTitle);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-            return new ResponseEntity(HttpStatus.OK);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    forumThreadService.deleteThread(threadToDelete);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), Constants.THREAD_DELETE, true));
+                    return new ResponseEntity(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadToDelete.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

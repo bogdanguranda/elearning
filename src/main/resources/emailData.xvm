@@ -54,6 +54,20 @@
         <emailLine3><![CDATA[<br><br>]]></emailLine3>
         <emailLine3>We recommend you to change the password to something you can remember :).</emailLine3>
     </email>
+    <email purpose="passwordSet">
+        <fields>subject,greeting,emailLine1,emailInsert1,emailLine2,emailInsert2,emailLine3</fields>
+        <subject>Account created by administrator</subject>
+        <greeting>Hello</greeting>
+        <emailLine1><![CDATA[<br><br>]]></emailLine1>
+        <emailLine1>Account username : </emailLine1>
+        <emailInsert1>ignored</emailInsert1>
+        <emailLine2><![CDATA[<br>]]></emailLine2>
+        <emailLine2>Password : </emailLine2>
+        <emailInsert2>ignored</emailInsert2>
+        <emailInsert2>ignored</emailInsert2>
+        <emailLine3><![CDATA[<br><br>]]></emailLine3>
+        <emailLine3>Welcome in our team!</emailLine3>
+    </email>
 
     <footer>
         <fields>messageLine,signature</fields>
@@ -63,3 +77,4 @@
         <signature><![CDATA[<p align='center' style='color:#15a0db'>Cereal Killers Team</p>]]></signature>
     </footer>
 </emailData>
+

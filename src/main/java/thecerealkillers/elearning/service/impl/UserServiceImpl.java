@@ -1,17 +1,12 @@
 package thecerealkillers.elearning.service.impl;
 
 
-import thecerealkillers.elearning.dao.impl.UserRoleDAO;
-import thecerealkillers.elearning.exceptions.PasswordExpertException;
-import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.exceptions.EmailException;
-import thecerealkillers.elearning.utilities.PasswordExpert;
-import thecerealkillers.elearning.utilities.TokenGenerator;
-import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.utilities.EmailExpert;
+import thecerealkillers.elearning.service.UserRoleService;
+import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.UserService;
 import thecerealkillers.elearning.dao.UserStatusDAO;
-import thecerealkillers.elearning.dao.SessionDAO;
+import thecerealkillers.elearning.exceptions.*;
+import thecerealkillers.elearning.utilities.*;
 import thecerealkillers.elearning.dao.UserDAO;
 import thecerealkillers.elearning.model.*;
 
@@ -24,22 +19,23 @@ import java.util.List;
 
 /**
  * Created by cuvidk on 11/8/2015.
- * Modified by Dani
- * - Methods modified : authenticate, signUp
- * - Methods added : validateUserAccount, deleteUserAccount, changePasswordRequest, resetPassword, changePassword,
- * validateCriticalToken, resetPasswordRequest, passwordChange
+ * Modified by Dani.
  */
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
-    @Autowired
-    private UserRoleDAO userRoleDAO;
-    @Autowired
-    private SessionDAO sessionDAO;
+
     @Autowired
     private UserStatusDAO userStatusDAO;
+
+    @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
+    private SessionService sessionService;
+
 
     private String siteUrl = "http://localhost:8080/";
     private String validationUrl = siteUrl + "users/confirmation/create/";
@@ -50,32 +46,52 @@ public class UserServiceImpl implements UserService {
     private int CONVERT_TO_MIN = 60 * 1000;
 
 
-    ///=========================================Public methods======================================================
-
     @Override
-    public String authenticate(UserLoginInfo user) throws ServiceException {
+    public String authenticate(UserLoginInfo user) throws ServiceException, NotFoundException {
         try {
             String username = user.getUsername();
             User userData = userDAO.get(username);
 
             if (PasswordExpert.verifyPassword(user.getPassword(), userData.getSalt(), userData.getHash())
                     && userStatusDAO.isAccountActivated(username)) {
-                if (sessionDAO.isSessionAvailable(username))
-                    return sessionDAO.getSessionByUser(username).getToken();
-                else {
-                    String token = TokenGenerator.generate();
-                    SessionDM session = new SessionDM(username, token, null);
-                    sessionDAO.addSession(session);
-                    return token;
-                }
+                return sessionService.startOrGetSession(username);
             }
 
             throw new ServiceException(ServiceException.FAILED_LOG_IN);
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_LOG_IN);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_LOG_IN);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_LOG_IN);
+        }
+    }
+
+    @Override
+    public String addAccount(UserSignUpInfo signUpInfo, String userRole) throws ServiceException {
+        try {
+            String username = signUpInfo.getUsername();
+            String email = signUpInfo.getEmail();
+
+            if (userRole.compareTo(Constants.ADMIN) == 0 && Constants.ROLE_LIST.contains(userRole))
+                throw new ServiceException(ServiceException.INVALID_USER_ROLE);
+
+            if (userDAO.isAvailable(username, email)) {
+                PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
+                String newToken = TokenGenerator.generate();
+
+                userDAO.signUp(new User(username, signUpInfo.getFirstName(), signUpInfo.getLastName(),
+                        email, passInfo.getHash(), passInfo.getSalt()));
+                userStatusDAO.add(new UserStatus(username, newToken));
+                userRoleService.addRole(username, userRole);
+
+                return newToken;
+            }
+
+            throw new ServiceException(ServiceException.FAILED_ACCOUNT_CREATION);
+        } catch (PasswordExpertException passwordException) {
+            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP);
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP);
         }
     }
 
@@ -83,60 +99,27 @@ public class UserServiceImpl implements UserService {
     public void signUp(UserSignUpInfo signUpInfo) throws ServiceException {
         try {
             String username = signUpInfo.getUsername();
+            String email = signUpInfo.getEmail();
+            String token = addAccount(signUpInfo, Constants.STUDENT);   // Creates the user account and returns the token with which to activate the account.
 
-            if (userDAO.isEmailAvailable(signUpInfo.getEmail()) &&
-                    userDAO.isUsernameAvailable(username)) {
+            String userRealName = signUpInfo.getFirstName() + " " + signUpInfo.getLastName();
+            String tmpUrl = validationUrl + username + "/?id=" + token;
 
-                PasswordInfo passInfo = PasswordExpert.newPassword(signUpInfo.getPassword());
-                String newToken = TokenGenerator.generate();
+            EmailExpert.sendMailValidation(email, userRealName, tmpUrl);
 
-                userDAO.signUp(new User(username, signUpInfo.getFirstName(), signUpInfo.getLastName(),
-                        signUpInfo.getEmail(), passInfo.getHash(), passInfo.getSalt()));
-                System.out.println("pass signUp");
-                userStatusDAO.add(new UserStatus(username, newToken));
-                System.out.println("pass userStatusDAO");
-                userRoleDAO.addRole(username, "student");
-                System.out.println("pass add role");
-
-                String userRealName = signUpInfo.getFirstName() + " " + signUpInfo.getLastName();
-                String tmpUrl = validationUrl + username + "/?id=" + newToken;
-
-                EmailExpert.sendMailValidation(signUpInfo.getEmail(), userRealName, tmpUrl);
-            }
         } catch (EmailException emailException) {
             try {
                 deleteUserAccount(signUpInfo.getUsername());
             } catch (DAOException dao_ex) {
-                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT);// + dao_ex.getMessage());
+                throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT);
             }
 
-            throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP);// + emailException.getMessage());
-        } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_PASSWORD_SIGN_UP);// + passwordException.getMessage());
-
-        } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_SIGN_UP);// + daoException.getMessage());
-        }
-    }
-
-    /**
-     * Get role for specific username
-     *
-     * @param username
-     * @return string role
-     * @throws ServiceException
-     */
-    @Override
-    public String getRole(String username) throws ServiceException {
-        try {
-            return userDAO.getRole(username);
-        }catch (DAOException e) {
-            throw new ServiceException(ServiceException.FAILED_GET_ROLE);
+            throw new ServiceException(ServiceException.FAILED_EMAIL_SIGN_UP);
         }
     }
 
     @Override
-    public void validateUserAccount(String userName, String token) throws ServiceException {
+    public void validateUserAccount(String userName, String token) throws ServiceException, NotFoundException {
         try {
             if (!(userStatusDAO.isAccountActivated(userName))) {
                 int tokenValidation = validateCriticalToken(token, CONVERT_TO_HOUR, userName, validationLinkExpTimeH);
@@ -152,10 +135,10 @@ public class UserServiceImpl implements UserService {
 
             EmailExpert.sendAccountCreated(user.getEmail(), userRealName);
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_EMAIL_VALIDATION);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_EMAIL_VALIDATION);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_EMAIL_VALIDATION);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_EMAIL_VALIDATION);
         }
 
     }
@@ -170,7 +153,7 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException
      */
     @Override
-    public void resetPasswordRequest(String userName) throws ServiceException {
+    public void resetPasswordRequest(String userName) throws ServiceException, NotFoundException {
         try {
             if (userStatusDAO.isAccountActivated(userName)) {
                 User user = userDAO.get(userName);
@@ -186,15 +169,15 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_RESET_REQUEST);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_RESET_REQUEST);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_RESET_REQUEST);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_RESET_REQUEST);
         }
     }
 
     @Override
-    public void resetPassword(String username, String token) throws ServiceException {
+    public void resetPasswordRequestHandler(String username, String token) throws ServiceException, NotFoundException {
         try {
             if (userStatusDAO.isAccountActivated(username)) {
                 if (validateCriticalToken(token, CONVERT_TO_MIN, username, changeLinkExpTimeH) == 3) {
@@ -210,78 +193,106 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
             }
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_RESET);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);
         }
     }
 
     @Override
-    public void changePassword(PasswordChange passwordChange) throws ServiceException {
+    public void setPassword(String username) throws ServiceException, NotFoundException {
+        try {
+            if (userStatusDAO.isAccountActivated(username)) {
+                String newPassword = PasswordExpert.generatePassword();
+                User user = userDAO.get(username);
+
+                String userRealName = user.getFirstName() + " " + user.getLastName();
+                EmailExpert.sendPasswordSet(user.getEmail(), username, newPassword, userRealName);
+
+                passwordChange(user, newPassword);
+            } else {
+                throw new ServiceException(ServiceException.CAN_NOT_RESET_PASSWORD);
+            }
+        } catch (PasswordExpertException passwordException) {
+            throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);
+
+        } catch (EmailException emailException) {
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_SET);
+
+        } catch (DAOException daoException) {
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);
+        }
+    }
+
+    @Override
+    public void changePassword(PasswordChange passwordChange) throws ServiceException, NotFoundException {
         try {
             User user = userDAO.get(passwordChange.getUsername());
             String userRealName = user.getFirstName() + " " + user.getLastName();
             authenticate(new UserLoginInfo(passwordChange.getUsername(), passwordChange.getOldPassword()));
 
-            passwordChange(user, passwordChange.getNewPassword());
-
             EmailExpert.sendPasswordChanged(user.getEmail(), userRealName);
+
+            passwordChange(user, passwordChange.getNewPassword());
         } catch (PasswordExpertException passwordException) {
-            throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE);// + passwordException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_AUTHENTICATE_PASSWORD_CHANGE);
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_CHANGE);// + emailException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_CHANGE);
 
         } catch (DAOException daoException) {
-            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_CHANGE);// + daoException.getMessage());
+            throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_CHANGE);
         }
     }
 
     @Override
-    public User get(String username) throws ServiceException {
+    public User get(String username) throws ServiceException, NotFoundException {
         try {
-//            return userDAO.get(username);
-
-            //OR
-///*
             User user = userDAO.get(username);
 
             user.setSalt("");
             user.setHash("");
 
             return user;
-//*/
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());
         }
     }
 
     @Override
-    public List<User> getAll() throws ServiceException {
+    public List<User> getAllUsers() throws ServiceException, NotFoundException {
         try {
-            return userDAO.getAll();
+            return userDAO.getAllUsers();
+        } catch (DAOException dao_exception) {
+            throw new ServiceException(dao_exception.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteUserAccount(String username) throws DAOException {
+        userDAO.deleteAccount(username);
+        userStatusDAO.accountDeleted(username);
+    }
+
+    @Override
+    public Boolean exists(String username) throws ServiceException{
+        try {
+            return !userDAO.isUsernameAvailable(username);
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());
         }
     }
 
 
-    ///========================================Private methods======================================================
-
     private void passwordChange(User user, String newPassword) throws PasswordExpertException, DAOException {
-        PasswordInfo passInfo = PasswordExpert.newPassword(newPassword, user.getSalt());
+        PasswordInfo passInfo = PasswordExpert.newPassword(newPassword);
 
-        userDAO.changePassword(user.getUsername(), passInfo.getHash());
+        userDAO.changePassword(user.getUsername(), passInfo.getSalt(), passInfo.getHash());
         userStatusDAO.update(user.getUsername(), "");
-    }
-
-    private void deleteUserAccount(String username) throws DAOException {
-        userDAO.delete(username);
-        userStatusDAO.accountDeleted(username);
     }
 
     /**
