@@ -1,16 +1,15 @@
 package thecerealkillers.elearning.controller.impl;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
 import thecerealkillers.elearning.controller.AdminController;
-import thecerealkillers.elearning.service.PermissionService;
-import thecerealkillers.elearning.service.UserRoleService;
-import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.model.AdminSignUpInfo;
-import thecerealkillers.elearning.service.AdminService;
 import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.model.AuditItem;
+import thecerealkillers.elearning.service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,35 +25,47 @@ import org.springframework.http.HttpStatus;
 public class AdminControllerImpl implements AdminController {
 
     @Autowired
-    private AdminService adminService;
-
-    @Autowired
-    private UserRoleService userRoleService;
+    private PermissionService permissionService;
 
     @Autowired
     private SessionService sessionService;
 
     @Autowired
-    private PermissionService permissionService;
+    private AdminService adminService;
+
+    @Autowired
+    private AuditService auditService;
 
 
     @Override
     @RequestMapping(value = "/admin/createAccount", method = RequestMethod.POST)
     public ResponseEntity createAccount(@RequestBody AdminSignUpInfo newUser,
                                         @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "AdminControllerImpl.createAccount";
 
-                if (permissionService.isOperationAvailable("AdminControllerImpl.createAccount", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     adminService.createAccount(newUser);
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newUser.toString(), Constants.ADMIN_NEW_ACCOUNT, true));
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 } else {
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, newUser.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newUser.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -65,24 +76,34 @@ public class AdminControllerImpl implements AdminController {
     @RequestMapping(value = "/admin/suspendAccount", method = RequestMethod.POST)
     public ResponseEntity suspendAccount(@RequestBody AccountSuspensionInfo suspendInfo,
                                          @RequestHeader(value = "token") String token) {
+        String actionName = "AdminControllerImpl.suspendAccount";
+
         try {
-            String userRole = userRoleService.getRole(suspendInfo.getAccountUsername());
-
-            if (userRole.compareTo(Constants.ADMIN) != 0) {
-                if (sessionService.isSessionActive(token)) {
-                    String crtUserRole = sessionService.getUserRoleByToken(token);
-
-                    if (permissionService.isOperationAvailable("AdminControllerImpl.suspendAccount", crtUserRole)) {
-                        adminService.suspendAccount(suspendInfo);
-
-                        return new ResponseEntity<>(HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-                    }
-                }
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    adminService.suspendAccount(suspendInfo);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, suspendInfo.toString(), Constants.ADMIN_SUSPEND, true));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, suspendInfo.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, suspendInfo.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, suspendInfo.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -92,24 +113,34 @@ public class AdminControllerImpl implements AdminController {
     @RequestMapping(value = "/admin/reactivateAccount", method = RequestMethod.POST)
     public ResponseEntity reactivateAccount(@RequestBody AccountSuspensionInfo reactivateInfo,
                                             @RequestHeader(value = "token") String token) {
+        String actionName = "AdminControllerImpl.reactivateAccount";
+
         try {
-            String userRole = userRoleService.getRole(reactivateInfo.getAccountUsername());
-
-            if (userRole.compareTo(Constants.ADMIN) != 0) {
-                if (sessionService.isSessionActive(token)) {
-                    String crtUserRole = sessionService.getUserRoleByToken(token);
-
-                    if (permissionService.isOperationAvailable("AdminControllerImpl.reactivateAccount", crtUserRole)) {
-                        adminService.reactivateAccount(reactivateInfo);
-
-                        return new ResponseEntity<>(HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-                    }
-                }
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    adminService.reactivateAccount(reactivateInfo);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, reactivateInfo.toString(), Constants.ADMIN_REACTIVATE, true));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, reactivateInfo.toString(), Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, reactivateInfo.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, reactivateInfo.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -119,67 +150,33 @@ public class AdminControllerImpl implements AdminController {
     @RequestMapping(value = "/admin/changeAccountType", method = RequestMethod.POST)
     public ResponseEntity changeAccountType(@RequestBody ChangeAccountTypeInfo accountTypeInfo,
                                             @RequestHeader(value = "token") String token) {
+        String actionName = "AdminControllerImpl.changeAccountType";
+
         try {
-            String userRole = userRoleService.getRole(accountTypeInfo.getAccountUsername());
-
-            if (userRole.compareTo(Constants.ADMIN) != 0) {
-                if (sessionService.isSessionActive(token)) {
-                    String crtUserRole = sessionService.getUserRoleByToken(token);
-
-                    if (permissionService.isOperationAvailable("AdminControllerImpl.changeAccountType", crtUserRole)) {
-                        adminService.changeAccountType(accountTypeInfo);
-
-                        return new ResponseEntity<>(HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-                    }
-                }
-            }
-
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
-
-    @Override
-    @RequestMapping(value = "/admin/getAudit", method = RequestMethod.GET)
-    public ResponseEntity<?> getAudit(@RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
-
-                if (permissionService.isOperationAvailable("AdminControllerImpl.getAudit", crtUserRole)) {
-                    adminService.getAudit();
-
-                    return new ResponseEntity<>(HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-                }
-            } else {
+            if (!sessionService.isSessionActive(token)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (ServiceException serviceException) {
-            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
 
-    @Override
-    @RequestMapping(value = "/admin/getAuditForUser/{username}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAuditForUser(@PathVariable("username") String username, @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
 
-                if (permissionService.isOperationAvailable("AdminControllerImpl.getAuditForUser", crtUserRole)) {
-                    adminService.getAuditForUser(username);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    adminService.changeAccountType(accountTypeInfo);
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, accountTypeInfo.toString(), Constants.ADMIN_CHANGE_TYPE, true));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, accountTypeInfo.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, accountTypeInfo.toString(), serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, accountTypeInfo.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

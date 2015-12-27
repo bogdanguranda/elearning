@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service.impl;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
 import thecerealkillers.elearning.model.ChangeAccountTypeInfo;
@@ -43,7 +44,6 @@ public class AdminServiceImpl implements AdminService {
 
             userStatusDAO.activateAccount(newUser.getUsername());
             userService.setPassword(newUser.getUsername());
-
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG);
         } catch (ServiceException serviceException) {
@@ -58,43 +58,41 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void suspendAccount(AccountSuspensionInfo suspendInfo) throws ServiceException {
+    public void suspendAccount(AccountSuspensionInfo suspendInfo) throws ServiceException, NotFoundException {
         try {
-            userStatusDAO.suspendAccount(suspendInfo.getAccountUsername());
+            if (userService.usernameExists(suspendInfo.getAccountUsername())) {
+                userStatusDAO.suspendAccount(suspendInfo.getAccountUsername());
+            } else {
+                throw new NotFoundException(NotFoundException.NO_USER);
+            }
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_SUSPEND_ACCOUNT);
         }
     }
 
     @Override
-    public void reactivateAccount(AccountSuspensionInfo reactivateInfo) throws ServiceException {
+    public void reactivateAccount(AccountSuspensionInfo reactivateInfo) throws ServiceException, NotFoundException {
         try {
-            userStatusDAO.activateAccount(reactivateInfo.getAccountUsername());
+            if (userService.usernameExists(reactivateInfo.getAccountUsername())) {
+                userStatusDAO.activateAccount(reactivateInfo.getAccountUsername());
+            } else {
+                throw new NotFoundException(NotFoundException.NO_USER);
+            }
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_ACTIVATE_ACCOUNT);
         }
     }
 
     @Override
-    public void changeAccountType(ChangeAccountTypeInfo accountTypeInfo) throws ServiceException {
+    public void changeAccountType(ChangeAccountTypeInfo accountTypeInfo) throws ServiceException, NotFoundException {
         try {
-            userRoleDAO.changeRole(accountTypeInfo.getAccountUsername(), accountTypeInfo.getNewAccountType());
+            if (userService.usernameExists(accountTypeInfo.getAccountUsername())) {
+                userRoleDAO.changeRole(accountTypeInfo.getAccountUsername(), accountTypeInfo.getNewAccountType());
+            } else {
+                throw new NotFoundException(NotFoundException.NO_USER);
+            }
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_CHANGE_ACCOUNT_TYPE);
         }
-    }
-
-    @Override
-    public List<String> getAudit() throws ServiceException {
-        //TODO getAudit
-
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<String> getAuditForUser(String username) throws ServiceException {
-        //TODO getAuditForUser
-
-        return new ArrayList<>();
     }
 }

@@ -56,23 +56,4 @@ public interface AdminController {
     ResponseEntity changeAccountType(
             @RequestBody ChangeAccountTypeInfo accountTypeInfo,
             @RequestHeader(value = "token") String token);
-
-
-    /**
-     * Retireves the audit.
-     */
-    @RequestMapping(value = "/admin/getAudit", method = RequestMethod.GET)
-    ResponseEntity<?> getAudit(
-            @RequestHeader(value = "token") String token);
-
-
-    /**
-     * Retrieves the audit for a specific user
-     *
-     * @param username = User for which to retrieve audit.
-     */
-    @RequestMapping(value = "/admin/getAuditForUser/{username}", method = RequestMethod.GET)
-    ResponseEntity<?> getAuditForUser(
-            @PathVariable("username") String username,
-            @RequestHeader(value = "token") String token);
 }

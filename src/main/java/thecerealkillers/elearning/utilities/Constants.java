@@ -49,4 +49,12 @@ public class Constants {
     public static final String COMMENT_GET_IN_THREAD = "All comments from the specified thread retrieved.";
     public static final String COMMENT_UPDATE = "Comment updated.";
     public static final String COMMENT_DELETE = "Comment deleted from database.";
+
+
+    //----------------------------------CommentController-----------------------------------------------------------------------------------
+
+    public static final String ADMIN_NEW_ACCOUNT = "New user account created.";
+    public static final String ADMIN_SUSPEND = "User account suspended.";
+    public static final String ADMIN_REACTIVATE = "User account reactivate.";
+    public static final String ADMIN_CHANGE_TYPE = "User account's type was changed.";
 }
