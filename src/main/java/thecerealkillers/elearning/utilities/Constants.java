@@ -80,4 +80,13 @@ public class Constants {
     public static final String USER_PASSWORD_RESET_REQUEST = "User requested a password reset.";
     public static final String USER_VALIDATED_ACCOUNT = "User confirmed his email address.";
     public static final String USER_INVALID_LOGIN_INFO = "Invalid login info.";
+
+
+    //----------------------------------UserController--------------------------------------------------------------------------------------
+
+    public static final String MODULE_CREATE = "Module was created.";
+    public static final String MODULE_DELETED = "Module was deleted";
+    public static final String MODULE_GET_ALL = "Retrieved all modules from database.";
+    public static final String MODULE_GET = "Module retrieved from database.";
+    public static final String MODULE_RENAMED = "Module was renamed.";
 }

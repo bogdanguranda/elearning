@@ -4,11 +4,13 @@ package thecerealkillers.elearning.controller.impl;
 import thecerealkillers.elearning.exceptions.InvalidModuleException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.ModuleController;
-import thecerealkillers.elearning.service.AuditService;
 import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.validator.ModuleValidator;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.ModuleService;
+import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Module;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,22 +65,22 @@ public class ModuleControllerImpl implements ModuleController {
 
                     moduleService.storeModule(module);
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, module.toString(), Constants.MODULE_CREATE, true));
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, module.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (InvalidModuleException moduleException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, module.toString(), moduleException.getMessage(), false));
                 return new ResponseEntity<>(moduleException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
 //            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, module.toString(), notFoundException.getMessage(), false));
 //                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, module.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
@@ -103,24 +105,27 @@ public class ModuleControllerImpl implements ModuleController {
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Module module = new Module();
-
                     module.setCourse(courseTitle);
                     module.setTitle(moduleTitle);
 
                     moduleService.deleteModule(module);
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle, Constants.MODULE_DELETED, true));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
 //            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+//                        " | Module title = " + moduleTitle, notFoundException.getMessage(), false));
 //                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                        " | Module title = " + moduleTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
@@ -143,19 +148,18 @@ public class ModuleControllerImpl implements ModuleController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
-
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, courseTitle, Constants.MODULE_GET_ALL, true));
                     return new ResponseEntity<>(moduleService.getAll(courseTitle), HttpStatus.OK);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, courseTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
 //            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, courseTitle, notFoundException.getMessage(), false));
 //                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, courseTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
@@ -181,18 +185,22 @@ public class ModuleControllerImpl implements ModuleController {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Module module = moduleService.get(moduleTitle, courseTitle);
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle, Constants.MODULE_GET, true));
                     return new ResponseEntity<>(module, HttpStatus.OK);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
 //            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+//                " | Module title = " + moduleTitle, notFoundException.getMessage(), false));
 //                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                        " | Module title = " + moduleTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
@@ -219,18 +227,22 @@ public class ModuleControllerImpl implements ModuleController {
                     Module module = moduleService.get(currentTitle, courseTitle);
                     moduleService.update(module, newTitle);
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Current module title = " + currentTitle + " | New module title = " + newTitle, Constants.MODULE_RENAMED, true));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Current module title = " + currentTitle + " | New module title = " + newTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
 //            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+//                " | Current module title = " + currentTitle + " | New module title = " + newTitle, notFoundException.getMessage(), false));
 //                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                        " | Current module title = " + currentTitle + " | New module title = " + newTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
