@@ -48,7 +48,7 @@ public class TopicControllerImpl implements TopicController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(token, actionName, newTopic.toString(), Constants.SESSION_EXPIRED, false));
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, newTopic.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -83,7 +83,7 @@ public class TopicControllerImpl implements TopicController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -121,7 +121,7 @@ public class TopicControllerImpl implements TopicController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(token, actionName, title, Constants.SESSION_EXPIRED, false));
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -160,7 +160,7 @@ public class TopicControllerImpl implements TopicController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(token, actionName, "Title = " + title + " | New data = " +
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "Title = " + title + " | New data = " +
                         newTopic.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
@@ -203,7 +203,7 @@ public class TopicControllerImpl implements TopicController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(token, actionName, topicToDelete.toString(), Constants.SESSION_EXPIRED, false));
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, topicToDelete.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

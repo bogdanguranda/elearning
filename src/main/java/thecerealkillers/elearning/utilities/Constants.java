@@ -12,6 +12,8 @@ public class Constants {
     public static final String STUDENT = "student";
     public static final String TEACHER = "profesor";
 
+    public static final String USERNAME_OF_MOCK_USER_ACCOUNT = ":anonymousUser:";
+
     public static final ArrayList<String> ROLE_LIST = new ArrayList<String>() {{
         add(ADMIN);
         add(STUDENT);

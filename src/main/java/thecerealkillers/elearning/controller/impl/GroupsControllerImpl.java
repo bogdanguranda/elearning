@@ -47,7 +47,7 @@ public class GroupsControllerImpl implements GroupsController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
