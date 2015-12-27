@@ -3,18 +3,18 @@ package thecerealkillers.elearning.controller.impl;
 
 import thecerealkillers.elearning.controller.GroupsController;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.AuditItem;
-import thecerealkillers.elearning.service.AuditService;
 import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.GroupsService;
+import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Group;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import thecerealkillers.elearning.utilities.Constants;
 
 import java.util.List;
 

@@ -67,6 +67,12 @@ public class Constants {
     //----------------------------------CoursesController-----------------------------------------------------------------------------------
 
     public static final String COURSES_GET_ALL = "All courses retrieved.";
+    public static final String COURSES_GET_ENROLLED = "Retrieved list of the enrolled students.";
+    public static final String COURSES_WITHDRAW = "User was withdrawn from course.";
+    public static final String COURSES_ENROLL = "User was enrolled to course.";
+    public static final String COURSES_GET = "Course was retrieved.";
+    public static final String COURSES_DELETE = "Course was deleted.";
+    public static final String COURSES_CREATE = "Course was created.";
 
 
     //----------------------------------UserController--------------------------------------------------------------------------------------
