@@ -43,7 +43,8 @@ public interface ModuleService {
     /**
      * Returns the module with the corresponding
      * title and course.
-     *
+     * @param title
+     * @param course
      * @return the corresponding module.
      * @throws ServiceException if the module is innexistent in DB /
      *                          if DAOException encountered.
@@ -52,7 +53,8 @@ public interface ModuleService {
 
     /**
      * Renames the module @module to @newTitle
-     *
+     * @param module
+     * @param newTitle
      * @throws ServiceException if module is innexistent in DB /
      *                          if DAOException encountered.
      */
