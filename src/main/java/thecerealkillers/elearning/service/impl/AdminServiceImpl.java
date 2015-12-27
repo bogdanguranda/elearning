@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public void createAccount(AdminSignUpInfo newUser) throws ServiceException {
+    public void createAccount(AdminSignUpInfo newUser) throws ServiceException, NotFoundException {
         try {
             userService.addAccount(new UserSignUpInfo(newUser.getUsername(), newUser.getFirstName(), newUser.getLastName(),
                     "", newUser.getEmail()), newUser.getUserRole());

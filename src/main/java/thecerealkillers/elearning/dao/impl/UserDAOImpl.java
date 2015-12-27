@@ -3,6 +3,7 @@ package thecerealkillers.elearning.dao.impl;
 
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.dao.UserDAO;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.model.User;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -52,7 +53,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User get(String username) throws DAOException {
+    public User get(String username) throws DAOException, NotFoundException {
         try {
             String sql = "select * from user where username = :username;";
             Map<String, String> namedParameters = Collections.singletonMap("username", username);
@@ -72,16 +73,20 @@ public class UserDAOImpl implements UserDAO {
                     return user;
                 }
             });
+
             if (userList.size() == 0)
-                throw new DAOException("Inexistent user with username: " + username);
+                throw new NotFoundException(NotFoundException.NO_USER);
+
             return userList.get(0);
+        } catch (NotFoundException notFound) {
+            throw notFound;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public List<User> getAllUsers() throws DAOException {
+    public List<User> getAllUsers() throws DAOException, NotFoundException {
         try {
             List<User> users;
             String sqlCommand = "SELECT * FROM user;";
@@ -101,14 +106,20 @@ public class UserDAOImpl implements UserDAO {
                     return user;
                 }
             });
+
+            if (users.size() == 0)
+                throw new NotFoundException(NotFoundException.NO_USERS);
+
             return users;
+        } catch (NotFoundException notFound) {
+            throw notFound;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
     }
 
     @Override
-    public void changePassword(String username, String newSalt, String newHash) throws DAOException  {
+    public void changePassword(String username, String newSalt, String newHash) throws DAOException {
         try {
             String sqlCommand = "UPDATE user SET hash = :hash, salt = :salt WHERE username = :username";
             Map<String, String> namedParameters = new HashMap<>();

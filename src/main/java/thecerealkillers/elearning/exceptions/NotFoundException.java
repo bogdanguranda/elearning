@@ -29,6 +29,7 @@ public class NotFoundException extends Exception  {
     //----------------------------User-------------------------------------------------------------------------
 
     public static final String NO_USER = "No user with this username.\n";
+    public static final String NO_USERS = "No users in the database.zn";
 
 
     public NotFoundException(String message) {

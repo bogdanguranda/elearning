@@ -3,17 +3,20 @@ package thecerealkillers.elearning.controller.impl;
 
 import thecerealkillers.elearning.exceptions.InvalidSignUpInfoException;
 import thecerealkillers.elearning.exceptions.InvalidLoginInfoException;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.service.*;
 import thecerealkillers.elearning.controller.UserController;
-import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.validator.UserValidator;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.service.*;
 import thecerealkillers.elearning.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 
 /**
@@ -54,13 +57,18 @@ public class UserControllerImpl implements UserController {
 
                 auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", Constants.USER_AUTHENTICATE, true));
                 return new ResponseEntity<>(authenticationInfo, HttpStatus.OK);
-            } catch (InvalidLoginInfoException login_exception) {
-                auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", "Invalid login info.", false));
-                return new ResponseEntity<>("Invalid login info.", HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (InvalidLoginInfoException info_exception) {
+                auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", Constants.USER_INVALID_LOGIN_INFO, false));
+                return new ResponseEntity<>(Constants.USER_INVALID_LOGIN_INFO, HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", "Invalid login info.", false));
-                return new ResponseEntity<>("Invalid login info.", HttpStatus.UNPROCESSABLE_ENTITY);
+                auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", Constants.USER_INVALID_LOGIN_INFO, false));
+                return new ResponseEntity<>(Constants.USER_INVALID_LOGIN_INFO, HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", Constants.USER_INVALID_LOGIN_INFO, false));
+                return new ResponseEntity<>(Constants.USER_INVALID_LOGIN_INFO, HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -75,11 +83,11 @@ public class UserControllerImpl implements UserController {
         try {
             try {
                 UserValidator.validateSignUpInfo(signUpInfo);
-
                 userService.signUp(signUpInfo);
 
-                auditService.addEvent(new AuditItem(signUpInfo.getUsername(), actionName, "", "Account successfully created. Please check your email to activate it.", true));
-                return new ResponseEntity<>("Account successfully created. Please check your email to activate it.", HttpStatus.OK);
+                auditService.addEvent(new AuditItem(signUpInfo.getUsername(), actionName, "", Constants.USER_ACCOUNT_CREATED, true));
+                return new ResponseEntity<>(Constants.USER_ACCOUNT_CREATED, HttpStatus.OK);
+
             } catch (InvalidSignUpInfoException info_exception) {
                 auditService.addEvent(new AuditItem(signUpInfo.getUsername(), actionName, "", info_exception.getMessage(), false));
                 return new ResponseEntity<>(info_exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -108,16 +116,18 @@ public class UserControllerImpl implements UserController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, username, Constants.USER_GET, true));
+                    User user = userService.get(username);
 
-                    return new ResponseEntity<>(userService.get(username), HttpStatus.OK);
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, username, Constants.USER_GET, true));
+                    return new ResponseEntity<>(user, HttpStatus.OK);
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, username, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-//            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
-//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, username, notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, username, serviceException.getMessage(), false));
@@ -126,6 +136,7 @@ public class UserControllerImpl implements UserController {
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
+
     }
 
     @Override
@@ -143,16 +154,17 @@ public class UserControllerImpl implements UserController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.USER_GET_ALL, true));
+                    List<User> userList = userService.getAllUsers();
 
-                    return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.USER_GET_ALL, true));
+                    return new ResponseEntity<>(userList, HttpStatus.OK);
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-//            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
-//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
@@ -169,12 +181,21 @@ public class UserControllerImpl implements UserController {
         String actionName = "UserControllerImpl.validateUserAccount";
 
         try {
-            userService.validateUserAccount(username, actionID);
+            try {
+                userService.validateUserAccount(username, actionID);
 
-//	auditService.addEvent(new AuditItem(username, actionName, dataReceived, response, true));
-            return new ResponseEntity<>(HttpStatus.OK);
+                auditService.addEvent(new AuditItem(username, actionName, "", Constants.USER_VALIDATED_ACCOUNT, true));
+                return new ResponseEntity<>(HttpStatus.OK);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(username, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(username, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
         } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(username, actionName, dataReceived, response, false));
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -185,12 +206,21 @@ public class UserControllerImpl implements UserController {
         String actionName = "UserControllerImpl.resetPasswordRequest";
 
         try {
-            userService.resetPasswordRequest(username);
+            try {
+                userService.resetPasswordRequest(username);
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
-            return new ResponseEntity<>(HttpStatus.OK);
+                auditService.addEvent(new AuditItem(username, actionName, "", Constants.USER_PASSWORD_RESET_REQUEST, true));
+                return new ResponseEntity<>(HttpStatus.OK);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(username, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(username, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
         } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -201,12 +231,21 @@ public class UserControllerImpl implements UserController {
         String actionName = "UserControllerImpl.resetPassword";
 
         try {
-            userService.resetPasswordRequestHandler(username, actionID);
+            try {
+                userService.resetPasswordRequestHandler(username, actionID);
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
-            return new ResponseEntity<>(HttpStatus.OK);
+                auditService.addEvent(new AuditItem(username, actionName, "", Constants.USER_PASSWORD_RESET, true));
+                return new ResponseEntity<>(HttpStatus.OK);
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(username, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(username, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
         } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -227,24 +266,27 @@ public class UserControllerImpl implements UserController {
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     UserValidator.validateLoginInfo(new UserLoginInfo(passwordChange.getUsername(), passwordChange.getNewPassword()));
-
                     userService.changePassword(passwordChange);
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.USER_PASSWORD_CHANGED, true));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
+
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
             } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (InvalidLoginInfoException invalidInfo) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", invalidInfo.getMessage(), false));
                 return new ResponseEntity<>(invalidInfo.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-            }
-//            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
-//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
-
+           }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }

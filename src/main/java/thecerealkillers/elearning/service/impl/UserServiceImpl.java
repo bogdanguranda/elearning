@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     ///=========================================Public methods======================================================
 
     @Override
-    public String authenticate(UserLoginInfo user) throws ServiceException {
+    public String authenticate(UserLoginInfo user) throws ServiceException, NotFoundException {
         try {
             String username = user.getUsername();
             User userData = userDAO.get(username);
@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void validateUserAccount(String userName, String token) throws ServiceException {
+    public void validateUserAccount(String userName, String token) throws ServiceException, NotFoundException {
         try {
             if (!(userStatusDAO.isAccountActivated(userName))) {
                 int tokenValidation = validateCriticalToken(token, CONVERT_TO_HOUR, userName, validationLinkExpTimeH);
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException
      */
     @Override
-    public void resetPasswordRequest(String userName) throws ServiceException {
+    public void resetPasswordRequest(String userName) throws ServiceException, NotFoundException {
         try {
             if (userStatusDAO.isAccountActivated(userName)) {
                 User user = userDAO.get(userName);
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPasswordRequestHandler(String username, String token) throws ServiceException {
+    public void resetPasswordRequestHandler(String username, String token) throws ServiceException, NotFoundException {
         try {
             if (userStatusDAO.isAccountActivated(username)) {
                 if (validateCriticalToken(token, CONVERT_TO_MIN, username, changeLinkExpTimeH) == 3) {
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setPassword(String username) throws ServiceException {
+    public void setPassword(String username) throws ServiceException, NotFoundException {
         try {
             if (userStatusDAO.isAccountActivated(username)) {
                 String newPassword = PasswordExpert.generatePassword();
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(PasswordChange passwordChange) throws ServiceException {
+    public void changePassword(PasswordChange passwordChange) throws ServiceException, NotFoundException {
         try {
             User user = userDAO.get(passwordChange.getUsername());
             String userRealName = user.getFirstName() + " " + user.getLastName();
@@ -252,7 +252,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(String username) throws ServiceException {
+    public User get(String username) throws ServiceException, NotFoundException {
         try {
             User user = userDAO.get(username);
 
@@ -266,7 +266,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() throws ServiceException {
+    public List<User> getAllUsers() throws ServiceException, NotFoundException {
         try {
             return userDAO.getAllUsers();
         } catch (DAOException dao_exception) {

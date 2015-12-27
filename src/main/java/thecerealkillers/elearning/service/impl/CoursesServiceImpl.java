@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service.impl;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.service.CoursesService;
@@ -70,7 +71,7 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     @Override
-    public void enrollUserToCourse(String courseTitle, String username) throws ServiceException {
+    public void enrollUserToCourse(String courseTitle, String username) throws ServiceException, NotFoundException {
         try {
             coursesDAO.get(courseTitle);
             usersDAO.get(username);
@@ -107,7 +108,7 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     @Override
-    public void unEnrollUserFromCourse(String title, String username) throws ServiceException {
+    public void unEnrollUserFromCourse(String title, String username) throws ServiceException, NotFoundException {
         try {
             usersDAO.get(username);
             coursesDAO.get(title);

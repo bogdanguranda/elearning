@@ -74,4 +74,10 @@ public class Constants {
     public static final String USER_AUTHENTICATE = "User log in success.";
     public static final String USER_GET = "Retrieved user data from the database.";
     public static final String USER_GET_ALL = "Retrieved all users from the database.";
+    public static final String USER_ACCOUNT_CREATED = "Account successfully created. Please check your email to activate it.";
+    public static final String USER_PASSWORD_CHANGED = "User's password was changed.";
+    public static final String USER_PASSWORD_RESET = "User confirmed the password reset request.";
+    public static final String USER_PASSWORD_RESET_REQUEST = "User requested a password reset.";
+    public static final String USER_VALIDATED_ACCOUNT = "User confirmed his email address.";
+    public static final String USER_INVALID_LOGIN_INFO = "Invalid login info.";
 }

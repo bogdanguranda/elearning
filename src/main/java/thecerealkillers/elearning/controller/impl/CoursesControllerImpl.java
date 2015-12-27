@@ -230,9 +230,9 @@ public class CoursesControllerImpl implements CoursesController {
 //	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-//            } catch (NotFoundException notFoundException) {
+            } catch (NotFoundException notFoundException) {
 //	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
-//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
 //	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
@@ -279,9 +279,9 @@ public class CoursesControllerImpl implements CoursesController {
 //	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-//            } catch (NotFoundException notFoundException) {
+            } catch (NotFoundException notFoundException) {
 //	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
-//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
             } catch (ServiceException serviceException) {
 //	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));

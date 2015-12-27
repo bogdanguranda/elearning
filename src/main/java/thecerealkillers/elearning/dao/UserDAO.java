@@ -2,6 +2,7 @@ package thecerealkillers.elearning.dao;
 
 
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.model.User;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface UserDAO {
      * @throws DAOException if inexistent username / DB problems /
      *                      other weird problems.
      */
-    User get(String username) throws DAOException;
+    User get(String username) throws DAOException, NotFoundException;
 
     /**
      * Changes password for the user with the username @userNames
@@ -41,7 +42,7 @@ public interface UserDAO {
      * @return - a list with all users in DB.
      * @throws DAOException if DB problems / other weird problems.
      */
-    List<User> getAllUsers() throws DAOException;
+    List<User> getAllUsers() throws DAOException, NotFoundException;
 
     /**
      * Deletes the user account with the username @userName

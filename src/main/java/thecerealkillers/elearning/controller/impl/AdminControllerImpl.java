@@ -62,10 +62,13 @@ public class AdminControllerImpl implements AdminController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, newUser.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
+            } catch (NotFoundException notFoundException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, newUser.toString(), notFoundException.getMessage(), false));
+                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, newUser.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

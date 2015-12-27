@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface AdminService {
 
-    void createAccount(AdminSignUpInfo newUser) throws ServiceException;
+    void createAccount(AdminSignUpInfo newUser) throws ServiceException, NotFoundException;
 
     void suspendAccount(AccountSuspensionInfo suspendInfo) throws ServiceException, NotFoundException;
 

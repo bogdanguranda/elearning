@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service;
 
 
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.PasswordChange;
@@ -24,7 +25,7 @@ public interface UserService {
      * @throws ServiceException if DAOException was caught /
      *                          other weird exception.
      */
-    String authenticate(UserLoginInfo loginInfo) throws ServiceException;
+    String authenticate(UserLoginInfo loginInfo) throws ServiceException, NotFoundException;
 
     /**
      * Adds an user account.
@@ -49,13 +50,13 @@ public interface UserService {
      * @param username = username of the user for which to return data
      * @return - the user with username @username
      */
-    User get(String username) throws ServiceException;
+    User get(String username) throws ServiceException, NotFoundException;
 
     /**
      * Retrieves a list of all the
      * existing users in the database.
      */
-    List<User> getAllUsers() throws ServiceException;
+    List<User> getAllUsers() throws ServiceException, NotFoundException;
 
     /**
      * Checks if the token received is right and activates his account
@@ -64,7 +65,7 @@ public interface UserService {
      * @param token    = token send in email to make sure action is right
      * @throws ServiceException
      */
-    void validateUserAccount(String userName, String token) throws ServiceException;
+    void validateUserAccount(String userName, String token) throws ServiceException, NotFoundException;
 
     /**
      * Sends a email to the user with username = @username with a token to make
@@ -74,7 +75,7 @@ public interface UserService {
      *                 password reset
      * @throws ServiceException
      */
-    void resetPasswordRequest(String userName) throws ServiceException;
+    void resetPasswordRequest(String userName) throws ServiceException, NotFoundException;
 
     /**
      * Checks if the token received is right and changes user's hash accordingly to
@@ -84,7 +85,7 @@ public interface UserService {
      * @param token    = token send in email to make sure action is right
      * @throws ServiceException
      */
-    void resetPasswordRequestHandler(String userName, String token) throws ServiceException;
+    void resetPasswordRequestHandler(String userName, String token) throws ServiceException, NotFoundException;
 
     /**
      * Sets the password for an user account created with addAccount and sends an email to the new user
@@ -92,7 +93,7 @@ public interface UserService {
      *
      * @throws ServiceException
      */
-    void setPassword(String username) throws ServiceException;
+    void setPassword(String username) throws ServiceException, NotFoundException;
 
     /**
      * Initiates a authentication procedure with the old password, if it's successful will changes users hash
@@ -101,7 +102,7 @@ public interface UserService {
      * @param passwordChange = data required for a password change
      * @throws ServiceException
      */
-    void changePassword(PasswordChange passwordChange) throws ServiceException;
+    void changePassword(PasswordChange passwordChange) throws ServiceException, NotFoundException;
 
     /**
      * Deletes an user account.
