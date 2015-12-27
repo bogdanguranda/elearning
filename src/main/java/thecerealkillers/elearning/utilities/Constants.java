@@ -82,11 +82,16 @@ public class Constants {
     public static final String USER_INVALID_LOGIN_INFO = "Invalid login info.";
 
 
-    //----------------------------------UserController--------------------------------------------------------------------------------------
+    //----------------------------------ModuleController------------------------------------------------------------------------------------
 
     public static final String MODULE_CREATE = "Module was created.";
     public static final String MODULE_DELETED = "Module was deleted";
     public static final String MODULE_GET_ALL = "Retrieved all modules from database.";
     public static final String MODULE_GET = "Module retrieved from database.";
     public static final String MODULE_RENAMED = "Module was renamed.";
+
+
+    //----------------------------------GroupsController------------------------------------------------------------------------------------
+
+    public static final String GROUPS_GET_ALL = "All groups retrieved from database.";
 }

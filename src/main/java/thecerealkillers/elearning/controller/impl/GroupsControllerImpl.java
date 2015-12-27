@@ -3,6 +3,8 @@ package thecerealkillers.elearning.controller.impl;
 
 import thecerealkillers.elearning.controller.GroupsController;
 import thecerealkillers.elearning.exceptions.ServiceException;
+import thecerealkillers.elearning.model.AuditItem;
+import thecerealkillers.elearning.service.AuditService;
 import thecerealkillers.elearning.service.PermissionService;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.GroupsService;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import thecerealkillers.elearning.utilities.Constants;
 
 import java.util.List;
 
@@ -24,6 +27,9 @@ import java.util.List;
 @RestController
 @CrossOrigin
 public class GroupsControllerImpl implements GroupsController {
+
+    @Autowired
+    private AuditService auditService;
 
     @Autowired
     private GroupsService groupsService;
@@ -51,14 +57,14 @@ public class GroupsControllerImpl implements GroupsController {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     List<Group> groupList = groupsService.getAll();
 
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", response, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.GROUPS_GET_ALL, true));
                     return new ResponseEntity<>(groupList, HttpStatus.OK);
                 } else {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", response, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", response, false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
