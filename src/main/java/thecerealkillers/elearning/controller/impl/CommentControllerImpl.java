@@ -10,6 +10,7 @@ import thecerealkillers.elearning.model.CommentUpdateInfo;
 import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.service.CommentService;
 import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Comment;
 
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import thecerealkillers.elearning.utilities.Constants;
 
 import java.util.List;
 
@@ -50,6 +50,7 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, comment.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -87,6 +88,7 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, commentID.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -124,6 +126,7 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, threadInfo.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -161,6 +164,7 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, commentUpdateInfo.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -197,6 +201,7 @@ public class CommentControllerImpl implements CommentController {
         String actionName = "CommentControllerImpl.deleteComment";
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, commentID.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

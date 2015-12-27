@@ -57,6 +57,7 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -93,6 +94,7 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, course.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -132,6 +134,7 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -169,6 +172,7 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -213,6 +217,8 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "Title = " + title +
+                        " | Username = " + username, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -267,6 +273,8 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "Title = " + title +
+                        " | Username = " + username, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -317,6 +325,7 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

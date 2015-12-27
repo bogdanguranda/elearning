@@ -108,6 +108,7 @@ public class UserControllerImpl implements UserController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -146,6 +147,7 @@ public class UserControllerImpl implements UserController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -257,6 +259,7 @@ public class UserControllerImpl implements UserController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

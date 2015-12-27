@@ -47,6 +47,7 @@ public class ModuleControllerImpl implements ModuleController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, module.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -96,6 +97,8 @@ public class ModuleControllerImpl implements ModuleController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "Course title = " + courseTitle +
+                        " | Module title = " + moduleTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -140,6 +143,7 @@ public class ModuleControllerImpl implements ModuleController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, courseTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -175,6 +179,8 @@ public class ModuleControllerImpl implements ModuleController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "Course title = " + courseTitle +
+                        " | Module title = " + moduleTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -216,6 +222,8 @@ public class ModuleControllerImpl implements ModuleController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "Course title = " + courseTitle +
+                        " | Current module title = " + currentTitle + " | New module title = " + newTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

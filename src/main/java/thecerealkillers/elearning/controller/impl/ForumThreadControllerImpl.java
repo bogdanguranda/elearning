@@ -50,6 +50,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, newThread.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -87,6 +88,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, threadIdentifier.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -124,6 +126,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, topicTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -161,6 +164,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, userName, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -197,6 +201,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -235,6 +240,8 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, "newTitle = " + newTitle + " | Old thread = " +
+                        thread.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -276,6 +283,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
+                auditService.addEvent(new AuditItem(token, actionName, threadToDelete.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

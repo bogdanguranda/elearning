@@ -19,6 +19,7 @@ public class Constants {
     }};
 
     public static final String NO_PERMISSION = "User doesn't have permission for this action!";
+    public static final String SESSION_EXPIRED = "Invalid session token.";
 
 
 
