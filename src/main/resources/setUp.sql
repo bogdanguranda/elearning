@@ -700,6 +700,16 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 -- Inserts permissions END
 
 
+-- Inserts topic START
+-- -------------------------------------------------------------------
+INSERT INTO topic VALUES ('Courses');
+INSERT INTO topic VALUES ('Books & Tutorials');
+INSERT INTO topic VALUES ('About E-learning');
+INSERT INTO topic VALUES ('Off Topic');
+-- -------------------------------------------------------------------
+-- Inserts topic END
+
+
 -- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
 -- ===================================================================
 
