@@ -107,12 +107,7 @@ public class UserDAOImpl implements UserDAO {
                 }
             });
 
-            if (users.size() == 0)
-                throw new NotFoundException(NotFoundException.NO_USERS);
-
             return users;
-        } catch (NotFoundException notFound) {
-            throw notFound;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }

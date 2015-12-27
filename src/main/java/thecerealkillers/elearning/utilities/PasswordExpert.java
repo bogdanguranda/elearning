@@ -20,8 +20,6 @@ public final class PasswordExpert {
     }
 
 
-    ///=========================================Public methods======================================================
-
     /**
      * This function hashes the salted password.
      *
@@ -29,15 +27,15 @@ public final class PasswordExpert {
      * @throws PasswordExpertException
      */
     public static PasswordInfo newPassword(String password) throws PasswordExpertException {
-        PasswordInfo passInfo = new PasswordInfo(password);
+        PasswordInfo passwordInfo = new PasswordInfo(password);
 
         String salt = generateSalt();
         String hash = createHash(password, salt);
 
-        passInfo.setSalt(salt);
-        passInfo.setHash(hash);
+        passwordInfo.setSalt(salt);
+        passwordInfo.setHash(hash);
 
-        return passInfo;
+        return passwordInfo;
     }
 
     /**
@@ -67,8 +65,6 @@ public final class PasswordExpert {
         return (correctHash.compareTo(verifiedHash) == 0);
     }
 
-
-    ///========================================Private methods======================================================
 
     /**
      * Returns a new random salt

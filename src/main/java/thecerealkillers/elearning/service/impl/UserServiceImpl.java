@@ -46,8 +46,6 @@ public class UserServiceImpl implements UserService {
     private int CONVERT_TO_MIN = 60 * 1000;
 
 
-    ///=========================================Public methods======================================================
-
     @Override
     public String authenticate(UserLoginInfo user) throws ServiceException, NotFoundException {
         try {
@@ -289,8 +287,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-    ///========================================Private methods======================================================
 
     private void passwordChange(User user, String newPassword) throws PasswordExpertException, DAOException {
         PasswordInfo passInfo = PasswordExpert.newPassword(newPassword);
