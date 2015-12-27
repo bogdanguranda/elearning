@@ -367,7 +367,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`operation` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`operation` (
-	`operationName` VARCHAR(300) NOT NULL COMMENT '',
+	`operationName` VARCHAR(200) NOT NULL COMMENT '',
 	PRIMARY KEY (`operationName`) COMMENT '',
 	UNIQUE INDEX `operation_operationName_UNIQUE` (`operationName` ASC)  COMMENT '')
 ENGINE = InnoDB;
@@ -379,7 +379,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`permission` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`permission` (
-  `operationName` VARCHAR(300) NOT NULL COMMENT '',
+  `operationName` VARCHAR(200) NOT NULL COMMENT '',
   `roleName` VARCHAR(45) NOT NULL COMMENT '',
   `permission` boolean  NOT NULL DEFAULT FALSE COMMENT '',
   PRIMARY KEY (`operationName`, `roleName`)  COMMENT '',
@@ -405,7 +405,7 @@ DROP TABLE IF EXISTS `elearning_db`.`audit`;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`audit` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
   `username` VARCHAR(45) NOT NULL COMMENT '',
-  `operationName` VARCHAR(300) NOT NULL COMMENT '',
+  `operationName` VARCHAR(200) NOT NULL COMMENT '',
   `dataReceived` TEXT NOT NULL COMMENT '',
   `response` TEXT NOT NULL COMMENT '',
   `success` BOOLEAN NOT NULL COMMENT '',
