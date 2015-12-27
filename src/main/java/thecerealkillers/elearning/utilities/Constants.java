@@ -51,6 +51,11 @@ public class Constants {
     public static final String COMMENT_DELETE = "Comment deleted from database.";
 
 
+    //----------------------------------BreachAttempt---------------------------------------------------------------------------------------
+
+    public static final String TOKEN_DIFFERENT_USERNAME = "Nice try :P.";
+
+
     //----------------------------------CommentController-----------------------------------------------------------------------------------
 
     public static final String ADMIN_NEW_ACCOUNT = "New user account created.";
@@ -59,7 +64,14 @@ public class Constants {
     public static final String ADMIN_CHANGE_TYPE = "User account's type was changed.";
 
 
-    //----------------------------------BreachAttempt---------------------------------------------------------------------------------------
+    //----------------------------------CoursesController-----------------------------------------------------------------------------------
 
-    public static final String TOKEN_DIFFERENT_USERNAME = "Nice try :P.";
+    public static final String COURSES_GET_ALL = "All courses retrieved.";
+
+
+    //----------------------------------UserController--------------------------------------------------------------------------------------
+
+    public static final String USER_AUTHENTICATE = "User log in success.";
+    public static final String USER_GET = "Retrieved user data from the database.";
+    public static final String USER_GET_ALL = "Retrieved all users from the database.";
 }

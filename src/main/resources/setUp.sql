@@ -488,9 +488,16 @@ INSERT INTO operation VALUES('TopicControllerImpl.getTopicByTitle');
 INSERT INTO operation VALUES('TopicControllerImpl.updateTopic');
 INSERT INTO operation VALUES('TopicControllerImpl.deleteTopicByTitle');
 
+INSERT INTO operation VALUES('UserControllerImpl.authenticate');
+INSERT INTO operation VALUES('UserControllerImpl.signOut');
+INSERT INTO operation VALUES('UserControllerImpl.signUp');
 INSERT INTO operation VALUES('UserControllerImpl.get');
 INSERT INTO operation VALUES('UserControllerImpl.getAll');
+INSERT INTO operation VALUES('UserControllerImpl.validateUserAccount');
+INSERT INTO operation VALUES('UserControllerImpl.resetPasswordRequest');
+INSERT INTO operation VALUES('UserControllerImpl.resetPassword');
 INSERT INTO operation VALUES('UserControllerImpl.changePassword');
+
 
 INSERT INTO operation VALUES('ModuleControllerImpl.createModule');
 INSERT INTO operation VALUES('ModuleControllerImpl.deleteModule');

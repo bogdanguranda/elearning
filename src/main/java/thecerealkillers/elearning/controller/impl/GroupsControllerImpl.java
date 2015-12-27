@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Created with love by Lucian and @Pi on 22.12.2015.
+ * Modified by Dani.
  */
 
 @RestController
@@ -36,19 +37,29 @@ public class GroupsControllerImpl implements GroupsController {
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
     public ResponseEntity<?> getGroups(@RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "GroupsControllerImpl.getGroups";
 
-                if (permissionService.isOperationAvailable("GroupsControllerImpl.getGroups", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     List<Group> groupList = groupsService.getAll();
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", response, true));
                     return new ResponseEntity<>(groupList, HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

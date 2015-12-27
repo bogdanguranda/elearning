@@ -3,11 +3,11 @@ package thecerealkillers.elearning.controller.impl;
 
 import thecerealkillers.elearning.exceptions.InvalidEnrollmentParams;
 import thecerealkillers.elearning.controller.CoursesController;
+import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.service.PermissionService;
-import thecerealkillers.elearning.service.SessionService;
-import thecerealkillers.elearning.service.CoursesService;
-import thecerealkillers.elearning.service.GroupsService;
+import thecerealkillers.elearning.model.AuditItem;
+import thecerealkillers.elearning.service.*;
+import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.validator.Validator;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
@@ -45,24 +45,41 @@ public class CoursesControllerImpl implements CoursesController {
     private GroupsService groupsService;
 
     @Autowired
+    private AuditService auditService;
+
+    @Autowired
     private PermissionService permissionService;
 
 
     @RequestMapping(value = "/courses", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourses(@RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "CoursesControllerImpl.getAllCourses";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.getAllCourses", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     List<Course> courseList = coursesService.getAll();
 
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.COURSES_GET_ALL, true));
                     return new ResponseEntity<>(courseList, HttpStatus.OK);
                 } else {
+                	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+            	auditService.addEvent(new AuditItem(usernameForToken, actionName, "", serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -71,22 +88,36 @@ public class CoursesControllerImpl implements CoursesController {
 
     @RequestMapping(value = "/courses", method = RequestMethod.POST)
     public ResponseEntity createCourse(@RequestBody Course course, @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "CoursesControllerImpl.createCourse";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.createCourse", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Group group = new Group(GROUP + course.getTitle());
                     groupsService.addGroup(group);
 
                     coursesService.add(course);
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -96,20 +127,34 @@ public class CoursesControllerImpl implements CoursesController {
     @RequestMapping(value = "/courses", method = RequestMethod.DELETE)
     public ResponseEntity deleteCourse(@RequestParam(value = "title", required = true) String title,
                                        @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "CoursesControllerImpl.deleteCourse";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.deleteCourse", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     coursesService.remove(title);
                     groupsService.removeGroup(GROUP + title);
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
                     return new ResponseEntity(HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -117,20 +162,35 @@ public class CoursesControllerImpl implements CoursesController {
     }
 
     @RequestMapping(value = "/courses/{title}", method = RequestMethod.GET)
-    public ResponseEntity<?> getCourse(@PathVariable("title") String title, @RequestHeader(value = "token") String token) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+    public ResponseEntity<?> getCourse(@PathVariable("title") String
+                                               title, @RequestHeader(value = "token") String token) {
+        String actionName = "CoursesControllerImpl.getCourse";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.getCourse", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Course course = coursesService.get(title);
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
                     return new ResponseEntity<>(course, HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -148,27 +208,42 @@ public class CoursesControllerImpl implements CoursesController {
     public ResponseEntity enrollUserToCourse(@RequestHeader(value = "token") String token,
                                              @RequestParam(value = "title", required = true) String title,
                                              @RequestParam(value = "username", required = true) String username) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "CoursesControllerImpl.enrollUserToCourse";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.enrollUserToCourse", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Validator.validateEnrollment(title, username);
                     coursesService.checkEnrollmentCompatibility(token, username);
                     coursesService.enrollUserToCourse(title, username);
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (InvalidEnrollmentParams invalidEnrollmentParams) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(invalidEnrollmentParams.getMessage(), HttpStatus.CONFLICT);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (InvalidEnrollmentParams invalidEnrollmentParams) {
-            return new ResponseEntity<>(invalidEnrollmentParams.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
@@ -182,27 +257,42 @@ public class CoursesControllerImpl implements CoursesController {
     public ResponseEntity unEnrollUserFromCourse(@RequestHeader(value = "token") String token,
                                                  @RequestParam(value = "title", required = true) String title,
                                                  @RequestParam(value = "username", required = true) String username) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "CoursesControllerImpl.unEnrollUserFromCourse";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.unEnrollUserFromCourse", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     Validator.validateEnrollment(title, username);
                     coursesService.checkUnEnrollmentCompatibility(token, username);
                     coursesService.unEnrollUserFromCourse(title, username);
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+
+            } catch (InvalidEnrollmentParams invalidEnrollmentParams) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(invalidEnrollmentParams.getMessage(), HttpStatus.CONFLICT);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
-        } catch (InvalidEnrollmentParams invalidEnrollmentParams) {
-            return new ResponseEntity<>(invalidEnrollmentParams.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
@@ -212,19 +302,33 @@ public class CoursesControllerImpl implements CoursesController {
     @RequestMapping(value = "/courses/{title}/users", method = RequestMethod.GET)
     public ResponseEntity<?> getEnrolledUsers(@RequestHeader(value = "token") String token,
                                               @PathVariable("title") String title) {
-        try {
-            if (sessionService.isSessionActive(token)) {
-                String crtUserRole = sessionService.getUserRoleByToken(token);
+        String actionName = "CoursesControllerImpl.getEnrolledUsers";
 
-                if (permissionService.isOperationAvailable("CoursesControllerImpl.getEnrolledUsers", crtUserRole)) {
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
                     List<String> users = coursesService.getEnrolled(title);
 
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, true));
                     return new ResponseEntity<>(users, HttpStatus.OK);
                 } else {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } catch (NotFoundException notFoundException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, notFoundException.getMessage(), false));
+//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+            } catch (ServiceException serviceException) {
+//	auditService.addEvent(new AuditItem(usernameForToken, actionName, dataReceived, response, false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
