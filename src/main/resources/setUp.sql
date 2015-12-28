@@ -786,4 +786,20 @@ INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
 INSERT INTO user_role VALUE ('username1', 'student');
 INSERT INTO user_role VALUE ('username2', 'student');
 INSERT INTO user_role VALUE ('username3', 'student');
+
+INSERT INTO thread VALUES ('General Discussion', 'What about panda bears?', 'username1');
+INSERT INTO thread VALUES ('General Discussion', 'How did Napoleon die?', 'username2');
+INSERT INTO thread VALUES ('General Discussion', 'Kung Fu figthing', 'username2');
+INSERT INTO thread VALUES ('General Discussion', 'Help pls...', 'username3');
+
+INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did Napoleon die?',
+                            'Some say he was poisoned on St. Elena island in the Pacific Ocean...', DEFAULT);
+INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did Napoleon die?',
+                            'There is also the option that he died of the bad climate.', DEFAULT);
+INSERT INTO comment VALUES (DEFAULT, 'username2', 'General Discussion', 'How did Napoleon die?',
+                            'Most likely he was poisoned having in mind the fear that the english man had of him.', DEFAULT);
+INSERT INTO comment VALUES (DEFAULT, 'username3', 'General Discussion', 'How did Napoleon die?',
+                            'Most likely...', DEFAULT);
+INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did Napoleon die?',
+                            'Yep :)', DEFAULT);
 -- dev only end

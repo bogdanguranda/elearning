@@ -28,10 +28,10 @@ public interface CommentController {
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/comments/thread", method = RequestMethod.POST)
-    ResponseEntity<?> getCommentsInThread(
-            @RequestBody ForumThreadIdentifier threadInfo,
-            @RequestHeader(value = "token") String token);
+    @RequestMapping(value = "/comments/thread", method = RequestMethod.GET)
+    ResponseEntity<?> getCommentsInThread(@RequestParam(value = "topicTitle") String topicTitle,
+                                          @RequestParam(value = "threadTitle") String threadTitle,
+                                          @RequestHeader(value = "token") String token);
 
 
     @RequestMapping(value = "/comments/update", method = RequestMethod.POST)

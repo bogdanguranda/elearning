@@ -119,14 +119,16 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    @RequestMapping(value = "/comments/thread", method = RequestMethod.POST)
-    public ResponseEntity<?> getCommentsInThread(@RequestBody ForumThreadIdentifier threadInfo,
+    @RequestMapping(value = "/comments/thread", method = RequestMethod.GET)
+    public ResponseEntity<?> getCommentsInThread(@RequestParam(value = "topicTitle") String topicTitle,
+                                                 @RequestParam(value = "threadTitle") String threadTitle,
                                                  @RequestHeader(value = "token") String token) {
         String actionName = "CommentControllerImpl.getCommentsInThread";
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, threadInfo.toString(), Constants.SESSION_EXPIRED, false));
+                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName,
+                        "Topic: " + topicTitle + " Thread: " + threadTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -135,20 +137,24 @@ public class CommentControllerImpl implements CommentController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                    List<Comment> commentList = commentService.getCommentsInThread(threadInfo.getTitle(), threadInfo.getTopic());
+                    List<Comment> commentList = commentService.getCommentsInThread(threadTitle, topicTitle);
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), Constants.COMMENT_GET_IN_THREAD, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                            "Topic: " + topicTitle + " Thread: " + threadTitle, Constants.COMMENT_GET_IN_THREAD, true));
                     return new ResponseEntity<>(commentList, HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), Constants.NO_PERMISSION, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                            "Topic: " + topicTitle + " Thread: " + threadTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                        "Topic: " + topicTitle + " Thread: " + threadTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadInfo.toString(), notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                        "Topic: " + topicTitle + " Thread: " + threadTitle, notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {

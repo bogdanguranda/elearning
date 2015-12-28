@@ -37,7 +37,7 @@ public interface CommentDAO {
      * @return comments posted in the thread with the title @threadTitle
      * @throws DAOException
      */
-    List<Comment> getCommentsInThread(String threadTitle, String topicTitle) throws DAOException, NotFoundException;
+    List<Comment> getCommentsInThread(String threadTitle, String topicTitle) throws DAOException;
 
     /**
      * Updates the message posted by @owner at @timeStamp with the message stored by @newMessage

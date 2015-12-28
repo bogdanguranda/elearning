@@ -17,7 +17,6 @@ public class NotFoundException extends Exception  {
 
     public static final String NO_THREADS_BY_OWNER = "No threads owned by this user in the database.\n";
     public static final String NO_THREAD = "The specified topic doesn't contain this thread.\n";
-    public static final String NO_THREADS_FOR_TOPIC = "No threads in this topic.\n";
     public static final String NO_THREADS = "No threads in the database.\n";
 
 
@@ -29,7 +28,6 @@ public class NotFoundException extends Exception  {
     //----------------------------User-------------------------------------------------------------------------
 
     public static final String NO_USER = "No user with this username.\n";
-    public static final String NO_USERS = "No users in the database.zn";
 
 
     public NotFoundException(String message) {

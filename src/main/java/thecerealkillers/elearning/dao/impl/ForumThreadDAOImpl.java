@@ -164,13 +164,7 @@ public class ForumThreadDAOImpl implements ForumThreadDAO {
                 }
             });
 
-            if (threadList.size() == 0)
-                throw new NotFoundException(NotFoundException.NO_THREADS_FOR_TOPIC);
-
             return threadList;
-        } catch (NotFoundException notFound){
-            throw notFound;
-
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }

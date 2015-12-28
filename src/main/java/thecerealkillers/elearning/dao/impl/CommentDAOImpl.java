@@ -86,7 +86,7 @@ public class CommentDAOImpl implements CommentDAO {
     }
 
     @Override
-    public List<Comment> getCommentsInThread(String threadTitle, String topicTitle) throws DAOException, NotFoundException {
+    public List<Comment> getCommentsInThread(String threadTitle, String topicTitle) throws DAOException {
         try {
             String command = "SELECT * FROM comment WHERE topic = :topic AND thread = :thread ORDER BY timestamp;";
             Map<String, String> namedParameters = new HashMap<>();
@@ -110,13 +110,7 @@ public class CommentDAOImpl implements CommentDAO {
                 }
             });
 
-            if (commentList.size() == 0)
-                throw new NotFoundException(NotFoundException.NO_THREAD);
-
             return commentList;
-        } catch (NotFoundException notFound) {
-            throw notFound;
-
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
