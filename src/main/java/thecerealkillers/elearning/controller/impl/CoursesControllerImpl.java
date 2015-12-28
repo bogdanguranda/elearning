@@ -57,7 +57,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "", Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -94,7 +93,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, course.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -134,7 +132,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -172,7 +169,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -217,8 +213,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "Title = " + title +
-                        " | Username = " + username, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -273,8 +267,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, "Title = " + title +
-                        " | Username = " + username, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -325,7 +317,6 @@ public class CoursesControllerImpl implements CoursesController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, title, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

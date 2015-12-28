@@ -50,7 +50,6 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, comment.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -88,7 +87,6 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, commentID.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -127,8 +125,6 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName,
-                        "Topic: " + topicTitle + " Thread: " + threadTitle, Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -170,7 +166,6 @@ public class CommentControllerImpl implements CommentController {
 
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, commentUpdateInfo.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
@@ -207,7 +202,6 @@ public class CommentControllerImpl implements CommentController {
         String actionName = "CommentControllerImpl.deleteComment";
         try {
             if (!sessionService.isSessionActive(token)) {
-                auditService.addEvent(new AuditItem(Constants.USERNAME_OF_MOCK_USER_ACCOUNT, actionName, commentID.toString(), Constants.SESSION_EXPIRED, false));
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 

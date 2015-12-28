@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setPassword(String username) throws ServiceException, NotFoundException {
+    public void setPassword(String username) throws ServiceException, NotFoundException, EmailException {
         try {
             if (userStatusDAO.isAccountActivated(username)) {
                 String newPassword = PasswordExpert.generatePassword();
@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ServiceException.FAILED_GENERATE_PASSWORD);
 
         } catch (EmailException emailException) {
-            throw new ServiceException(ServiceException.FAILED_EMAIL_PASSWORD_SET);
+            throw emailException;
 
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_PASSWORD_RESET);
