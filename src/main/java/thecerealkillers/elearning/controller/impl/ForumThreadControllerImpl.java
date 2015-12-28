@@ -44,7 +44,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
 
     @Override
-    @RequestMapping(value = "/threads/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/threads", method = RequestMethod.POST)
     public ResponseEntity createThread(@RequestBody ForumThread newThread,
                                        @RequestHeader(value = "token") String token) {
         String actionName = "ForumThreadControllerImpl.createThread";
@@ -81,8 +81,9 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    @RequestMapping(value = "/thread", method = RequestMethod.POST)
-    public ResponseEntity<?> getThread(@RequestBody ForumThreadIdentifier threadIdentifier,
+    @RequestMapping(value = "/threads/{topicTitle}{threadTitle}", method = RequestMethod.POST)
+    public ResponseEntity<?> getThread(@RequestParam(value = "topicTitle") String topicTitle,
+                                       @RequestParam(value = "threadTitle") String threadTitle,
                                        @RequestHeader(value = "token") String token) {
         String actionName = "ForumThreadControllerImpl.getThread";
 
@@ -96,20 +97,24 @@ public class ForumThreadControllerImpl implements ForumThreadController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                    ForumThread thread = forumThreadService.getThread(threadIdentifier.getTitle(), threadIdentifier.getTopic());
+                    ForumThread thread = forumThreadService.getThread(threadTitle, topicTitle);
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.THREAD_GET, true));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                            "Topic: " + topicTitle + " Thread: " + threadTitle, Constants.THREAD_GET, true));
                     return new ResponseEntity<>(thread, HttpStatus.OK);
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), Constants.NO_PERMISSION, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                            "Topic: " + topicTitle + " Thread: " + threadTitle, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                        "Topic: " + topicTitle + " Thread: " + threadTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
 
             } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, threadIdentifier.toString(), notFoundException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                        "Topic: " + topicTitle + " Thread: " + threadTitle, notFoundException.getMessage(), false));
                 return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
@@ -192,7 +197,7 @@ public class ForumThreadControllerImpl implements ForumThreadController {
     }
 
     @Override
-    @RequestMapping(value = "/threads/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/threads", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token) {
         String actionName = "ForumThreadControllerImpl.getAll";
 

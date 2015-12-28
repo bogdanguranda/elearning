@@ -13,16 +13,16 @@ import org.springframework.http.ResponseEntity;
  */
 public interface ForumThreadController {
 
-    @RequestMapping(value = "/threads/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/threads", method = RequestMethod.POST)
     ResponseEntity createThread(
             @RequestBody ForumThread newThread,
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/thread", method = RequestMethod.POST)
-    ResponseEntity<?> getThread(
-            @RequestBody ForumThreadIdentifier threadIdentifier,
-            @RequestHeader(value = "token") String token);
+    @RequestMapping(value = "/threads/{topicTitle}{threadTitle}", method = RequestMethod.POST)
+    ResponseEntity<?> getThread(@RequestParam(value = "topicTitle") String topicTitle,
+                                @RequestParam(value = "threadTitle") String threadTitle,
+                                @RequestHeader(value = "token") String token);
 
 
     @RequestMapping(value = "/threads/topic/{topicTitle}", method = RequestMethod.GET)
@@ -37,7 +37,7 @@ public interface ForumThreadController {
             @RequestHeader(value = "token") String token);
 
 
-    @RequestMapping(value = "/threads/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/threads", method = RequestMethod.GET)
     ResponseEntity<?> getAll(
             @RequestHeader(value = "token") String token);
 
