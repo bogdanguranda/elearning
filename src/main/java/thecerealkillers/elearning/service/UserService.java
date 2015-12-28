@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service;
 
 
+import thecerealkillers.elearning.exceptions.EmailException;
 import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.exceptions.DAOException;
@@ -93,7 +94,7 @@ public interface UserService {
      *
      * @throws ServiceException
      */
-    void setPassword(String username) throws ServiceException, NotFoundException;
+    void setPassword(String username) throws ServiceException, NotFoundException, EmailException;
 
     /**
      * Initiates a authentication procedure with the old password, if it's successful will changes users hash

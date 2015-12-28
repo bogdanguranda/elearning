@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service.impl;
 
 
+import thecerealkillers.elearning.exceptions.EmailException;
 import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AccountSuspensionInfo;
@@ -41,16 +42,21 @@ public class AdminServiceImpl implements AdminService {
 
             userStatusDAO.activateAccount(newUser.getUsername());
             userService.setPassword(newUser.getUsername());
+
         } catch (DAOException daoException) {
             throw new ServiceException(ServiceException.FAILED_DAO_ROLE_CHG);
+
         } catch (ServiceException serviceException) {
+            throw new ServiceException(serviceException.getMessage());
+
+        } catch (EmailException emailException) {
             try {
                 userService.deleteUserAccount(newUser.getUsername());
             } catch (DAOException dao_ex) {
                 throw new ServiceException(ServiceException.FAILED_DAO_DELETE_ACCOUNT);
             }
 
-            throw new ServiceException(serviceException.getMessage());
+            throw new ServiceException(emailException.getMessage());
         }
     }
 
