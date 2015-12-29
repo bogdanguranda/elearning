@@ -49,6 +49,22 @@ public class ModuleFileDAOImpl implements ModuleFileDAO {
     }
 
     @Override
+    public void deleteFile(ModuleFile file) throws DAOException {
+        try {
+            String sql = "DELETE FROM module_file WHERE name= :name AND course= :course AND module = :module";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("name", file.getName());
+            namedParameters.put("course", file.getAssociatedCourse());
+            namedParameters.put("module", file.getAssociatedModule());
+
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
     public boolean isModuleFileExistent(ModuleFile file) throws DAOException {
         try {
             List<ModuleFile> files;

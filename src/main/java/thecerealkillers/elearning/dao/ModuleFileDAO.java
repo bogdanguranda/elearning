@@ -17,6 +17,13 @@ public interface ModuleFileDAO {
     void storeFile(ModuleFile file) throws DAOException;
 
     /**
+     * Removes file @file from DB.
+     * @param file
+     * @throws DAOException if DB error.
+     */
+    void deleteFile(ModuleFile file) throws DAOException;
+
+    /**
      * Checks if file is stored in DB.
      * @param file
      * @return true if it is stored already in DB, false else.
