@@ -424,6 +424,25 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`audit` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`test`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`test`;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`test` (
+
+  `testID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
+  `testTitle` VARCHAR(150) NOT NULL COMMENT '',
+  `numberOfTries` INTEGER  NOT NULL DEFAULT 0 COMMENT '',
+
+  CONSTRAINT `course_title_fk`
+    FOREIGN KEY (`courseTitle`)
+    REFERENCES `elearning_db`.`course` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
 
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
