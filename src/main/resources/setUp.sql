@@ -162,18 +162,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `elearning_db`.`file`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`file` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`file` (
-  `name` VARCHAR(100) NOT NULL COMMENT '',
-  `size` INT NULL COMMENT '',
-  `extension` VARCHAR(45) NULL COMMENT '',
-  `content` MEDIUMBLOB NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -191,6 +179,32 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
   REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`file`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`file` ;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`file` (
+  `name` VARCHAR(100) NOT NULL COMMENT '',
+  `associatedCourse` VARCHAR(45) NOT NULL COMMENT '',
+  `associatedModule` VARCHAR(45) NOT NULL COMMENT '',
+  `size` INT NULL COMMENT '',
+  `type` VARCHAR(45) NULL COMMENT '',
+  `content` MEDIUMBLOB NULL COMMENT '',
+  PRIMARY KEY (`name`, `associatedCourse`, `associatedModule`)  COMMENT '',
+  CONSTRAINT `file_associatedCourse_course_title_fk`
+  FOREIGN KEY (`associatedCourse`)
+  REFERENCES `elearning_db`.`course` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `file_associatedModule_module_title_fk`
+  FOREIGN KEY (`associatedModule`)
+  REFERENCES `elearning_db`.`module` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
   ENGINE = InnoDB;
 
 
@@ -198,23 +212,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
 -- Table `elearning_db`.`module_file`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `elearning_db`.`module_file` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`module_file` (
-  `module` VARCHAR(45) NOT NULL COMMENT '',
-  `file` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`module`, `file`)  COMMENT '',
-  INDEX `file_idx` (`file` ASC)  COMMENT '',
-  CONSTRAINT `module_file_module_title_fk`
-    FOREIGN KEY (`module`)
-    REFERENCES `elearning_db`.`module` (`title`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `module_file_file_name_fk`
-    FOREIGN KEY (`file`)
-    REFERENCES `elearning_db`.`file` (`name`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
