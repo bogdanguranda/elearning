@@ -38,7 +38,6 @@ public interface ModuleFileDAO {
      */
     ModuleFile getFile(String fileName, String associatedCourse, String associatedModule) throws DAOException;
 
-
     /**
      * Returns all the files with the associated course = @associatedCourse
      * and the associated module = @associatedModule (Basically, all the files
@@ -49,6 +48,15 @@ public interface ModuleFileDAO {
      * @throws DAOException if DB error.
      */
     List<ModuleFile> getAll(String associatedCourse, String associatedModule) throws DAOException;
+
+    /**
+     * Renames the module-file with having the info @file,
+     * to @newName.
+     * @param file
+     * @param newName
+     * @throws DAOException if DB error.
+     */
+    void renameFile(ModuleFile file, String newName) throws DAOException;
 
     /**
      * Checks if file is stored in DB.

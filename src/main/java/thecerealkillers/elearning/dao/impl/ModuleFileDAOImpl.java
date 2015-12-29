@@ -128,6 +128,23 @@ public class ModuleFileDAOImpl implements ModuleFileDAO {
     }
 
     @Override
+    public void renameFile(ModuleFile file, String newName) throws DAOException {
+        try {
+            String sql = "UPDATE module_file SET name = :newName WHERE name = :oldName AND course = :course AND module = :module";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("newName", newName);
+            namedParameters.put("oldName", file.getName());
+            namedParameters.put("course", file.getAssociatedCourse());
+            namedParameters.put("module", file.getAssociatedModule());
+
+            namedParameterJdbcTemplate.update(sql, namedParameters);
+        } catch (Exception exception) {
+            throw new DAOException(exception.getMessage());
+        }
+    }
+
+    @Override
     public boolean isModuleFileExistent(ModuleFile file) throws DAOException {
         try {
             List<ModuleFile> files;
