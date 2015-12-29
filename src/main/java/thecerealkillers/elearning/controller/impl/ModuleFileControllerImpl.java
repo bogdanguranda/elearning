@@ -194,4 +194,55 @@ public class ModuleFileControllerImpl implements ModuleFileController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.PUT)
+    public ResponseEntity<?> renameFile(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+                                        @PathVariable("moduleTitle") String moduleTitle, @RequestParam("currentName") String currentName,
+                                        @RequestParam("newName") String newName) {
+        String actionName = "ModuleFileControllerImpl.renameFile";
+
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    ModuleFile file = new ModuleFile();
+                    file.setName(currentName);
+                    file.setAssociatedCourse(courseTitle);
+                    file.setAssociatedModule(moduleTitle);
+
+                    moduleFileService.renameFile(file, newName);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                            "Filename = " +  currentName +
+                            " | Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle +
+                            " | New filename = " + newName, Constants.MODULE_FILE_RENAMED, true));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                            "Filename = " +  currentName +
+                            " | Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle +
+                            " | New filename = " + newName, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName,
+                        "Filename = " +  currentName +
+                                " | Course title = " + courseTitle +
+                                " | Module title = " + moduleTitle +
+                                " | New filename = " + newName , serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

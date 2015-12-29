@@ -34,4 +34,11 @@ public interface ModuleFileController {
     ResponseEntity<?> getAll(@RequestHeader("token") String token,
                              @PathVariable("courseTitle") String courseTitle,
                              @PathVariable("moduleTitle") String moduleTitle);
+
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.PUT)
+    ResponseEntity<?> renameFile(@RequestHeader("token") String token,
+                                 @PathVariable("courseTitle") String courseTitle,
+                                 @PathVariable("moduleTitle") String moduleTitle,
+                                 @RequestParam("currentName") String currentName,
+                                 @RequestParam("newName") String newName);
 }
