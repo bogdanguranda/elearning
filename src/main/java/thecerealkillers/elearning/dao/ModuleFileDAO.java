@@ -2,6 +2,7 @@ package thecerealkillers.elearning.dao;
 
 import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.model.Module;
 import thecerealkillers.elearning.model.ModuleFile;
 
 /**
@@ -22,6 +23,17 @@ public interface ModuleFileDAO {
      * @throws DAOException if DB error.
      */
     void deleteFile(ModuleFile file) throws DAOException;
+
+    /**
+     * Return the file with the name @fileName, the assocCourse @associatedCourse
+     * and the assocModule @associatedModule.
+     * @param fileName
+     * @param associatedCourse
+     * @param associatedModule
+     * @return the corresponding ModuleFile.
+     * @throws DAOException if DB error.
+     */
+    ModuleFile getFile(String fileName, String associatedCourse, String associatedModule) throws DAOException;
 
     /**
      * Checks if file is stored in DB.
