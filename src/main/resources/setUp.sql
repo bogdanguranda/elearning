@@ -730,7 +730,7 @@ INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41
 INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
 INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
 INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
-INSERT INTO user_role VALUE ('username1', 'student');
+INSERT INTO user_role VALUE ('username1', 'profesor');
 INSERT INTO user_role VALUE ('username2', 'student');
 INSERT INTO user_role VALUE ('username3', 'student');
 
