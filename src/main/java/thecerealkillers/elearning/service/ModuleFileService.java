@@ -49,4 +49,13 @@ public interface ModuleFileService {
      * if no such module / course.
      */
     List<ModuleFile> getAll(String associatedCourse, String associatedModule) throws ServiceException;
+
+    /**
+     * Renames the file @file to @newName.
+     * @param file
+     * @param newName
+     * @throws ServiceException if DAOException encountered /
+     * if no such file as @file.
+     */
+    void renameFile(ModuleFile file, String newName) throws ServiceException;
 }

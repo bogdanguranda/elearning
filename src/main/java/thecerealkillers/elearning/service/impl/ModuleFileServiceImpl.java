@@ -101,7 +101,20 @@ public class ModuleFileServiceImpl implements ModuleFileService {
                 throw new ServiceException(ServiceException.FAILED_COURSE_INNEXISTENT);
             }
         } catch (DAOException daoException) {
-                throw new ServiceException(daoException.getMessage());
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
+
+    @Override
+    public void renameFile(ModuleFile file, String newName) throws ServiceException {
+        try {
+            if (moduleFileDAO.isModuleFileExistent(file)) {
+                moduleFileDAO.renameFile(file, newName);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_NO_SUCH_MODULE_FILE);
+            }
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
         }
     }
 }
