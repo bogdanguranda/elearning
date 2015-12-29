@@ -183,11 +183,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `elearning_db`.`file`
+-- Table `elearning_db`.`module_file`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`file` ;
+DROP TABLE IF EXISTS `elearning_db`.`module_file` ;
 
-CREATE TABLE IF NOT EXISTS `elearning_db`.`file` (
+CREATE TABLE IF NOT EXISTS `elearning_db`.`module_file` (
   `name` VARCHAR(100) NOT NULL COMMENT '',
   `associatedCourse` VARCHAR(45) NOT NULL COMMENT '',
   `associatedModule` VARCHAR(45) NOT NULL COMMENT '',
@@ -209,9 +209,9 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`file` (
 
 
 -- -----------------------------------------------------
--- Table `elearning_db`.`module_file`
+-- Table `elearning_db`.`file`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`module_file` ;
+DROP TABLE IF EXISTS `elearning_db`.`file` ;
 
 
 -- -----------------------------------------------------
