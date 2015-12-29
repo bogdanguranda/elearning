@@ -444,6 +444,45 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`test` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`question`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`question`;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`question` (
+
+  `questionID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `testID` INTEGER  NOT NULL COMMENT '',
+  `questionText` VARCHAR(400) NOT NULL COMMENT '',
+
+  CONSTRAINT `test_id_fk`
+    FOREIGN KEY (`testID`)
+    REFERENCES `elearning_db`.`test` (`testID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`answer`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`answer`;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`answer` (
+
+  `answerID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `questionID` INTEGER  NOT NULL COMMENT '',
+  `answerText` VARCHAR(150) NOT NULL COMMENT '',
+  `correct` BOOLEAN NOT NULL COMMENT '',
+
+  CONSTRAINT `question_ID_fk`
+    FOREIGN KEY (`questionID`)
+    REFERENCES `elearning_db`.`question` (`questionID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
 
