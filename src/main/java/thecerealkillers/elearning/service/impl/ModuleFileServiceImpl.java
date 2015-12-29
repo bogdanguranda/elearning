@@ -62,4 +62,22 @@ public class ModuleFileServiceImpl implements ModuleFileService {
             throw new ServiceException(daoException.getMessage());
         }
     }
+
+    @Override
+    public ModuleFile getFile(String fileName, String associatedCourse, String associatedModule) throws ServiceException {
+        try {
+            ModuleFile file = new ModuleFile();
+            file.setName(fileName);
+            file.setAssociatedModule(associatedModule);
+            file.setAssociatedCourse(associatedCourse);
+
+            if (moduleFileDAO.isModuleFileExistent(file)) {
+                return moduleFileDAO.getFile(fileName, associatedCourse, associatedModule);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_NO_SUCH_MODULE_FILE);
+            }
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
 }

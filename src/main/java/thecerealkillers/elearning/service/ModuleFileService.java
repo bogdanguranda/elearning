@@ -26,4 +26,15 @@ public interface ModuleFileService {
      * if DAOException encountered.
      */
     void deleteFile(ModuleFile file) throws ServiceException;
+
+    /**
+     * Gets the corresponding file.
+     * @param fileName
+     * @param associatedCourse
+     * @param associatedModule
+     * @return corresponding ModuleFile.
+     * @throws ServiceException if DAOException encountered /
+     * if the file is non-existent.
+     */
+    ModuleFile getFile(String fileName, String associatedCourse, String associatedModule) throws ServiceException;
 }
