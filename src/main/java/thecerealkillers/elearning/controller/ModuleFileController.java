@@ -29,4 +29,9 @@ public interface ModuleFileController {
                               @PathVariable("courseTitle") String courseTitle,
                               @PathVariable("moduleTitle") String moduleTitle,
                               @PathVariable("fileName") String fileName);
+
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.GET)
+    ResponseEntity<?> getAll(@RequestHeader("token") String token,
+                             @PathVariable("courseTitle") String courseTitle,
+                             @PathVariable("moduleTitle") String moduleTitle);
 }

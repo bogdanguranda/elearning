@@ -16,6 +16,7 @@ import thecerealkillers.elearning.service.SessionService;
 import thecerealkillers.elearning.utilities.Constants;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by cuvidk on 12/29/2015.
@@ -151,6 +152,42 @@ public class ModuleFileControllerImpl implements ModuleFileController {
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName,  "Filename = " +  fileName +
                         " | Course title = " + courseTitle + " | Module title = " + moduleTitle, serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.GET)
+    public ResponseEntity<?> getAll(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+                                    @PathVariable("moduleTitle") String moduleTitle) {
+        String actionName = "ModuleFileControllerImpl.getAll";
+
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    List<ModuleFile> files = moduleFileService.getAll(courseTitle, moduleTitle);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, "Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle, Constants.MODULE_FILE_GET_ALL, true));
+                    return new ResponseEntity<>(files, HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName,  "Course title = " + courseTitle +
+                            " | Module title = " + moduleTitle, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName,  "Course title = " + courseTitle +
+                        " | Module title = " + moduleTitle, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {

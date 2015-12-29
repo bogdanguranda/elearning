@@ -45,7 +45,8 @@ public interface ModuleFileService {
      * @param associatedCourse
      * @param associatedModule
      * @return a list of ModuleFile.
-     * @throws ServiceException
+     * @throws ServiceException if DAOException encountered /
+     * if no such module / course.
      */
     List<ModuleFile> getAll(String associatedCourse, String associatedModule) throws ServiceException;
 }
