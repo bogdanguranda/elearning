@@ -12,6 +12,8 @@ import thecerealkillers.elearning.model.Module;
 import thecerealkillers.elearning.model.ModuleFile;
 import thecerealkillers.elearning.service.ModuleFileService;
 
+import java.util.List;
+
 /**
  * Created by cuvidk on 12/29/2015.
  */
@@ -78,6 +80,28 @@ public class ModuleFileServiceImpl implements ModuleFileService {
             }
         } catch (DAOException daoException) {
             throw new ServiceException(daoException.getMessage());
+        }
+    }
+
+    @Override
+    public List<ModuleFile> getAll(String associatedCourse, String associatedModule) throws ServiceException {
+        try {
+            Course course = new Course();
+            course.setTitle(associatedCourse);
+            if (coursesDAO.isCourseExistent(course)) {
+                Module module = new Module();
+                module.setTitle(associatedModule);
+                module.setCourse(associatedCourse);
+                if (moduleDAO.isModuleExistent(module)) {
+                    return moduleFileDAO.getAll(associatedCourse, associatedModule);
+                } else {
+                    throw new ServiceException(ServiceException.FAILED_MODULE_INNEXISTENT);
+                }
+            } else {
+                throw new ServiceException(ServiceException.FAILED_COURSE_INNEXISTENT);
+            }
+        } catch (DAOException daoException) {
+                throw new ServiceException(daoException.getMessage());
         }
     }
 }

@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.ModuleFile;
 
+import java.util.List;
+
 /**
  * Created by cuvidk on 12/29/2015.
  */
@@ -37,4 +39,13 @@ public interface ModuleFileService {
      * if the file is non-existent.
      */
     ModuleFile getFile(String fileName, String associatedCourse, String associatedModule) throws ServiceException;
+
+    /**
+     * Gets a list of all corresponding module-files.
+     * @param associatedCourse
+     * @param associatedModule
+     * @return a list of ModuleFile.
+     * @throws ServiceException
+     */
+    List<ModuleFile> getAll(String associatedCourse, String associatedModule) throws ServiceException;
 }
