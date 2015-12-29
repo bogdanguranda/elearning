@@ -21,4 +21,12 @@ public interface ModuleFileController {
                                  @PathVariable("courseTitle") String courseTitle,
                                  @PathVariable("moduleTitle") String moduleTitle,
                                  @RequestParam("fileName") String fileNames);
+
+    //!!!!  PLEASE NOTE THAT THIS REQUEST NEEDS TO END IN "/", if not using "/", !!!!
+    //!!!!  a pathVariable like x.html will be truncated to x !!!!!
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files/{fileName}/", method = RequestMethod.GET)
+    ResponseEntity<?> getFile(@RequestHeader("token") String token,
+                              @PathVariable("courseTitle") String courseTitle,
+                              @PathVariable("moduleTitle") String moduleTitle,
+                              @PathVariable("fileName") String fileName);
 }

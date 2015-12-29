@@ -101,7 +101,7 @@ public class Constants {
     //----------------------------------ModuleFileController------------------------------------------------------------------------------------
     public static final String MODULE_FILE_CREATED = "Module file was created.";
     public static final String MODULE_FILE_DELETED = "Module file was deleted.";
-
+    public static final String MODULE_FILE_GET = "Module file retrieved from database.";
 
     //----------------------------------GroupsController------------------------------------------------------------------------------------
 

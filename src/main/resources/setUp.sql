@@ -504,6 +504,7 @@ INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
 
 INSERT INTO operation VALUES('ModuleFileControllerImpl.uploadFile');
 INSERT INTO operation VALUES('ModuleFileControllerImpl.deleteFile');
+INSERT INTO operation VALUES('ModuleFileControllerImpl.getFile');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -624,6 +625,10 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileC
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'administrator', false);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'student', true);
 --  #################################################=-ModuleFileControllerImpl END-=###########################################################################
 
 -- ###############################################=-ForumThreadControllerImpl START-=#########################################################################

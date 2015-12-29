@@ -80,7 +80,7 @@ public class ServiceException extends Exception {
 
     //------------------------------------------ModuleServiceImpl---------------------------------------------------------------------------------
     public static final String FAILED_MODULE_FILE_ALREADY_EXISTS = "The module file you are trying to upload already exists.\n";
-    public static final String FAILED_NO_SUCH_MODULE_FILE = "The module file you are trying to delete is non-existent.\n";
+    public static final String FAILED_NO_SUCH_MODULE_FILE = "The module file you are trying to manipulate is non-existent.\n";
 
 
     //------------------------------------------CoursesServiceImpl---------------------------------------------------------------------------------
