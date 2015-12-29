@@ -98,6 +98,10 @@ public class Constants {
     public static final String MODULE_RENAMED = "Module was renamed.";
 
 
+    //----------------------------------ModuleFileController------------------------------------------------------------------------------------
+    public static final String MODULE_FILE_CREATED = "Module file was created.";
+
+
     //----------------------------------GroupsController------------------------------------------------------------------------------------
 
     public static final String GROUPS_GET_ALL = "All groups retrieved from database.";

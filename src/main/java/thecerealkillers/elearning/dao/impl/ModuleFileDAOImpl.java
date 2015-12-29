@@ -4,6 +4,8 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import sun.reflect.generics.tree.ByteSignature;
 import thecerealkillers.elearning.dao.ModuleFileDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Module;
@@ -18,6 +20,7 @@ import java.util.Map;
 /**
  * Created by cuvidk on 12/29/2015.
  */
+@Repository
 public class ModuleFileDAOImpl implements ModuleFileDAO {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -30,8 +33,8 @@ public class ModuleFileDAOImpl implements ModuleFileDAO {
     @Override
     public void storeFile(ModuleFile file) throws DAOException {
         try {
-            String sql = "INSERT INTO module_file VALUES (:name, :course, :module, " + file.getSize() + ", :type," +
-                    file.getContent() + ");";
+            String sql = "INSERT INTO module_file VALUE (:name, :course, :module, " + file.getSize() + ", :type, '" +
+                    file.getContent() + "');";
 
             Map<String, String> namedParameters = new HashMap<>();
             namedParameters.put("name", file.getName());
@@ -49,10 +52,10 @@ public class ModuleFileDAOImpl implements ModuleFileDAO {
     public boolean isModuleFileExistent(ModuleFile file) throws DAOException {
         try {
             List<ModuleFile> files;
-            String sqlCommand = "SELECT * FROM module_file WHERE title = :name AND course = :course AND module = :module";
+            String sqlCommand = "SELECT * FROM module_file WHERE name = :name AND course = :course AND module = :module";
 
             Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("title", file.getName());
+            namedParameters.put("name", file.getName());
             namedParameters.put("course", file.getAssociatedCourse());
             namedParameters.put("module", file.getAssociatedModule());
 

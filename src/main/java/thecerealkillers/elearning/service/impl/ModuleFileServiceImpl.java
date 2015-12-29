@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.dao.ModuleDAO;
 import thecerealkillers.elearning.dao.ModuleFileDAO;
@@ -14,6 +15,7 @@ import thecerealkillers.elearning.service.ModuleFileService;
 /**
  * Created by cuvidk on 12/29/2015.
  */
+@Service
 public class ModuleFileServiceImpl implements ModuleFileService {
     @Autowired
     private ModuleDAO moduleDAO;
@@ -30,6 +32,7 @@ public class ModuleFileServiceImpl implements ModuleFileService {
             if (coursesDAO.isCourseExistent(course)) {
                 Module module = new Module();
                 module.setTitle(file.getAssociatedModule());
+                module.setCourse(file.getAssociatedCourse());
                 if (moduleDAO.isModuleExistent(module)) {
                     if (!moduleFileDAO.isModuleFileExistent(file)) {
                         moduleFileDAO.storeFile(file);

@@ -196,12 +196,12 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`module_file` (
   `content` MEDIUMBLOB NULL COMMENT '',
   PRIMARY KEY (`name`, `course`, `module`)  COMMENT '',
   CONSTRAINT `file_associatedCourse_course_title_fk`
-  FOREIGN KEY (`associatedCourse`)
+  FOREIGN KEY (`course`)
   REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `file_associatedModule_module_title_fk`
-  FOREIGN KEY (`associatedModule`)
+  FOREIGN KEY (`module`)
   REFERENCES `elearning_db`.`module` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
@@ -501,6 +501,8 @@ INSERT INTO operation VALUES('ModuleControllerImpl.deleteModule');
 INSERT INTO operation VALUES('ModuleControllerImpl.getAll');
 INSERT INTO operation VALUES('ModuleControllerImpl.get');
 INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
+
+INSERT INTO operation VALUES('ModuleFileControllerImpl.uploadFile');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -612,6 +614,12 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleContr
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'student', false);
 -- ###################################################=-ModuleControllerImpl END-=###########################################################################
+
+--  #################################################=-ModuleFileControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'student', false);
+--  #################################################=-ModuleFileControllerImpl END-=###########################################################################
 
 -- ###############################################=-ForumThreadControllerImpl START-=#########################################################################
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'administrator', true);

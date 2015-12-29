@@ -10,7 +10,7 @@ public class ModuleFile {
     private String name;
     private String associatedCourse;
     private String associatedModule;
-    private int size;
+    private long size;
     private String type;
     private byte[] content;
 
@@ -38,11 +38,11 @@ public class ModuleFile {
         this.associatedModule = associatedModule;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -85,7 +85,7 @@ public class ModuleFile {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (associatedCourse != null ? associatedCourse.hashCode() : 0);
         result = 31 * result + (associatedModule != null ? associatedModule.hashCode() : 0);
-        result = 31 * result + size;
+        result = 31 * result + (int) (size ^ (size >>> 32));
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + Arrays.hashCode(content);
         return result;

@@ -1,11 +1,13 @@
 package thecerealkillers.elearning.dao;
 
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.ModuleFile;
 
 /**
  * Created by cuvidk on 12/29/2015.
  */
+@Repository
 public interface ModuleFileDAO {
     /**
      * Stores the file @file in DB.
