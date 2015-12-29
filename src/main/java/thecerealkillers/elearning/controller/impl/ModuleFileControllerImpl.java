@@ -81,4 +81,42 @@ public class ModuleFileControllerImpl implements ModuleFileController {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
+
+    @Override
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteFile(@RequestHeader("token") String token, @PathVariable("courseTitle") String courseTitle,
+                                        @PathVariable("moduleTitle") String moduleTitle, @RequestParam("fileName") String fileName) {
+        String actionName = "ModuleFileControllerImpl.deleteFile";
+
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    ModuleFile moduleFile = new ModuleFile();
+                    moduleFile.setName(fileName);
+                    moduleFile.setAssociatedCourse(courseTitle);
+                    moduleFile.setAssociatedModule(moduleTitle);
+
+                    moduleFileService.deleteFile(moduleFile);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, fileName, Constants.MODULE_FILE_DELETED, true));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, fileName, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, fileName, serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

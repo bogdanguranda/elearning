@@ -15,4 +15,10 @@ public interface ModuleFileController {
             @PathVariable("courseTitle") String courseTitle,
             @PathVariable("moduleTitle") String moduleTitle,
             @RequestParam("file") MultipartFile file);
+
+    @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.DELETE)
+    ResponseEntity<?> deleteFile(@RequestHeader("token") String token,
+                                 @PathVariable("courseTitle") String courseTitle,
+                                 @PathVariable("moduleTitle") String moduleTitle,
+                                 @RequestParam("fileName") String fileNames);
 }
