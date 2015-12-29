@@ -18,4 +18,12 @@ public interface ModuleFileService {
      * doesn't exist.
      */
     void storeFile(ModuleFile file) throws ServiceException;
+
+    /**
+     * Deletes the file @file.
+     * @param file
+     * @throws ServiceException if file is innexistent /
+     * if DAOException encountered.
+     */
+    void deleteFile(ModuleFile file) throws ServiceException;
 }

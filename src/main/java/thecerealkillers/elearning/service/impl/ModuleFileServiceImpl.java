@@ -49,4 +49,17 @@ public class ModuleFileServiceImpl implements ModuleFileService {
             throw new ServiceException(daoException.getMessage());
         }
     }
+
+    @Override
+    public void deleteFile(ModuleFile file) throws ServiceException {
+        try {
+            if (moduleFileDAO.isModuleFileExistent(file)) {
+                moduleFileDAO.deleteFile(file);
+            } else {
+                throw new ServiceException(ServiceException.FAILED_NO_SUCH_MODULE_FILE);
+            }
+        } catch (DAOException daoException) {
+            throw new ServiceException(daoException.getMessage());
+        }
+    }
 }
