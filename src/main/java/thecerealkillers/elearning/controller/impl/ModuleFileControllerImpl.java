@@ -64,17 +64,17 @@ public class ModuleFileControllerImpl implements ModuleFileController {
 
                         moduleFileService.storeFile(moduleFile);
 
-                        auditService.addEvent(new AuditItem(usernameForToken, actionName, file.toString(), Constants.MODULE_FILE_CREATED, true));
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, file.getOriginalFilename(), Constants.MODULE_FILE_CREATED, true));
                         return new ResponseEntity<>(HttpStatus.CREATED);
                     } else {
                         return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
                     }
                 } else {
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, file.toString(), Constants.NO_PERMISSION, false));
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, file.getOriginalFilename(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
             } catch (ServiceException serviceException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, file.toString(), serviceException.getMessage(), false));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, file.getOriginalFilename(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
