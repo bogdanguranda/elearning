@@ -189,12 +189,12 @@ DROP TABLE IF EXISTS `elearning_db`.`module_file` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`module_file` (
   `name` VARCHAR(100) NOT NULL COMMENT '',
-  `associatedCourse` VARCHAR(45) NOT NULL COMMENT '',
-  `associatedModule` VARCHAR(45) NOT NULL COMMENT '',
+  `course` VARCHAR(45) NOT NULL COMMENT '',
+  `module` VARCHAR(45) NOT NULL COMMENT '',
   `size` INT NULL COMMENT '',
   `type` VARCHAR(45) NULL COMMENT '',
   `content` MEDIUMBLOB NULL COMMENT '',
-  PRIMARY KEY (`name`, `associatedCourse`, `associatedModule`)  COMMENT '',
+  PRIMARY KEY (`name`, `course`, `module`)  COMMENT '',
   CONSTRAINT `file_associatedCourse_course_title_fk`
   FOREIGN KEY (`associatedCourse`)
   REFERENCES `elearning_db`.`course` (`title`)
