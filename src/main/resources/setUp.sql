@@ -431,14 +431,15 @@ DROP TABLE IF EXISTS `elearning_db`.`test`;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`test` (
 
-  `testID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
-  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
   `testTitle` VARCHAR(150) NOT NULL COMMENT '',
+  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
   `numberOfTries` INTEGER  NOT NULL DEFAULT 0 COMMENT '',
 
+  PRIMARY KEY (`testTitle`, `courseTitle`),
+
   CONSTRAINT `course_title_fk`
-    FOREIGN KEY (`courseTitle`)
-    REFERENCES `elearning_db`.`course` (`title`)
+  FOREIGN KEY (`courseTitle`)
+  REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -452,15 +453,21 @@ DROP TABLE IF EXISTS `elearning_db`.`question`;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`question` (
 
   `questionID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
-  `testID` INTEGER  NOT NULL COMMENT '',
+  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
+  `testTitle` VARCHAR(150) NOT NULL COMMENT '',
   `questionText` VARCHAR(400) NOT NULL COMMENT '',
 
-  CONSTRAINT `test_id_fk`
-    FOREIGN KEY (`testID`)
-    REFERENCES `elearning_db`.`test` (`testID`)
+  CONSTRAINT `question_testTitle_fk`
+    FOREIGN KEY (`testTitle`)
+    REFERENCES `elearning_db`.`test` (`testTitle`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `question_course_title_fk`
+    FOREIGN KEY (`courseTitle`)
+    REFERENCES `elearning_db`.`test` (`courseTitle`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
+  ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -479,9 +486,7 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`answer` (
     FOREIGN KEY (`questionID`)
     REFERENCES `elearning_db`.`question` (`questionID`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
+    ON UPDATE CASCADE);
 
 -- -----------------------------------------------------
 -- Table `elearning_db`.`test_user`
@@ -489,16 +494,22 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `elearning_db`.`test_user`;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`test_user` (
 
-  `testID` INTEGER NOT NULL COMMENT '',
+  `testTitle` VARCHAR(150) NOT NULL COMMENT '',
+  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
   `tryNumber` INTEGER NOT NULL COMMENT '',
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `points` INTEGER NOT NULL COMMENT '',
 
-  PRIMARY KEY (`testID`, `username`, `tryNumber`)  COMMENT '',
+  PRIMARY KEY (`testTitle`, `courseTitle`, `username`, `tryNumber`)  COMMENT '',
 
-  CONSTRAINT `id_test_user_fk`
-    FOREIGN KEY (`testID`)
-    REFERENCES `elearning_db`.`test` (`testID`)
+  CONSTRAINT `test_user_testTitle_fk`
+    FOREIGN KEY (`testTitle`)
+    REFERENCES `elearning_db`.`test` (`testTitle`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `test_user_course_title_fk`
+    FOREIGN KEY (`courseTitle`)
+    REFERENCES `elearning_db`.`test` (`courseTitle`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
 
