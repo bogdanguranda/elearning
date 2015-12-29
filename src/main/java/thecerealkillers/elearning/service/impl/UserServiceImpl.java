@@ -298,7 +298,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Verifies @token
      *
-     * @param token            = token the will be checked
+     * @param token            = token that will be checked
      * @param conversion       = conversion unit
      * @param username         = the username for witch to compare @token with the token stored in the database
      * @param timeTokenIsValid = time limit in which the token is valid
