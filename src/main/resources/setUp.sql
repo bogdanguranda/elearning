@@ -483,6 +483,31 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`answer` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`test_user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`test_user`;
+CREATE TABLE IF NOT EXISTS `elearning_db`.`test_user` (
+
+  `testID` INTEGER NOT NULL COMMENT '',
+  `tryNumber` INTEGER NOT NULL COMMENT '',
+  `username` VARCHAR(45) NOT NULL COMMENT '',
+  `points` INTEGER NOT NULL COMMENT '',
+
+  PRIMARY KEY (`testID`, `username`, `tryNumber`)  COMMENT '',
+
+  CONSTRAINT `id_test_user_fk`
+    FOREIGN KEY (`testID`)
+    REFERENCES `elearning_db`.`test` (`testID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT `username_fk`
+    FOREIGN KEY (`username`)
+    REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
 
