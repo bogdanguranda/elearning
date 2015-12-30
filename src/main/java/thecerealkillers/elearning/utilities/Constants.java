@@ -10,7 +10,7 @@ public class Constants {
 
     public static final String ADMIN = "administrator";
     public static final String STUDENT = "student";
-    public static final String TEACHER = "profesor";
+    public static final String TEACHER = "professor";
 
     public static final ArrayList<String> ROLE_LIST = new ArrayList<String>() {{
         add(ADMIN);
