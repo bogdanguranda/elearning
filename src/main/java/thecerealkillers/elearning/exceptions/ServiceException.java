@@ -122,6 +122,9 @@ public class ServiceException extends Exception {
     public static final String ADD_EVENT = "An error occurred while saving the event.\n";
 
 
+    //------------------------------------------OnlineTestsServiceImpl------------------------------------------------------------------------
+    public static final String FAILED_TEST_ALREADY_EXISTS = "The test you are trying to create already exists.\n";
+
     public ServiceException(String message) {
         super(message);
     }

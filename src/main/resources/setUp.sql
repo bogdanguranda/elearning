@@ -598,6 +598,8 @@ INSERT INTO operation VALUES('ModuleControllerImpl.deleteModule');
 INSERT INTO operation VALUES('ModuleControllerImpl.getAll');
 INSERT INTO operation VALUES('ModuleControllerImpl.get');
 INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
+
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.createTest');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -797,6 +799,12 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'profesor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'student', true);
 -- ###################################################=-UserControllerImpl END-=##############################################################################
+
+-- ##################################################=-OnlineTestsController START-=#############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'profesor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'student', FALSE);
+-- ###################################################=-OnlineTestsController END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END
 
@@ -824,7 +832,7 @@ INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41
 INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
 INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
 INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
-INSERT INTO user_role VALUE ('username1', 'student');
+INSERT INTO user_role VALUE ('username1', 'profesor');
 INSERT INTO user_role VALUE ('username2', 'student');
 INSERT INTO user_role VALUE ('username3', 'student');
 

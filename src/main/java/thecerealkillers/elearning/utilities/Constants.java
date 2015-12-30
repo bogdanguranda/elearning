@@ -101,4 +101,11 @@ public class Constants {
     //----------------------------------GroupsController------------------------------------------------------------------------------------
 
     public static final String GROUPS_GET_ALL = "All groups retrieved from database.";
+
+
+    //----------------------------------OnlineTestsController-------------------------------------------------------------------------------
+    public static final String ONLINE_TEST_NEW_TEST = "Online test was created.";
 }
+
+
+
