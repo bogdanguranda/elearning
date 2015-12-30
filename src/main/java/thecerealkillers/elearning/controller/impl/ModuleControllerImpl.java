@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
  * Modified by Dani.
  */
 @RestController
+@CrossOrigin
 public class ModuleControllerImpl implements ModuleController {
 
     @Autowired
