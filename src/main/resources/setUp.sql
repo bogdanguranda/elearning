@@ -431,14 +431,14 @@ DROP TABLE IF EXISTS `elearning_db`.`test`;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`test` (
 
-  `testTitle` VARCHAR(150) NOT NULL COMMENT '',
-  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
-  `numberOfTries` INTEGER  NOT NULL DEFAULT 0 COMMENT '',
+  `title` VARCHAR(150) NOT NULL COMMENT '',
+  `course` VARCHAR(150) NOT NULL COMMENT '',
+  `attempts` INTEGER  NOT NULL DEFAULT 0 COMMENT '',
 
-  PRIMARY KEY (`testTitle`, `courseTitle`),
+  PRIMARY KEY (`title`, `course`),
 
   CONSTRAINT `course_title_fk`
-  FOREIGN KEY (`courseTitle`)
+  FOREIGN KEY (`course`)
   REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
@@ -453,40 +453,29 @@ DROP TABLE IF EXISTS `elearning_db`.`question`;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`question` (
 
   `questionID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
-  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
-  `testTitle` VARCHAR(150) NOT NULL COMMENT '',
-  `questionText` VARCHAR(400) NOT NULL COMMENT '',
-
+  `course` VARCHAR(150) NOT NULL COMMENT '',
+  `title` VARCHAR(150) NOT NULL COMMENT '',
+  `text` VARCHAR(400) NOT NULL COMMENT '',
+  `answer1` VARCHAR(300) NOT NULL COMMENT '',
+  `correct1` VARCHAR(6) NOT NULL COMMENT '',
+  `answer2` VARCHAR(300) NOT NULL COMMENT '',
+  `correct2` VARCHAR(6) NOT NULL COMMENT '',
+  `answer3` VARCHAR(300) NOT NULL COMMENT '',
+  `correct3` VARCHAR(6) NOT NULL COMMENT '',
+  `answer4` VARCHAR(300) NOT NULL COMMENT '',
+  `correct4` VARCHAR(6) NOT NULL COMMENT '',
   CONSTRAINT `question_testTitle_fk`
-    FOREIGN KEY (`testTitle`)
-    REFERENCES `elearning_db`.`test` (`testTitle`)
+    FOREIGN KEY (`title`)
+    REFERENCES `elearning_db`.`test` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `question_course_title_fk`
-    FOREIGN KEY (`courseTitle`)
-    REFERENCES `elearning_db`.`test` (`courseTitle`)
+    FOREIGN KEY (`course`)
+    REFERENCES `elearning_db`.`test` (`course`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
   ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `elearning_db`.`answer`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`answer`;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`answer` (
-
-  `answerID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
-  `questionID` INTEGER  NOT NULL COMMENT '',
-  `answerText` VARCHAR(150) NOT NULL COMMENT '',
-  `correct` BOOLEAN NOT NULL COMMENT '',
-
-  CONSTRAINT `question_ID_fk`
-    FOREIGN KEY (`questionID`)
-    REFERENCES `elearning_db`.`question` (`questionID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
 
 -- -----------------------------------------------------
 -- Table `elearning_db`.`test_user`
@@ -494,22 +483,22 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`answer` (
 DROP TABLE IF EXISTS `elearning_db`.`test_user`;
 CREATE TABLE IF NOT EXISTS `elearning_db`.`test_user` (
 
-  `testTitle` VARCHAR(150) NOT NULL COMMENT '',
-  `courseTitle` VARCHAR(150) NOT NULL COMMENT '',
-  `tryNumber` INTEGER NOT NULL COMMENT '',
+  `title` VARCHAR(150) NOT NULL COMMENT '',
+  `course` VARCHAR(150) NOT NULL COMMENT '',
+  `attemptNumber` INTEGER NOT NULL COMMENT '',
   `username` VARCHAR(45) NOT NULL COMMENT '',
   `points` INTEGER NOT NULL COMMENT '',
 
-  PRIMARY KEY (`testTitle`, `courseTitle`, `username`, `tryNumber`)  COMMENT '',
+  PRIMARY KEY (`title`, `course`, `username`, `attemptNumber`)  COMMENT '',
 
   CONSTRAINT `test_user_testTitle_fk`
-    FOREIGN KEY (`testTitle`)
-    REFERENCES `elearning_db`.`test` (`testTitle`)
+    FOREIGN KEY (`title`)
+    REFERENCES `elearning_db`.`test` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `test_user_course_title_fk`
-    FOREIGN KEY (`courseTitle`)
-    REFERENCES `elearning_db`.`test` (`courseTitle`)
+    FOREIGN KEY (`course`)
+    REFERENCES `elearning_db`.`test` (`course`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
 
@@ -600,6 +589,7 @@ INSERT INTO operation VALUES('ModuleControllerImpl.get');
 INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
 
 INSERT INTO operation VALUES('OnlineTestsControllerImpl.createTest');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.createQuestionForTest');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -804,6 +794,10 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'administrator', FALSE);
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'profesor', TRUE);
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'student', FALSE);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createQuestionForTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createQuestionForTest', 'profesor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createQuestionForTest', 'student', FALSE);
 -- ###################################################=-OnlineTestsController END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END

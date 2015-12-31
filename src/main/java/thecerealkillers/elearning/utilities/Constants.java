@@ -105,6 +105,7 @@ public class Constants {
 
     //----------------------------------OnlineTestsController-------------------------------------------------------------------------------
     public static final String ONLINE_TEST_NEW_TEST = "Online test was created.";
+    public static final String DEFAULT_NR_OF_TRIES_FOR_VALIDATE_PARAMS = "1";
 }
 
 

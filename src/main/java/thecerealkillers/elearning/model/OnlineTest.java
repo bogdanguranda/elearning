@@ -1,31 +1,25 @@
 package thecerealkillers.elearning.model;
 
+import java.util.List;
+
 /**
  * Created with love by Lucian and @Pi on 29.12.2015.
  */
 public class OnlineTest {
 
-    private String testTitle;
-    private String courseTitle;
-    private String numberOfTries;
-
-    public OnlineTest() {
-        
-    }
+    private String title;
+    private String course;
+    private String attempts;
+    private List<Question> questions;
 
     @Override
     public String toString() {
         return "OnlineTest{" +
-                "testTitle='" + testTitle + '\'' +
-                ", courseTitle='" + courseTitle + '\'' +
-                ", numberOfTries=" + numberOfTries +
+                "title='" + title + '\'' +
+                ", course='" + course + '\'' +
+                ", attempts='" + attempts + '\'' +
+                ", questions=" + questions +
                 '}';
-    }
-
-    public OnlineTest(String testTitle, String courseTitle, String numberOfTries) {
-        this.testTitle = testTitle;
-        this.courseTitle = courseTitle;
-        this.numberOfTries = numberOfTries;
     }
 
     @Override
@@ -35,43 +29,64 @@ public class OnlineTest {
 
         OnlineTest that = (OnlineTest) o;
 
-        if (numberOfTries != that.numberOfTries) return false;
-        if (testTitle != null ? !testTitle.equals(that.testTitle) : that.testTitle != null) return false;
-        return courseTitle != null ? courseTitle.equals(that.courseTitle) : that.courseTitle == null;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (course != null ? !course.equals(that.course) : that.course != null) return false;
+        if (attempts != null ? !attempts.equals(that.attempts) : that.attempts != null) return false;
+        return questions != null ? questions.equals(that.questions) : that.questions == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = testTitle != null ? testTitle.hashCode() : 0;
-        result = 31 * result + (courseTitle != null ? courseTitle.hashCode() : 0);
-        result = 31 * result + (numberOfTries != null ? numberOfTries.hashCode() : 0);
+        int result = title != null ? title.hashCode() : 0;
+        result = 31 * result + (course != null ? course.hashCode() : 0);
+        result = 31 * result + (attempts != null ? attempts.hashCode() : 0);
+        result = 31 * result + (questions != null ? questions.hashCode() : 0);
         return result;
     }
 
-    public String getTestTitle() {
-        return testTitle;
+    public String getTitle() {
+
+        return title;
     }
 
-    public void setTestTitle(String testTitle) {
-        this.testTitle = testTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getCourseTitle() {
-        return courseTitle;
+    public String getCourse() {
+        return course;
     }
 
-    public void setCourseTitle(String courseTitle) {
-        this.courseTitle = courseTitle;
+    public void setCourse(String course) {
+        this.course = course;
     }
 
-    public String getNumberOfTries() {
-        return numberOfTries;
+    public String getAttempts() {
+        return attempts;
     }
 
-    public void setNumberOfTries(String numberOfTries) {
-        this.numberOfTries = numberOfTries;
+    public void setAttempts(String attempts) {
+        this.attempts = attempts;
     }
 
+    public List<Question> getQuestions() {
+        return questions;
+    }
 
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public OnlineTest() {
+
+    }
+
+    public OnlineTest(String title, String course, String attempts, List<Question> questions) {
+
+        this.title = title;
+        this.course = course;
+        this.attempts = attempts;
+        this.questions = questions;
+    }
 }

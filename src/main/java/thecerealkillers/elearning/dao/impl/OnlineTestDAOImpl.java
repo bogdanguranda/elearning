@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.OnlineTestsDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.OnlineTest;
+import thecerealkillers.elearning.model.Question;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,20 +33,20 @@ public class OnlineTestDAOImpl implements OnlineTestsDAO {
     public boolean isTestExistent(OnlineTest onlineTest) throws DAOException {
         try {
             List<OnlineTest> onlineTestList;
-            String sqlCommand = "SELECT * FROM test WHERE testTitle = :testTitle AND courseTitle = :courseTitle";
+            String sqlCommand = "SELECT * FROM test WHERE title = :testTitle AND course = :courseTitle";
 
             Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("testTitle", onlineTest.getTestTitle());
-            namedParameters.put("courseTitle", onlineTest.getCourseTitle());
+            namedParameters.put("testTitle", onlineTest.getTitle());
+            namedParameters.put("courseTitle", onlineTest.getCourse());
 
             onlineTestList = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<OnlineTest>() {
                 @Override
                 public OnlineTest mapRow(ResultSet resultSet, int i) throws SQLException {
 
                     OnlineTest test = new OnlineTest();
-                    test.setCourseTitle(resultSet.getString("courseTitle"));
-                    test.setNumberOfTries(resultSet.getString("numberOfTries"));
-                    test.setTestTitle(resultSet.getString("testTitle"));
+                    test.setCourse(resultSet.getString("course"));
+                    test.setAttempts(resultSet.getString("attempts"));
+                    test.setTitle(resultSet.getString("title"));
 
                     return test;
                 }
@@ -62,14 +63,37 @@ public class OnlineTestDAOImpl implements OnlineTestsDAO {
     @Override
     public void addTest(OnlineTest onlineTest) throws DAOException {
         try {
-            String sqlCommand = "INSERT INTO test VALUE (:testTitle, :courseTitle, :numberOfTries);";
+            String sqlCommand = "INSERT INTO test VALUE (:title, :course, :attempts);";
 
             Map<String, String> namedParameters = new HashMap<>();
-            namedParameters.put("testTitle", onlineTest.getTestTitle());
-            namedParameters.put("courseTitle", onlineTest.getCourseTitle());
-            namedParameters.put("numberOfTries", onlineTest.getNumberOfTries());
+            namedParameters.put("title", onlineTest.getTitle());
+            namedParameters.put("course", onlineTest.getCourse());
+            namedParameters.put("attempts", onlineTest.getAttempts());
 
             namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+
+            namedParameters.remove("title");
+            namedParameters.remove("course");
+            namedParameters.remove("attempts");
+
+            for (Question question :
+                    onlineTest.getQuestions()) {
+                sqlCommand = "INSERT INTO question (course, title, text, answer1, correct1, answer2, correct2, answer3, correct3, answer4, correct4) " +
+                        "value (:course, :title, :text, :answer1, :correct1, :answer2, :correct2, :answer3, :correct3, :answer4, :correct4);";
+                namedParameters.put("course", onlineTest.getCourse());
+                namedParameters.put("title", onlineTest.getTitle());
+                namedParameters.put("text", question.getText());
+                namedParameters.put("answer1", question.getAnswer1());
+                namedParameters.put("correct1", question.getCorrect1());
+                namedParameters.put("answer2", question.getAnswer2());
+                namedParameters.put("correct2", question.getCorrect2());
+                namedParameters.put("answer3", question.getAnswer3());
+                namedParameters.put("correct3", question.getCorrect3());
+                namedParameters.put("answer4", question.getAnswer4());
+                namedParameters.put("correct4", question.getCorrect4());
+
+                namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+            }
         } catch (Exception ex) {
             throw new DAOException(ex.getMessage());
         }

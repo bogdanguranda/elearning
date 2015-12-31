@@ -9,7 +9,10 @@ import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.OnlineTest;
+import thecerealkillers.elearning.model.Question;
 import thecerealkillers.elearning.service.OnlineTestsService;
+
+import java.util.List;
 
 /**
  * Created with love by Lucian and @Pi on 30.12.2015.
@@ -31,7 +34,7 @@ public class OnlineTestsServiceImpl implements OnlineTestsService {
             }
             else {
                 Course course = new Course();
-                course.setTitle(onlineTest.getCourseTitle());
+                course.setTitle(onlineTest.getCourse());
                 if (coursesDAO.isCourseExistent(course)) {
                     onlineTestsDAO.addTest(onlineTest);
                 } else {
@@ -42,4 +45,5 @@ public class OnlineTestsServiceImpl implements OnlineTestsService {
             throw new ServiceException(daoExeption.getMessage());
         }
     }
+
 }

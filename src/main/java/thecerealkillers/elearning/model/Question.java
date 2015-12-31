@@ -5,18 +5,31 @@ package thecerealkillers.elearning.model;
  */
 public class Question {
 
-    private int questionID;
-    private String courseTitle;
-    private String testTitle;
-    private String questionText;
+    private String text;
+    private String answer1;
+    private String correct1;
+    private String answer2;
+    private String correct2;
+    private String answer3;
+    private String correct3;
+    private String answer4;
+    private String correct4;
+
+    public Question() {
+    }
 
     @Override
     public String toString() {
         return "Question{" +
-                "questionID=" + questionID +
-                ", courseTitle='" + courseTitle + '\'' +
-                ", testTitle='" + testTitle + '\'' +
-                ", questionText='" + questionText + '\'' +
+                "text='" + text + '\'' +
+                ", answer1='" + answer1 + '\'' +
+                ", correct1='" + correct1 + '\'' +
+                ", answer2='" + answer2 + '\'' +
+                ", correct2='" + correct2 + '\'' +
+                ", answer3='" + answer3 + '\'' +
+                ", correct3='" + correct3 + '\'' +
+                ", answer4='" + answer4 + '\'' +
+                ", correct4='" + correct4 + '\'' +
                 '}';
     }
 
@@ -27,60 +40,115 @@ public class Question {
 
         Question question = (Question) o;
 
-        if (questionID != question.questionID) return false;
-        if (courseTitle != null ? !courseTitle.equals(question.courseTitle) : question.courseTitle != null)
+        if (text != null ? !text.equals(question.text) : question.text != null)
             return false;
-        if (testTitle != null ? !testTitle.equals(question.testTitle) : question.testTitle != null) return false;
-        return questionText != null ? questionText.equals(question.questionText) : question.questionText == null;
+        if (answer1 != null ? !answer1.equals(question.answer1) : question.answer1 != null) return false;
+        if (correct1 != null ? !correct1.equals(question.correct1) : question.correct1 != null) return false;
+        if (answer2 != null ? !answer2.equals(question.answer2) : question.answer2 != null) return false;
+        if (correct2 != null ? !correct2.equals(question.correct2) : question.correct2 != null) return false;
+        if (answer3 != null ? !answer3.equals(question.answer3) : question.answer3 != null) return false;
+        if (correct3 != null ? !correct3.equals(question.correct3) : question.correct3 != null) return false;
+        if (answer4 != null ? !answer4.equals(question.answer4) : question.answer4 != null) return false;
+        return correct4 != null ? correct4.equals(question.correct4) : question.correct4 == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = questionID;
-        result = 31 * result + (courseTitle != null ? courseTitle.hashCode() : 0);
-        result = 31 * result + (testTitle != null ? testTitle.hashCode() : 0);
-        result = 31 * result + (questionText != null ? questionText.hashCode() : 0);
+        int result = text != null ? text.hashCode() : 0;
+        result = 31 * result + (answer1 != null ? answer1.hashCode() : 0);
+        result = 31 * result + (correct1 != null ? correct1.hashCode() : 0);
+        result = 31 * result + (answer2 != null ? answer2.hashCode() : 0);
+        result = 31 * result + (correct2 != null ? correct2.hashCode() : 0);
+        result = 31 * result + (answer3 != null ? answer3.hashCode() : 0);
+        result = 31 * result + (correct3 != null ? correct3.hashCode() : 0);
+        result = 31 * result + (answer4 != null ? answer4.hashCode() : 0);
+        result = 31 * result + (correct4 != null ? correct4.hashCode() : 0);
         return result;
     }
 
-    public int getQuestionID() {
-        return questionID;
+    public String getText() {
+        return text;
     }
 
-    public void setQuestionID(int questionID) {
-        this.questionID = questionID;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getCourseTitle() {
-        return courseTitle;
+    public String getAnswer1() {
+        return answer1;
     }
 
-    public void setCourseTitle(String courseTitle) {
-        this.courseTitle = courseTitle;
+    public void setAnswer1(String answer1) {
+        this.answer1 = answer1;
     }
 
-    public String getTestTitle() {
-        return testTitle;
+    public String getCorrect1() {
+        return correct1;
     }
 
-    public void setTestTitle(String testTitle) {
-        this.testTitle = testTitle;
+    public void setCorrect1(String correct1) {
+        this.correct1 = correct1;
     }
 
-    public String getQuestionText() {
-        return questionText;
+    public String getAnswer2() {
+        return answer2;
     }
 
-    public void setQuestionText(String questionText) {
-        this.questionText = questionText;
+    public void setAnswer2(String answer2) {
+        this.answer2 = answer2;
     }
 
-    public Question(int questionID, String courseTitle, String testTitle, String questionText) {
+    public String getCorrect2() {
+        return correct2;
+    }
 
-        this.questionID = questionID;
-        this.courseTitle = courseTitle;
-        this.testTitle = testTitle;
-        this.questionText = questionText;
+    public void setCorrect2(String correct2) {
+        this.correct2 = correct2;
+    }
+
+    public String getAnswer3() {
+        return answer3;
+    }
+
+    public void setAnswer3(String answer3) {
+        this.answer3 = answer3;
+    }
+
+    public String getCorrect3() {
+        return correct3;
+    }
+
+    public void setCorrect3(String correct3) {
+        this.correct3 = correct3;
+    }
+
+    public String getAnswer4() {
+        return answer4;
+    }
+
+    public void setAnswer4(String answer4) {
+        this.answer4 = answer4;
+    }
+
+    public String getCorrect4() {
+        return correct4;
+    }
+
+    public void setCorrect4(String correct4) {
+        this.correct4 = correct4;
+    }
+
+    public Question(String text, String answer1, String correct1, String answer2, String correct2, String answer3, String correct3, String answer4, String correct4) {
+
+        this.text = text;
+        this.answer1 = answer1;
+        this.correct1 = correct1;
+        this.answer2 = answer2;
+        this.correct2 = correct2;
+        this.answer3 = answer3;
+        this.correct3 = correct3;
+        this.answer4 = answer4;
+        this.correct4 = correct4;
     }
 }
