@@ -7,6 +7,7 @@ import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Group;
 import thecerealkillers.elearning.service.GroupsService;
+import thecerealkillers.elearning.utilities.Constants;
 
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class GroupsServiceImpl implements GroupsService {
     @Override
     public void addGroup(Group group) throws ServiceException {
         try {
+            if (groupsDAO.groupExists(group)) {
+                throw new ServiceException(Constants.COURSES_ALREADY_EXISTENT);
+            }
             groupsDAO.add(group);
         } catch (DAOException ex) {
             throw new ServiceException(ex.getMessage());

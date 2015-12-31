@@ -1,19 +1,17 @@
 package thecerealkillers.elearning.dao.impl;
 
 
-import thecerealkillers.elearning.exceptions.DAOException;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.GroupsDAO;
+import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Group;
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.jdbc.core.RowMapper;
-import org.apache.tomcat.jdbc.pool.DataSource;
-
-import java.sql.SQLException;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -77,5 +75,31 @@ public class GroupsDAOImpl implements GroupsDAO {
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
         }
+    }
+
+    @Override
+    public boolean groupExists(Group group) throws DAOException {
+        try {
+            List<Group> groupList;
+            String sqlCommand = "SELECT * FROM elearning_db.group WHERE name = :name;";
+
+            Map<String, String> namedParameters = new HashMap<>();
+
+            namedParameters.put("name", group.getName());
+            groupList = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<Group>() {
+                @Override
+                public Group mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Group group = new Group();
+
+                    group.setName(resultSet.getString("name"));
+                    return group;
+                }
+            });
+            if (groupList.size() > 0)
+                return true;
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+        return false;
     }
 }

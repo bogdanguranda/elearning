@@ -71,6 +71,7 @@ public class Constants {
     public static final String COURSES_GET_ENROLLED = "Retrieved list of the enrolled students.";
     public static final String COURSES_WITHDRAW = "User was withdrawn from course.";
     public static final String COURSES_ENROLL = "User was enrolled to course.";
+    public static final String COURSES_ALREADY_EXISTENT = "The course you are trying to create already exists.";
     public static final String COURSES_GET = "Course was retrieved.";
     public static final String COURSES_DELETE = "Course was deleted.";
     public static final String COURSES_CREATE = "Course was created.";
@@ -105,7 +106,6 @@ public class Constants {
 
     //----------------------------------OnlineTestsController-------------------------------------------------------------------------------
     public static final String ONLINE_TEST_NEW_TEST = "Online test was created.";
-    public static final String DEFAULT_NR_OF_TRIES_FOR_VALIDATE_PARAMS = "1";
 }
 
 
