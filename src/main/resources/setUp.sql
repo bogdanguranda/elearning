@@ -162,18 +162,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`message` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `elearning_db`.`file`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `elearning_db`.`file` ;
-
-CREATE TABLE IF NOT EXISTS `elearning_db`.`file` (
-  `name` VARCHAR(100) NOT NULL COMMENT '',
-  `size` INT NULL COMMENT '',
-  `extension` VARCHAR(45) NULL COMMENT '',
-  `content` MEDIUMBLOB NULL COMMENT '',
-  PRIMARY KEY (`name`)  COMMENT '')
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -191,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
   REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-  ENGINE = InnoDB;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -200,21 +188,30 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`module` (
 DROP TABLE IF EXISTS `elearning_db`.`module_file` ;
 
 CREATE TABLE IF NOT EXISTS `elearning_db`.`module_file` (
+  `name` VARCHAR(100) NOT NULL COMMENT '',
+  `course` VARCHAR(45) NOT NULL COMMENT '',
   `module` VARCHAR(45) NOT NULL COMMENT '',
-  `file` VARCHAR(45) NOT NULL COMMENT '',
-  PRIMARY KEY (`module`, `file`)  COMMENT '',
-  INDEX `file_idx` (`file` ASC)  COMMENT '',
-  CONSTRAINT `module_file_module_title_fk`
-    FOREIGN KEY (`module`)
-    REFERENCES `elearning_db`.`module` (`title`)
+  `size` INT NULL COMMENT '',
+  `type` VARCHAR(45) NULL COMMENT '',
+  `content` MEDIUMBLOB NULL COMMENT '',
+  PRIMARY KEY (`name`, `course`, `module`)  COMMENT '',
+  CONSTRAINT `file_associatedCourse_course_title_fk`
+  FOREIGN KEY (`course`)
+  REFERENCES `elearning_db`.`course` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `module_file_file_name_fk`
-    FOREIGN KEY (`file`)
-    REFERENCES `elearning_db`.`file` (`name`)
+  CONSTRAINT `file_associatedModule_module_title_fk`
+  FOREIGN KEY (`module`)
+  REFERENCES `elearning_db`.`module` (`title`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`file`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`file` ;
 
 
 -- -----------------------------------------------------
@@ -504,6 +501,12 @@ INSERT INTO operation VALUES('ModuleControllerImpl.deleteModule');
 INSERT INTO operation VALUES('ModuleControllerImpl.getAll');
 INSERT INTO operation VALUES('ModuleControllerImpl.get');
 INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
+
+INSERT INTO operation VALUES('ModuleFileControllerImpl.uploadFile');
+INSERT INTO operation VALUES('ModuleFileControllerImpl.deleteFile');
+INSERT INTO operation VALUES('ModuleFileControllerImpl.getFile');
+INSERT INTO operation VALUES('ModuleFileControllerImpl.getAll');
+INSERT INTO operation VALUES('ModuleFileControllerImpl.renameFile');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -615,6 +618,28 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleContr
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleControllerImpl.renameModule', 'student', false);
 -- ###################################################=-ModuleControllerImpl END-=###########################################################################
+
+--  #################################################=-ModuleFileControllerImpl START-=###########################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'student', false);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'administrator', false);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'student', false);
+--  #################################################=-ModuleFileControllerImpl END-=###########################################################################
 
 -- ###############################################=-ForumThreadControllerImpl START-=#########################################################################
 INSERT INTO permission (operationName, roleName, permission) VALUES('ForumThreadControllerImpl.createThread', 'administrator', true);
@@ -730,7 +755,7 @@ INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41
 INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
 INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
 INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
-INSERT INTO user_role VALUE ('username1', 'student');
+INSERT INTO user_role VALUE ('username1', 'profesor');
 INSERT INTO user_role VALUE ('username2', 'student');
 INSERT INTO user_role VALUE ('username3', 'student');
 
