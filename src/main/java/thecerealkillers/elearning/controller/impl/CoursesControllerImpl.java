@@ -1,21 +1,20 @@
 package thecerealkillers.elearning.controller.impl;
 
 
-import thecerealkillers.elearning.exceptions.InvalidEnrollmentParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.CoursesController;
+import thecerealkillers.elearning.exceptions.InvalidEnrollmentParams;
 import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.utilities.Constants;
-import thecerealkillers.elearning.validator.Validator;
 import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Course;
 import thecerealkillers.elearning.model.Group;
 import thecerealkillers.elearning.service.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.validator.Validator;
 
 import java.util.List;
 
@@ -101,7 +100,7 @@ public class CoursesControllerImpl implements CoursesController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                    if(!usernameForToken.equals(course.getOwner())) {
+                    if (!usernameForToken.equals(course.getOwner())) {
                         auditService.addEvent(new AuditItem(usernameForToken, actionName, course.toString(), Constants.NO_PERMISSION, false));
                         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
                     }

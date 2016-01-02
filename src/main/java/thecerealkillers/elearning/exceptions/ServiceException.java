@@ -83,7 +83,7 @@ public class ServiceException extends Exception {
     public static final String CANNOT_UNENROLL_OTHER_USER = "You can only unenroll yourself from a course.\n";
     public static final String CANNOT_ENROLL_OTHER_USER = "You can only enroll yourself to a course.\n";
     public static final String USER_ALREADY_ENROLLED = "You are already enrolled to this course.\n";
-    public static final String USER_NOT_ENROLLED = "You are not enrolled to this course.\n";
+    public static final String USER_NOT_ENROLLED = "Username provided are not enrolled to this course.\n";
 
 
     //------------------------------------------TopicServiceImpl-----------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ public class ServiceException extends Exception {
 
     //------------------------------------------OnlineTestsServiceImpl------------------------------------------------------------------------
     public static final String FAILED_TEST_ALREADY_EXISTS = "The test you are trying to create already exists.\n";
-    public static final String FAILED_TEST_NOT_EXISTS = "The test you are trying to delete not exists.\n";
+    public static final String FAILED_TEST_NOT_EXISTS = "The test you are trying to use not exists.\n";
 
     public ServiceException(String message) {
         super(message);

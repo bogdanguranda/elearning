@@ -9,6 +9,7 @@ import thecerealkillers.elearning.dao.OnlineTestsDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.OnlineTest;
 import thecerealkillers.elearning.model.Question;
+import thecerealkillers.elearning.model.UserPoints;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -109,6 +110,27 @@ public class OnlineTestDAOImpl implements OnlineTestsDAO {
             namedParameters.put("courseTitle", onlineTest.getCourse());
 
             namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<UserPoints> getStudentPoints(String course, String test, String username) throws DAOException {
+        try {
+            String sql = "SELECT attemptNumber, points FROM test_user WHERE title = :title AND course = :course AND username = :username;";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", test);
+            namedParameters.put("course", course);
+            namedParameters.put("username", username);
+
+            return namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<UserPoints>() {
+                @Override
+                public UserPoints mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return new UserPoints(resultSet.getString("attemptNumber"), resultSet.getString("points"));
+                }
+            });
         } catch (Exception ex) {
             throw new DAOException(ex.getMessage());
         }

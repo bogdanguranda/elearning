@@ -6,13 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.OnlineTestsController;
 import thecerealkillers.elearning.exceptions.InvalidOnlineTestException;
+import thecerealkillers.elearning.exceptions.InvalidUsernameException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.OnlineTest;
 import thecerealkillers.elearning.model.Question;
+import thecerealkillers.elearning.model.UserPoints;
 import thecerealkillers.elearning.service.*;
 import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.validator.OnlineTestValidator;
+import thecerealkillers.elearning.validator.Validator;
 
 import java.util.List;
 
@@ -34,6 +37,8 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
     private OnlineTestsService onlineTestsService;
     @Autowired
     private CoursesService coursesService;
+    @Autowired
+    private UserService userService;
 
     @Override
     @RequestMapping(value = "/professor/tests/create", method = RequestMethod.POST)
@@ -119,6 +124,48 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
             }
         } catch (ServiceException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/professor/tests/{course}/{test}", method = RequestMethod.GET)
+    public ResponseEntity<?> getStudentPoints(@RequestHeader(value = "token") String token,
+                                              @PathVariable(value = "course") String course,
+                                              @PathVariable(value = "test") String test,
+                                              @RequestParam(value = "username") String username) {
+        String actionName = "OnlineTestsControllerImpl.getStudentPoints";
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    Validator.validateUsername(username);
+                    if (!userService.exists(username)) {
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, username, Constants.USER_NOT_EXISTS, false));
+                        return new ResponseEntity<>(Constants.USER_NOT_EXISTS, HttpStatus.NOT_FOUND);
+                    }
+                    coursesService.userIsOwner(usernameForToken, course);
+                    List<UserPoints> userPointsList = onlineTestsService.getStudentsPoints(course, test, username);
+                    if (userPointsList.size() == 0) {
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, username + course + test, Constants.USER_POINTS_LIST_EMPTY, true));
+                        return new ResponseEntity<>(Constants.USER_POINTS_LIST_EMPTY, HttpStatus.OK);
+                    } else {
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, username + course + test, Constants.USER_POINTS_LIST, true));
+                        return new ResponseEntity<>(userPointsList, HttpStatus.OK);
+                    }
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, username, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (InvalidUsernameException e) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, username, e.getMessage(), false));
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 

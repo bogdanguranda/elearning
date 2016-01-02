@@ -90,6 +90,7 @@ public class Constants {
     public static final String USER_PASSWORD_RESET_REQUEST = "User requested a password reset.";
     public static final String USER_VALIDATED_ACCOUNT = "User confirmed his email address.";
     public static final String USER_INVALID_LOGIN_INFO = "Invalid login info.";
+    public static final String USER_NOT_EXISTS = "User provided not exists.";
 
 
     //----------------------------------ModuleController------------------------------------------------------------------------------------
@@ -108,6 +109,8 @@ public class Constants {
 
     //----------------------------------OnlineTestsController-------------------------------------------------------------------------------
     public static final String ONLINE_TEST_NEW_TEST = "Online test was created.";
+    public static final String USER_POINTS_LIST_EMPTY = "The user hasn't take any test so far.\n";
+    public static final String USER_POINTS_LIST = "The user_points list was received.\n";
 }
 
 

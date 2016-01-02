@@ -24,4 +24,10 @@ public interface OnlineTestsController {
     ResponseEntity deleteTest(@RequestHeader(value = "token") String token,
                               @RequestParam(value = "title") String title,
                               @RequestParam(value = "course") String course);
+
+    @RequestMapping(value = "/professor/tests/{course}/{test}", method = RequestMethod.GET)
+    ResponseEntity<?> getStudentPoints(@RequestHeader(value = "token") String token,
+                                       @PathVariable(value = "course") String course,
+                                       @PathVariable(value = "test") String test,
+                                       @RequestParam(value = "username") String username);
 }
