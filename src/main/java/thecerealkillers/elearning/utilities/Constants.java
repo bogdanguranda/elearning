@@ -75,6 +75,8 @@ public class Constants {
     public static final String COURSES_GET = "Course was retrieved.";
     public static final String COURSES_DELETE = "Course was deleted.";
     public static final String COURSES_CREATE = "Course was created.";
+    public static final String COURSE_NOT_FOUND = "The course you are trying to use not exists.";
+    public static final String USER_NOT_OWNER_TO_COURSE = "You are not owner to this course.";
 
 
     //----------------------------------UserController--------------------------------------------------------------------------------------

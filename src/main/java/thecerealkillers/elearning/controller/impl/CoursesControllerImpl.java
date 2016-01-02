@@ -340,6 +340,9 @@ public class CoursesControllerImpl implements CoursesController {
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, title, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            } catch (NotFoundException e) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, title, e.getMessage(), false));
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

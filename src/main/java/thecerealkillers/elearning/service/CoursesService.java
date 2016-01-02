@@ -26,5 +26,7 @@ public interface CoursesService {
 
     void unEnrollUserFromCourse(String title, String username) throws ServiceException, NotFoundException;
 
-    List<String> getEnrolled(String title) throws ServiceException;
+    List<String> getEnrolled(String title) throws ServiceException, NotFoundException;
+
+    boolean userIsOwner(String usernameForToken, String title) throws ServiceException, NotFoundException;
 }

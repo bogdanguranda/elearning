@@ -8,16 +8,13 @@ import thecerealkillers.elearning.controller.OnlineTestsController;
 import thecerealkillers.elearning.exceptions.InvalidOnlineTestException;
 import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.*;
-import thecerealkillers.elearning.service.AuditService;
-import thecerealkillers.elearning.service.OnlineTestsService;
-import thecerealkillers.elearning.service.PermissionService;
-import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.model.AuditItem;
+import thecerealkillers.elearning.model.OnlineTest;
+import thecerealkillers.elearning.model.Question;
+import thecerealkillers.elearning.service.*;
 import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.validator.OnlineTestValidator;
 
-import java.sql.Wrapper;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +33,8 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
     private PermissionService permissionService;
     @Autowired
     private OnlineTestsService onlineTestsService;
+    @Autowired
+    private CoursesService coursesService;
 
     @Override
     @RequestMapping(value = "/professor/tests/create", method = RequestMethod.POST)
@@ -60,10 +59,16 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
                     OnlineTest onlineTest = new OnlineTest(title, course, attempts, questionList);
                     OnlineTestValidator.validate(onlineTest);
 
-                    onlineTestsService.createTest(onlineTest);
+                    try {
+                        coursesService.userIsOwner(usernameForToken, course);
 
-                    auditService.addEvent(new AuditItem(usernameForToken, actionName, onlineTest.toString(), Constants.ONLINE_TEST_NEW_TEST, true));
-                    return new ResponseEntity<>(HttpStatus.CREATED);
+                        onlineTestsService.createTest(onlineTest);
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, onlineTest.toString(), Constants.ONLINE_TEST_NEW_TEST, true));
+                        return new ResponseEntity<>(HttpStatus.CREATED);
+                    } catch (ServiceException ex) {
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, questionList.toString(), Constants.NO_PERMISSION, false));
+                        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+                    }
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, questionList.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -224,4 +224,32 @@ public class CoursesDAOImpl implements CoursesDAO {
             throw new DAOException(exception.getMessage());
         }
     }
+
+    @Override
+    public boolean userIsOwner(String usernameForToken, Course course) throws DAOException {
+        try {
+            String sql = "SELECT * FROM course WHERE title = :title AND owner = :owner;";
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("title", course.getTitle());
+            namedParameters.put("owner", usernameForToken);
+
+            List<Course> courseList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<Course>() {
+                @Override
+                public Course mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Course course = new Course();
+
+                    course.setTitle(resultSet.getString("title"));
+
+                    return course;
+                }
+
+            });
+            if (courseList.size() > 0) {
+                return true;
+            }
+            return false;
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
 }

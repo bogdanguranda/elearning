@@ -1,17 +1,17 @@
 package thecerealkillers.elearning.service.impl;
 
 
-import thecerealkillers.elearning.exceptions.NotFoundException;
-import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.exceptions.DAOException;
-import thecerealkillers.elearning.service.CoursesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.dao.SessionDAO;
 import thecerealkillers.elearning.dao.UserDAO;
+import thecerealkillers.elearning.exceptions.DAOException;
+import thecerealkillers.elearning.exceptions.NotFoundException;
+import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.Course;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import thecerealkillers.elearning.service.CoursesService;
+import thecerealkillers.elearning.utilities.Constants;
 
 import java.util.List;
 
@@ -129,6 +129,27 @@ public class CoursesServiceImpl implements CoursesService {
             return coursesDAO.getEnrolled(title);
         } catch (DAOException dao_exception) {
             throw new ServiceException(dao_exception.getMessage());
+        }
+    }
+
+    @Override
+    public boolean userIsOwner(String usernameForToken, String title) throws ServiceException, NotFoundException {
+        Course course = new Course();
+        course.setTitle(title);
+        try {
+            if (coursesDAO.isCourseExistent(course)) {
+                if(coursesDAO.userIsOwner(usernameForToken, course)) {
+                    return true;
+                }
+                else {
+                    throw new ServiceException(Constants.USER_NOT_OWNER_TO_COURSE);
+                }
+            }
+            else {
+                throw new ServiceException(Constants.COURSE_NOT_FOUND);
+            }
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
         }
     }
 }

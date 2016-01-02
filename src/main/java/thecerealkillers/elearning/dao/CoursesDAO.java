@@ -84,4 +84,6 @@ public interface CoursesDAO {
      * @throws DAOException
      */
     List<String> getEnrolled(String title) throws DAOException;
+
+    boolean userIsOwner(String usernameForToken, Course course) throws DAOException;
 }
