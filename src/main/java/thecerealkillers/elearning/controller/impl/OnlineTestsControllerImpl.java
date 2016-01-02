@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thecerealkillers.elearning.controller.OnlineTestsController;
 import thecerealkillers.elearning.exceptions.InvalidOnlineTestException;
-import thecerealkillers.elearning.exceptions.NotFoundException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.OnlineTest;
@@ -61,22 +60,18 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
 
                     try {
                         coursesService.userIsOwner(usernameForToken, course);
-
-                        onlineTestsService.createTest(onlineTest);
-                        auditService.addEvent(new AuditItem(usernameForToken, actionName, onlineTest.toString(), Constants.ONLINE_TEST_NEW_TEST, true));
-                        return new ResponseEntity<>(HttpStatus.CREATED);
                     } catch (ServiceException ex) {
                         auditService.addEvent(new AuditItem(usernameForToken, actionName, questionList.toString(), Constants.NO_PERMISSION, false));
                         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
                     }
+                    onlineTestsService.createTest(onlineTest);
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, onlineTest.toString(), Constants.ONLINE_TEST_NEW_TEST, true));
+                    return new ResponseEntity<>(HttpStatus.CREATED);
+
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, questionList.toString(), Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-            } catch (NotFoundException notFoundException) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, questionList.toString(), notFoundException.getMessage(), false));
-                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, questionList.toString(), serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -86,6 +81,44 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/professor/tests", method = RequestMethod.DELETE)
+    public ResponseEntity deleteTest(@RequestHeader(value = "token") String token,
+                                     @RequestParam(value = "title") String title,
+                                     @RequestParam(value = "course") String course) {
+        String actionName = "OnlineTestsControllerImpl.deleteTest";
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+
+                    OnlineTestValidator.validateDeleteTestInfo(title, course);
+                    coursesService.userIsOwner(usernameForToken, course);
+                    onlineTestsService.deleteTest(title, course);
+
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, title + course, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (InvalidOnlineTestException exeption) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, title + course, exeption.getMessage(), false));
+                return new ResponseEntity<>(exeption.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, title + course, serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        } catch (ServiceException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 

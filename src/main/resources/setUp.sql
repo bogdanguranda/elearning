@@ -589,7 +589,7 @@ INSERT INTO operation VALUES('ModuleControllerImpl.get');
 INSERT INTO operation VALUES('ModuleControllerImpl.renameModule');
 
 INSERT INTO operation VALUES('OnlineTestsControllerImpl.createTest');
-INSERT INTO operation VALUES('OnlineTestsControllerImpl.createQuestionForTest');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.deleteTest');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -795,9 +795,9 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTests
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'profesor', TRUE);
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'student', FALSE);
 
-INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createQuestionForTest', 'administrator', FALSE);
-INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createQuestionForTest', 'profesor', TRUE);
-INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createQuestionForTest', 'student', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.deleteTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.deleteTest', 'profesor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.deleteTest', 'student', FALSE);
 -- ###################################################=-OnlineTestsController END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END

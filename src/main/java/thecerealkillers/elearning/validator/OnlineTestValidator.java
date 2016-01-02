@@ -27,8 +27,8 @@ public class OnlineTestValidator extends Validator {
         return !isEmpty(testTitle);
     }
 
-    private static boolean answerIsSet(String correct) {
-        return "true".equals(correct) || "false".equals(correct);
+    private static boolean answerNotSet(String correct) {
+        return !"true".equals(correct) && !"false".equals(correct);
     }
 
     public static void validate(OnlineTest onlineTest) throws InvalidOnlineTestException {
@@ -61,10 +61,24 @@ public class OnlineTestValidator extends Validator {
             if (isEmpty(question.getAnswer1()) || isEmpty(question.getAnswer2()) || isEmpty(question.getAnswer3()) || isEmpty(question.getAnswer4())) {
                 return false;
             }
-            if (!answerIsSet(question.getCorrect1()) || !answerIsSet(question.getCorrect2()) || !answerIsSet(question.getCorrect3()) || !answerIsSet(question.getCorrect4())) {
+            if (answerNotSet(question.getCorrect1()) || answerNotSet(question.getCorrect2()) || answerNotSet(question.getCorrect3()) || answerNotSet(question.getCorrect4())) {
                 return false;
             }
         }
         return true;
+    }
+
+    public static void validateDeleteTestInfo(String title, String course) throws InvalidOnlineTestException {
+        String feedback = "";
+
+        if (isEmpty(title)) {
+            feedback += "Invalid test title. Test title cannot be empty.\n";
+        }
+        if (isEmpty(course)) {
+            feedback += "Invalid course title. Course title cannot be empty.\n";
+        }
+        if (!"".equals(feedback)) {
+            throw new InvalidOnlineTestException(feedback);
+        }
     }
 }

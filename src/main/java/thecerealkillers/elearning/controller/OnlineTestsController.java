@@ -20,4 +20,8 @@ public interface OnlineTestsController {
                               @RequestParam(value = "attempts", required = true) String attempts,
                               @RequestBody List<Question> questionList);
 
+    @RequestMapping(value = "/professor/tests", method = RequestMethod.DELETE)
+    ResponseEntity deleteTest(@RequestHeader(value = "token") String token,
+                              @RequestParam(value = "title") String title,
+                              @RequestParam(value = "course") String course);
 }

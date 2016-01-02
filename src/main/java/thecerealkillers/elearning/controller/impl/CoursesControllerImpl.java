@@ -101,6 +101,11 @@ public class CoursesControllerImpl implements CoursesController {
 
             try {
                 if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    if(!usernameForToken.equals(course.getOwner())) {
+                        auditService.addEvent(new AuditItem(usernameForToken, actionName, course.toString(), Constants.NO_PERMISSION, false));
+                        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+                    }
+
                     Group group = new Group(GROUP + course.getTitle());
                     groupsService.addGroup(group);
 
@@ -340,9 +345,6 @@ public class CoursesControllerImpl implements CoursesController {
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, title, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-            } catch (NotFoundException e) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, title, e.getMessage(), false));
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

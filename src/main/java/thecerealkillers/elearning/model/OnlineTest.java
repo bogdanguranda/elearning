@@ -12,6 +12,11 @@ public class OnlineTest {
     private String attempts;
     private List<Question> questions;
 
+    public OnlineTest(String title, String course) {
+        this.title = title;
+        this.course = course;
+    }
+
     @Override
     public String toString() {
         return "OnlineTest{" +
@@ -30,9 +35,7 @@ public class OnlineTest {
         OnlineTest that = (OnlineTest) o;
 
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (course != null ? !course.equals(that.course) : that.course != null) return false;
-        if (attempts != null ? !attempts.equals(that.attempts) : that.attempts != null) return false;
-        return questions != null ? questions.equals(that.questions) : that.questions == null;
+        return course != null ? course.equals(that.course) : that.course == null && (attempts != null ? attempts.equals(that.attempts) : that.attempts == null && (questions != null ? questions.equals(that.questions) : that.questions == null));
 
     }
 

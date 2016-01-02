@@ -124,6 +124,7 @@ public class ServiceException extends Exception {
 
     //------------------------------------------OnlineTestsServiceImpl------------------------------------------------------------------------
     public static final String FAILED_TEST_ALREADY_EXISTS = "The test you are trying to create already exists.\n";
+    public static final String FAILED_TEST_NOT_EXISTS = "The test you are trying to delete not exists.\n";
 
     public ServiceException(String message) {
         super(message);

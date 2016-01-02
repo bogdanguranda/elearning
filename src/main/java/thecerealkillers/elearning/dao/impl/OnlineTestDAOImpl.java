@@ -98,4 +98,19 @@ public class OnlineTestDAOImpl implements OnlineTestsDAO {
             throw new DAOException(ex.getMessage());
         }
     }
+
+    @Override
+    public void deleteTest(OnlineTest onlineTest) throws DAOException {
+        try {
+            String sqlCommand = "DELETE FROM test WHERE title = :testTitle AND course = :courseTitle";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("testTitle", onlineTest.getTitle());
+            namedParameters.put("courseTitle", onlineTest.getCourse());
+
+            namedParameterJdbcTemplate.update(sqlCommand, namedParameters);
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
 }

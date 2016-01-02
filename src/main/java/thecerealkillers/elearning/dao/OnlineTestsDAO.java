@@ -13,4 +13,6 @@ public interface OnlineTestsDAO {
     boolean isTestExistent(OnlineTest onlineTest) throws DAOException;
 
     void addTest(OnlineTest onlineTest) throws DAOException;
+
+    void deleteTest(OnlineTest onlineTest) throws DAOException;
 }

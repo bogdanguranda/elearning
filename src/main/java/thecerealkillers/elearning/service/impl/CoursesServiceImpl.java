@@ -133,19 +133,15 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     @Override
-    public boolean userIsOwner(String usernameForToken, String title) throws ServiceException, NotFoundException {
+    public void userIsOwner(String usernameForToken, String title) throws ServiceException {
         Course course = new Course();
         course.setTitle(title);
         try {
             if (coursesDAO.isCourseExistent(course)) {
-                if(coursesDAO.userIsOwner(usernameForToken, course)) {
-                    return true;
-                }
-                else {
+                if (!coursesDAO.userIsOwner(usernameForToken, course)) {
                     throw new ServiceException(Constants.USER_NOT_OWNER_TO_COURSE);
                 }
-            }
-            else {
+            } else {
                 throw new ServiceException(Constants.COURSE_NOT_FOUND);
             }
         } catch (DAOException e) {
