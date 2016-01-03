@@ -621,23 +621,23 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleContr
 
 --  #################################################=-ModuleFileControllerImpl START-=###########################################################################
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'administrator', false);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.uploadFile', 'student', false);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'administrator', false);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.deleteFile', 'student', false);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getFile', 'student', true);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'administrator', true);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.getAll', 'student', true);
 
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'administrator', false);
-INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'profesor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('ModuleFileControllerImpl.renameFile', 'student', false);
 --  #################################################=-ModuleFileControllerImpl END-=###########################################################################
 
@@ -755,7 +755,7 @@ INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41
 INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
 INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
 INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
-INSERT INTO user_role VALUE ('username1', 'profesor');
+INSERT INTO user_role VALUE ('username1', 'professor');
 INSERT INTO user_role VALUE ('username2', 'student');
 INSERT INTO user_role VALUE ('username3', 'student');
 
