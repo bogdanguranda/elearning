@@ -78,6 +78,11 @@ public class ServiceException extends Exception {
     public static final String FAILED_MODULE_INNEXISTENT = "The module you are trying to manipulate is innexistent.\n";
 
 
+    //------------------------------------------ModuleServiceImpl---------------------------------------------------------------------------------
+    public static final String FAILED_MODULE_FILE_ALREADY_EXISTS = "The module file you are trying to upload already exists.\n";
+    public static final String FAILED_NO_SUCH_MODULE_FILE = "The module file you are trying to manipulate is non-existent.\n";
+
+
     //------------------------------------------CoursesServiceImpl---------------------------------------------------------------------------------
 
     public static final String CANNOT_UNENROLL_OTHER_USER = "You can only unenroll yourself from a course.\n";

@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.controller.impl;
 
 
+import org.springframework.web.multipart.MultipartFile;
 import thecerealkillers.elearning.exceptions.InvalidModuleException;
 import thecerealkillers.elearning.exceptions.ServiceException;
 import thecerealkillers.elearning.controller.ModuleController;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
  * Modified by Dani.
  */
 @RestController
+@CrossOrigin
 public class ModuleControllerImpl implements ModuleController {
 
     @Autowired

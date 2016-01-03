@@ -10,7 +10,7 @@ public class Constants {
 
     public static final String ADMIN = "administrator";
     public static final String STUDENT = "student";
-    public static final String TEACHER = "profesor";
+    public static final String TEACHER = "professor";
 
     public static final ArrayList<String> ROLE_LIST = new ArrayList<String>() {{
         add(ADMIN);
@@ -101,6 +101,13 @@ public class Constants {
     public static final String MODULE_GET = "Module retrieved from database.";
     public static final String MODULE_RENAMED = "Module was renamed.";
 
+
+    //----------------------------------ModuleFileController------------------------------------------------------------------------------------
+    public static final String MODULE_FILE_CREATED = "Module file was created.";
+    public static final String MODULE_FILE_DELETED = "Module file was deleted.";
+    public static final String MODULE_FILE_GET = "Module file retrieved from database.";
+    public static final String MODULE_FILE_GET_ALL = "Retrieved all module-files from database.";
+    public static final String MODULE_FILE_RENAMED = "Module-file was renamed.";
 
     //----------------------------------GroupsController------------------------------------------------------------------------------------
 
