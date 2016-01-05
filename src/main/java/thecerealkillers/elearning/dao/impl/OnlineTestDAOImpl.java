@@ -9,6 +9,7 @@ import thecerealkillers.elearning.dao.OnlineTestsDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.OnlineTest;
 import thecerealkillers.elearning.model.Question;
+import thecerealkillers.elearning.model.QuestionsTest;
 import thecerealkillers.elearning.model.UserPoints;
 
 import java.sql.ResultSet;
@@ -131,6 +132,35 @@ public class OnlineTestDAOImpl implements OnlineTestsDAO {
                     return new UserPoints(resultSet.getString("attemptNumber"), resultSet.getString("points"));
                 }
             });
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<QuestionsTest> getOnlineTest(String course, String test) throws DAOException {
+        try {
+            String sql = "SELECT text, answer1, answer2, answer3, answer4 FROM question WHERE course = :course AND title = :title";
+
+            Map<String, String> namedParameters = new HashMap<>();
+            namedParameters.put("course", course);
+            namedParameters.put("title", test);
+
+            List<QuestionsTest> questionsTestList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<QuestionsTest>() {
+                @Override
+                public QuestionsTest mapRow(ResultSet resultSet, int i) throws SQLException {
+                    QuestionsTest questionsTest = new QuestionsTest();
+                    questionsTest.setText(resultSet.getString("text"));
+                    questionsTest.setAnswer1(resultSet.getString("answer1"));
+                    questionsTest.setAnswer1(resultSet.getString("answer2"));
+                    questionsTest.setAnswer1(resultSet.getString("answer3"));
+                    questionsTest.setAnswer1(resultSet.getString("answer4"));
+
+                    return questionsTest;
+                }
+            });
+
+            return questionsTestList;
         } catch (Exception ex) {
             throw new DAOException(ex.getMessage());
         }

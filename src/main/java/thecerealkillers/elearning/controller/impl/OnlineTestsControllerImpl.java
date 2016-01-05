@@ -169,4 +169,27 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
         }
     }
 
+    @Override
+    @RequestMapping(value = "/{course}/tests/{test}", method = RequestMethod.GET)
+    public ResponseEntity<?> getOnlineTest(@RequestHeader(value = "token") String token,
+                                           @PathVariable(value = "course") String course,
+                                           @PathVariable(value = "test") String test) {
+        String actionName = "OnlineTestsControllerImpl.getOnlineTest";
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+            if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken + course + test, Constants.USER_POINTS_LIST, true));
+                return new ResponseEntity<>(onlineTestsService.getOnlineTest(course, test, usernameForToken, userRoleForToken), HttpStatus.OK);
+            } else {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, Constants.NO_PERMISSION, false));
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
 }

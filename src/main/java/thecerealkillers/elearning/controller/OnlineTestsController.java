@@ -2,6 +2,7 @@ package thecerealkillers.elearning.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import thecerealkillers.elearning.model.Answer;
 import thecerealkillers.elearning.model.Question;
 
 import java.util.List;
@@ -30,4 +31,16 @@ public interface OnlineTestsController {
                                        @PathVariable(value = "course") String course,
                                        @PathVariable(value = "test") String test,
                                        @RequestParam(value = "username") String username);
+
+    @RequestMapping(value = "/{course}/tests/{test}", method = RequestMethod.GET)
+    ResponseEntity<?> getOnlineTest(@RequestHeader(value = "token") String token,
+                                 @PathVariable(value = "course") String course,
+                                 @PathVariable(value = "test") String test);
+
+//    @RequestMapping(value = "/{course}/test/{test}", method = RequestMethod.POST)
+//    ResponseEntity<?> takeOnlineTest(@RequestHeader(value = "token") String token,
+//                                     @PathVariable(value = "course") String course,
+//                                     @PathVariable(value = "test") String test,
+//                                     @RequestParam(value = "username") String username,
+//                                     @RequestBody List<Answer> answerList);
 }
