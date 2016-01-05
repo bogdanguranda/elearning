@@ -146,21 +146,18 @@ public class OnlineTestDAOImpl implements OnlineTestsDAO {
             namedParameters.put("course", course);
             namedParameters.put("title", test);
 
-            List<QuestionsTest> questionsTestList = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<QuestionsTest>() {
+            return namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<QuestionsTest>() {
                 @Override
                 public QuestionsTest mapRow(ResultSet resultSet, int i) throws SQLException {
                     QuestionsTest questionsTest = new QuestionsTest();
                     questionsTest.setText(resultSet.getString("text"));
                     questionsTest.setAnswer1(resultSet.getString("answer1"));
-                    questionsTest.setAnswer1(resultSet.getString("answer2"));
-                    questionsTest.setAnswer1(resultSet.getString("answer3"));
-                    questionsTest.setAnswer1(resultSet.getString("answer4"));
-
+                    questionsTest.setAnswer2(resultSet.getString("answer2"));
+                    questionsTest.setAnswer3(resultSet.getString("answer3"));
+                    questionsTest.setAnswer4(resultSet.getString("answer4"));
                     return questionsTest;
                 }
             });
-
-            return questionsTestList;
         } catch (Exception ex) {
             throw new DAOException(ex.getMessage());
         }

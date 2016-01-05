@@ -244,10 +244,7 @@ public class CoursesDAOImpl implements CoursesDAO {
                 }
 
             });
-            if (courseList.size() > 0) {
-                return true;
-            }
-            return false;
+            return courseList.size() > 0;
         } catch (Exception ex) {
             throw new DAOException(ex.getMessage());
         }

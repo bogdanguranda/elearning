@@ -43,8 +43,7 @@ public class OnlineTestsServiceImpl implements OnlineTestsService {
             OnlineTest onlineTest = new OnlineTest(title, course);
             if (onlineTestsDAO.isTestExistent(onlineTest)) {
                 onlineTestsDAO.deleteTest(onlineTest);
-            }
-            else {
+            } else {
                 throw new ServiceException(ServiceException.FAILED_TEST_NOT_EXISTS);
             }
         } catch (DAOException e) {
@@ -77,11 +76,9 @@ public class OnlineTestsServiceImpl implements OnlineTestsService {
             if (onlineTestsDAO.isTestExistent(onlineTest)) {
                 if (userRole.equals(Constants.TEACHER)) {
                     return onlineTestsDAO.getOnlineTest(course, test);
-                }
-                else if(coursesDAO.userIsEnrolled(course, username)) {
+                } else if (coursesDAO.userIsEnrolled(course, username)) {
                     return onlineTestsDAO.getOnlineTest(course, test);
-                }
-                else {
+                } else {
                     throw new ServiceException(ServiceException.USER_NOT_ENROLLED);
                 }
             } else {
@@ -91,5 +88,4 @@ public class OnlineTestsServiceImpl implements OnlineTestsService {
             throw new ServiceException(e.getMessage());
         }
     }
-
 }

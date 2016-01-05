@@ -34,13 +34,6 @@ public interface OnlineTestsController {
 
     @RequestMapping(value = "/{course}/tests/{test}", method = RequestMethod.GET)
     ResponseEntity<?> getOnlineTest(@RequestHeader(value = "token") String token,
-                                 @PathVariable(value = "course") String course,
-                                 @PathVariable(value = "test") String test);
-
-//    @RequestMapping(value = "/{course}/test/{test}", method = RequestMethod.POST)
-//    ResponseEntity<?> takeOnlineTest(@RequestHeader(value = "token") String token,
-//                                     @PathVariable(value = "course") String course,
-//                                     @PathVariable(value = "test") String test,
-//                                     @RequestParam(value = "username") String username,
-//                                     @RequestBody List<Answer> answerList);
+                                    @PathVariable(value = "course") String course,
+                                    @PathVariable(value = "test") String test);
 }
