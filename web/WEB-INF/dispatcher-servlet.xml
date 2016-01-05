@@ -11,7 +11,9 @@
         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
     <mvc:annotation-driven/>
+
     <context:component-scan base-package="thecerealkillers.elearning"/>
+    <context:property-placeholder location="classpath:jdbc.properties"/>
 
     <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
         <property name="driverClassName" value="${driverClassName}"/>
@@ -25,11 +27,11 @@
     </bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
-        <property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
+        <!-- 20MB -->
+        <property name="maxUploadSize" value="20971520"/>
+        <!-- 1MB -->
+        <property name="maxInMemorySize" value="1048576"/>
     </bean>
-
-    <context:property-placeholder location="classpath:jdbc.properties"/>
 
     <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="classpath:setUp.sql"/>
