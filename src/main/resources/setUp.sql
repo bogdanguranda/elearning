@@ -430,7 +430,7 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`test` (
 
   `title` VARCHAR(150) NOT NULL COMMENT '',
   `course` VARCHAR(150) NOT NULL COMMENT '',
-  `attempts` INTEGER  NOT NULL DEFAULT 0 COMMENT '',
+  `attempts` VARCHAR(2)  NOT NULL DEFAULT 0 COMMENT '',
 
   PRIMARY KEY (`title`, `course`),
 
@@ -595,6 +595,7 @@ INSERT INTO operation VALUES('OnlineTestsControllerImpl.createTest');
 INSERT INTO operation VALUES('OnlineTestsControllerImpl.deleteTest');
 INSERT INTO operation VALUES('OnlineTestsControllerImpl.getStudentPoints');
 INSERT INTO operation VALUES('OnlineTestsControllerImpl.getOnlineTest');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.takeOnlineTest');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -833,6 +834,10 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTests
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getOnlineTest', 'administrator', FALSE);
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getOnlineTest', 'professor', TRUE);
 INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getOnlineTest', 'student', TRUE);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.takeOnlineTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.takeOnlineTest', 'professor', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.takeOnlineTest', 'student', TRUE);
 -- ###################################################=-OnlineTestsController END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END
@@ -886,8 +891,8 @@ INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did
 INSERT INTO user VALUES('username4', 'firstName', 'lastName', 'email4', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
 INSERT INTO user_status VALUES ('username4', TRUE, DEFAULT, '4');
 INSERT INTO user_role VALUES ('username4', 'professor');
-INSERT INTO elearning_db.`group` VALUES ('csgroup');
-INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'csgroup');
+INSERT INTO elearning_db.`group` VALUES ('GROUP_CS Course');
+INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'GROUP_CS Course');
 INSERT INTO module VALUES ('First module CS', 'CS Course', 'best module ever');
 INSERT INTO module VALUES ('Second module CS', 'CS Course', 'best module ever');
 INSERT INTO module VALUES ('Third module CS', 'CS Course', 'best module ever');

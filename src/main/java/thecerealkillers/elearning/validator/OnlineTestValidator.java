@@ -1,6 +1,7 @@
 package thecerealkillers.elearning.validator;
 
 import thecerealkillers.elearning.exceptions.InvalidOnlineTestException;
+import thecerealkillers.elearning.model.Answer;
 import thecerealkillers.elearning.model.OnlineTest;
 import thecerealkillers.elearning.model.Question;
 
@@ -76,6 +77,22 @@ public class OnlineTestValidator extends Validator {
         }
         if (isEmpty(course)) {
             feedback += "Invalid course title. Course title cannot be empty.\n";
+        }
+        if (!"".equals(feedback)) {
+            throw new InvalidOnlineTestException(feedback);
+        }
+    }
+
+    public static void validateAnswerList(List<Answer> answerList) throws InvalidOnlineTestException {
+        String feedback = "";
+        for (Answer answer :
+                answerList) {
+            if (isEmpty(answer.getText())) {
+                feedback += "Invalid answer text.\n";
+            }
+            if (answerNotSet(answer.getAnswer1()) || answerNotSet(answer.getAnswer2()) || answerNotSet(answer.getAnswer3()) || answerNotSet(answer.getAnswer4())) {
+                feedback += "Invalid answer. All the answers must be: {true} or {false}.\n";
+            }
         }
         if (!"".equals(feedback)) {
             throw new InvalidOnlineTestException(feedback);

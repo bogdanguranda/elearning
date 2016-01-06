@@ -8,10 +8,7 @@ import thecerealkillers.elearning.controller.OnlineTestsController;
 import thecerealkillers.elearning.exceptions.InvalidOnlineTestException;
 import thecerealkillers.elearning.exceptions.InvalidUsernameException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.model.AuditItem;
-import thecerealkillers.elearning.model.OnlineTest;
-import thecerealkillers.elearning.model.Question;
-import thecerealkillers.elearning.model.UserPoints;
+import thecerealkillers.elearning.model.*;
 import thecerealkillers.elearning.service.*;
 import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.validator.OnlineTestValidator;
@@ -109,7 +106,7 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
                     OnlineTestValidator.validateDeleteTestInfo(title, course);
                     coursesService.userIsOwner(usernameForToken, course);
                     onlineTestsService.deleteTest(title, course);
-
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, title + course, Constants.ONLINE_TEST_DELETE_OK, false));
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, title + course, Constants.NO_PERMISSION, false));
@@ -182,13 +179,42 @@ public class OnlineTestsControllerImpl implements OnlineTestsController {
             String userRoleForToken = sessionService.getUserRoleByToken(token);
             String usernameForToken = sessionService.getUsernameByToken(token);
             if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
-                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken + course + test, Constants.USER_POINTS_LIST, true));
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken + course + test, Constants.ONLINE_TEST_GET_TEST, true));
                 return new ResponseEntity<>(onlineTestsService.getOnlineTest(course, test, usernameForToken, userRoleForToken), HttpStatus.OK);
             } else {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, Constants.NO_PERMISSION, false));
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         } catch (ServiceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/{course}/tests/{test}", method = RequestMethod.POST)
+    public ResponseEntity<?> takeOnlineTest(@RequestHeader(value = "token") String token,
+                                            @PathVariable(value = "course") String course,
+                                            @PathVariable(value = "test") String test,
+                                            @RequestBody List<Answer> answerList) {
+        String actionName = "OnlineTestsControllerImpl.takeOnlineTest";
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+            if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                OnlineTestValidator.validateAnswerList(answerList);
+
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, Constants.ONLINE_TEST_TAKE_TEST, true));
+                return new ResponseEntity<>(onlineTestsService.takeOnlineTest(usernameForToken, course, test, answerList), HttpStatus.OK);
+            } else {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, Constants.NO_PERMISSION, false));
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (InvalidOnlineTestException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }

@@ -6,6 +6,7 @@ package thecerealkillers.elearning.exceptions;
  * Modified by Dani
  * * Added error messages for userServiceImpl and UserRoleServiceImpl
  */
+@SuppressWarnings("unused")
 public class ServiceException extends Exception {
 
 
@@ -130,6 +131,7 @@ public class ServiceException extends Exception {
     //------------------------------------------OnlineTestsServiceImpl------------------------------------------------------------------------
     public static final String FAILED_TEST_ALREADY_EXISTS = "The test you are trying to create already exists.\n";
     public static final String FAILED_TEST_NOT_EXISTS = "The test you are trying to use not exists.\n";
+    public static final String FAILED_NO_ATTEMPTS_AVAILABLE = "We are sorry. You don't have available attempts.\n";
 
     public ServiceException(String message) {
         super(message);

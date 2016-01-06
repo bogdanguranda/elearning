@@ -6,6 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by Dani.
  */
+@SuppressWarnings("ALL")
 public class Constants {
 
     public static final String ADMIN = "administrator";
@@ -118,6 +119,13 @@ public class Constants {
     public static final String ONLINE_TEST_NEW_TEST = "Online test was created.";
     public static final String USER_POINTS_LIST_EMPTY = "The user hasn't take any test so far.\n";
     public static final String USER_POINTS_LIST = "The user_points list was received.\n";
+    public static final String ONLINE_TEST_TAKE_TEST = "The test was done.\n";
+    public static final String ONLINE_TEST_GET_TEST = "The test was shown.\n";
+    public static final String ONLINE_TEST_DELETE_OK = "Online test successfully deleted.\n";
+    public static final int ONLINE_TEST_ANSWER_CORRECT = 25;
+    public static final String ONLINE_TEST_CORRECT = "Correct! ";
+    public static final String ONLINE_TEST_INCORRECT = "Incorrect! Correct is: ";
+    public static final String ONLINE_TEST_SEPARATOR = ". ";
 }
 
 
