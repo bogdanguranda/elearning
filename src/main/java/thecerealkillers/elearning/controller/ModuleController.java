@@ -10,7 +10,6 @@ import thecerealkillers.elearning.model.Module;
  * Created by cuvidk on 12/22/2015.
  * .
  */
-@RestController
 public interface ModuleController {
 
     @RequestMapping(value = "/courses/{courseTitle}/modules", method = RequestMethod.POST)

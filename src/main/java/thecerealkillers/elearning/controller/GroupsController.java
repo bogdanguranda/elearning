@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 /**
  * Created with love by Lucian and @Pi on 22.12.2015.
  */
-@RestController
 public interface GroupsController {
 
     /**

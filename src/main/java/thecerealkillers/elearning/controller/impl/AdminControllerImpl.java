@@ -49,6 +49,10 @@ public class AdminControllerImpl implements AdminController {
             }
 
             String userRoleForToken = sessionService.getUserRoleByToken(token);
+            if (!userRoleForToken.equals(Constants.ADMIN)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             String usernameForToken = sessionService.getUsernameByToken(token);
 
             try {
@@ -87,6 +91,10 @@ public class AdminControllerImpl implements AdminController {
             }
 
             String userRoleForToken = sessionService.getUserRoleByToken(token);
+            if (!userRoleForToken.equals(Constants.ADMIN)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             String usernameForToken = sessionService.getUsernameByToken(token);
 
             try {
@@ -124,6 +132,10 @@ public class AdminControllerImpl implements AdminController {
             }
 
             String userRoleForToken = sessionService.getUserRoleByToken(token);
+            if (!userRoleForToken.equals(Constants.ADMIN)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             String usernameForToken = sessionService.getUsernameByToken(token);
 
             try {
@@ -161,6 +173,10 @@ public class AdminControllerImpl implements AdminController {
             }
 
             String userRoleForToken = sessionService.getUserRoleByToken(token);
+            if (!userRoleForToken.equals(Constants.ADMIN)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            
             String usernameForToken = sessionService.getUsernameByToken(token);
 
             try {

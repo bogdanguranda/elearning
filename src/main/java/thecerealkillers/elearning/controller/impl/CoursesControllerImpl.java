@@ -29,8 +29,8 @@ import java.util.List;
  * Modified by Dani.
  */
 
-@CrossOrigin
 @RestController
+@CrossOrigin
 public class CoursesControllerImpl implements CoursesController {
 
     private static final String GROUP = "GROUP_";

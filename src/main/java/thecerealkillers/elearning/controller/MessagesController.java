@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
  * Created by Lucian on 10.11.2015.
  * Modified by Dani.
  */
-@RestController
 public interface MessagesController {
 
     /**

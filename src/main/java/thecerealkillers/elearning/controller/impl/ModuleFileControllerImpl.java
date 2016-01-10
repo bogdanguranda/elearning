@@ -22,6 +22,7 @@ import java.util.List;
  * Created by cuvidk on 12/29/2015.
  */
 @RestController
+@CrossOrigin
 public class ModuleFileControllerImpl implements ModuleFileController {
     @Autowired
     private ModuleFileService moduleFileService;

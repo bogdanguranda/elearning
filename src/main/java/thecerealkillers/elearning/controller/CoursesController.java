@@ -9,7 +9,6 @@ import thecerealkillers.elearning.model.Course;
 /**
  * Modified by Dani.
  */
-@RestController
 public interface CoursesController {
 
     @RequestMapping(value = "/courses", method = RequestMethod.GET)

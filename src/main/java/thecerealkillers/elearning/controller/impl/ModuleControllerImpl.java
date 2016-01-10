@@ -1,23 +1,21 @@
 package thecerealkillers.elearning.controller.impl;
 
 
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import thecerealkillers.elearning.controller.ModuleController;
 import thecerealkillers.elearning.exceptions.InvalidModuleException;
 import thecerealkillers.elearning.exceptions.ServiceException;
-import thecerealkillers.elearning.controller.ModuleController;
-import thecerealkillers.elearning.service.PermissionService;
-import thecerealkillers.elearning.validator.ModuleValidator;
-import thecerealkillers.elearning.service.SessionService;
-import thecerealkillers.elearning.service.ModuleService;
-import thecerealkillers.elearning.service.AuditService;
-import thecerealkillers.elearning.utilities.Constants;
 import thecerealkillers.elearning.model.AuditItem;
 import thecerealkillers.elearning.model.Module;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import thecerealkillers.elearning.service.AuditService;
+import thecerealkillers.elearning.service.ModuleService;
+import thecerealkillers.elearning.service.PermissionService;
+import thecerealkillers.elearning.service.SessionService;
+import thecerealkillers.elearning.utilities.Constants;
+import thecerealkillers.elearning.validator.ModuleValidator;
 
 
 /**

@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * Created by cuvidk on 12/29/2015.
  */
-@RestController
 public interface ModuleFileController {
     @RequestMapping(value = "/courses/{courseTitle}/modules/{moduleTitle}/files", method = RequestMethod.POST)
     ResponseEntity<?> uploadFile(
