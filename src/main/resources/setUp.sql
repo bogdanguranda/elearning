@@ -397,7 +397,90 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`audit` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `elearning_db`.`test`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`test`;
 
+CREATE TABLE IF NOT EXISTS `elearning_db`.`test` (
+
+  `title` VARCHAR(150) NOT NULL COMMENT '',
+  `course` VARCHAR(150) NOT NULL COMMENT '',
+  `attempts` VARCHAR(2)  NOT NULL DEFAULT 0 COMMENT '',
+
+  PRIMARY KEY (`title`, `course`),
+
+  CONSTRAINT `course_title_fk`
+  FOREIGN KEY (`course`)
+  REFERENCES `elearning_db`.`course` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`question`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`question`;
+
+CREATE TABLE IF NOT EXISTS `elearning_db`.`question` (
+
+  `questionID` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '',
+  `course` VARCHAR(150) NOT NULL COMMENT '',
+  `title` VARCHAR(150) NOT NULL COMMENT '',
+  `text` VARCHAR(400) NOT NULL COMMENT '',
+  `answer1` VARCHAR(300) NOT NULL COMMENT '',
+  `correct1` VARCHAR(6) NOT NULL COMMENT '',
+  `answer2` VARCHAR(300) NOT NULL COMMENT '',
+  `correct2` VARCHAR(6) NOT NULL COMMENT '',
+  `answer3` VARCHAR(300) NOT NULL COMMENT '',
+  `correct3` VARCHAR(6) NOT NULL COMMENT '',
+  `answer4` VARCHAR(300) NOT NULL COMMENT '',
+  `correct4` VARCHAR(6) NOT NULL COMMENT '',
+  CONSTRAINT `question_testTitle_fk`
+    FOREIGN KEY (`title`)
+    REFERENCES `elearning_db`.`test` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `question_course_title_fk`
+    FOREIGN KEY (`course`)
+    REFERENCES `elearning_db`.`test` (`course`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `elearning_db`.`test_user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elearning_db`.`test_user`;
+CREATE TABLE IF NOT EXISTS `elearning_db`.`test_user` (
+
+  `title` VARCHAR(150) NOT NULL COMMENT '',
+  `course` VARCHAR(150) NOT NULL COMMENT '',
+  `attemptNumber` INTEGER NOT NULL COMMENT '',
+  `username` VARCHAR(45) NOT NULL COMMENT '',
+  `points` INTEGER NOT NULL COMMENT '',
+
+  PRIMARY KEY (`title`, `course`, `username`, `attemptNumber`)  COMMENT '',
+
+  CONSTRAINT `test_user_testTitle_fk`
+    FOREIGN KEY (`title`)
+    REFERENCES `elearning_db`.`test` (`title`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `test_user_course_title_fk`
+    FOREIGN KEY (`course`)
+    REFERENCES `elearning_db`.`test` (`course`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT `username_fk`
+    FOREIGN KEY (`username`)
+    REFERENCES `elearning_db`.`user` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
 
@@ -483,6 +566,12 @@ INSERT INTO operation VALUES('ModuleFileControllerImpl.deleteFile');
 INSERT INTO operation VALUES('ModuleFileControllerImpl.getFile');
 INSERT INTO operation VALUES('ModuleFileControllerImpl.getAll');
 INSERT INTO operation VALUES('ModuleFileControllerImpl.renameFile');
+
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.createTest');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.deleteTest');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.getStudentPoints');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.getOnlineTest');
+INSERT INTO operation VALUES('OnlineTestsControllerImpl.takeOnlineTest');
 -- -------------------------------------------------------------------
 -- Inserts operations END
 
@@ -704,6 +793,28 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'student', true);
 -- ###################################################=-UserControllerImpl END-=##############################################################################
+
+-- ##################################################=-OnlineTestsController START-=#############################################################################
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'professor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.createTest', 'student', FALSE);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.deleteTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.deleteTest', 'professor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.deleteTest', 'student', FALSE);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getStudentPoints', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getStudentPoints', 'professor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getStudentPoints', 'student', FALSE);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getOnlineTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getOnlineTest', 'professor', TRUE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.getOnlineTest', 'student', TRUE);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.takeOnlineTest', 'administrator', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.takeOnlineTest', 'professor', FALSE);
+INSERT INTO permission (operationName, roleName, permission) VALUES('OnlineTestsControllerImpl.takeOnlineTest', 'student', TRUE);
+-- ###################################################=-OnlineTestsController END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END
 
@@ -756,8 +867,8 @@ INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did
 INSERT INTO user VALUES('username4', 'firstName', 'lastName', 'email4', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
 INSERT INTO user_status VALUES ('username4', TRUE, DEFAULT, '4');
 INSERT INTO user_role VALUES ('username4', 'professor');
-INSERT INTO elearning_db.`group` VALUES ('csgroup');
-INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'csgroup');
+INSERT INTO elearning_db.`group` VALUES ('GROUP_CS Course');
+INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'GROUP_CS Course');
 INSERT INTO module VALUES ('First module CS', 'CS Course', 'best module ever');
 INSERT INTO module VALUES ('Second module CS', 'CS Course', 'best module ever');
 INSERT INTO module VALUES ('Third module CS', 'CS Course', 'best module ever');

@@ -5,6 +5,7 @@ package thecerealkillers.elearning.validator;
  */
 
 import thecerealkillers.elearning.exceptions.InvalidEnrollmentParams;
+import thecerealkillers.elearning.exceptions.InvalidUsernameException;
 
 /**
  * This is a generic validator class for strings.
@@ -88,6 +89,16 @@ public class Validator {
 
         if (!"".equals(feedback)) {
             throw new InvalidEnrollmentParams(feedback);
+        }
+    }
+
+    public static void validateUsername(String username) throws InvalidUsernameException {
+        String feedback = "";
+        if (username.isEmpty()) {
+            feedback = "Please provide the username.";
+        }
+        if(!"".equals(feedback)) {
+            throw new InvalidUsernameException(feedback);
         }
     }
 }

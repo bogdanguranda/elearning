@@ -6,6 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by Dani.
  */
+@SuppressWarnings("ALL")
 public class Constants {
 
     public static final String ADMIN = "administrator";
@@ -71,9 +72,12 @@ public class Constants {
     public static final String COURSES_GET_ENROLLED = "Retrieved list of the enrolled students.";
     public static final String COURSES_WITHDRAW = "User was withdrawn from course.";
     public static final String COURSES_ENROLL = "User was enrolled to course.";
+    public static final String COURSES_ALREADY_EXISTENT = "The course you are trying to create already exists.";
     public static final String COURSES_GET = "Course was retrieved.";
     public static final String COURSES_DELETE = "Course was deleted.";
     public static final String COURSES_CREATE = "Course was created.";
+    public static final String COURSE_NOT_FOUND = "The course you are trying to use not exists.";
+    public static final String USER_NOT_OWNER_TO_COURSE = "You are not owner to this course.";
 
 
     //----------------------------------UserController--------------------------------------------------------------------------------------
@@ -87,6 +91,7 @@ public class Constants {
     public static final String USER_PASSWORD_RESET_REQUEST = "User requested a password reset.";
     public static final String USER_VALIDATED_ACCOUNT = "User confirmed his email address.";
     public static final String USER_INVALID_LOGIN_INFO = "Invalid login info.";
+    public static final String USER_NOT_EXISTS = "User provided not exists.";
 
 
     //----------------------------------ModuleController------------------------------------------------------------------------------------
@@ -108,4 +113,20 @@ public class Constants {
     //----------------------------------GroupsController------------------------------------------------------------------------------------
 
     public static final String GROUPS_GET_ALL = "All groups retrieved from database.";
+
+
+    //----------------------------------OnlineTestsController-------------------------------------------------------------------------------
+    public static final String ONLINE_TEST_NEW_TEST = "Online test was created.";
+    public static final String USER_POINTS_LIST_EMPTY = "The user hasn't take any test so far.\n";
+    public static final String USER_POINTS_LIST = "The user_points list was received.\n";
+    public static final String ONLINE_TEST_TAKE_TEST = "The test was done.\n";
+    public static final String ONLINE_TEST_GET_TEST = "The test was shown.\n";
+    public static final String ONLINE_TEST_DELETE_OK = "Online test successfully deleted.\n";
+    public static final int ONLINE_TEST_ANSWER_CORRECT = 25;
+    public static final String ONLINE_TEST_CORRECT = "Correct! ";
+    public static final String ONLINE_TEST_INCORRECT = "Incorrect! Correct is: ";
+    public static final String ONLINE_TEST_SEPARATOR = ". ";
 }
+
+
+
