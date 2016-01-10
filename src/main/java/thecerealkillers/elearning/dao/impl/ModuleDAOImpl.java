@@ -69,7 +69,7 @@ public class ModuleDAOImpl implements ModuleDAO {
     public List<Module> getAll(String course) throws DAOException {
         try {
             List<Module> modules;
-            String sqlCommand = "SELECT * FROM Module WHERE course = :course";
+            String sqlCommand = "SELECT * FROM module WHERE course = :course";
             Map<String, String> namedParameters = Collections.singletonMap("course", course);
 
             modules = namedParameterJdbcTemplate.query(sqlCommand, namedParameters, new RowMapper<Module>() {
@@ -94,7 +94,7 @@ public class ModuleDAOImpl implements ModuleDAO {
     public Module get(String title, String course) throws DAOException {
         try {
             List<Module> modules;
-            String sqlCommand = "SELECT * FROM Module WHERE title = :title AND course = :course";
+            String sqlCommand = "SELECT * FROM module WHERE title = :title AND course = :course";
 
             Map<String, String> namedParameters = new HashMap<>();
             namedParameters.put("title", title);
@@ -139,7 +139,7 @@ public class ModuleDAOImpl implements ModuleDAO {
     public boolean isModuleExistent(Module module) throws DAOException {
         try {
             List<Module> modules;
-            String sqlCommand = "SELECT * FROM Module WHERE title = :title AND course = :course";
+            String sqlCommand = "SELECT * FROM module WHERE title = :title AND course = :course";
 
             Map<String, String> namedParameters = new HashMap<>();
             namedParameters.put("title", module.getTitle());
