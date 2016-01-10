@@ -44,8 +44,8 @@ public class UserControllerImpl implements UserController {
 
 
     @Override
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {
+         @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+         public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {
         String actionName = "UserControllerImpl.authenticate";
 
         try {
@@ -69,6 +69,39 @@ public class UserControllerImpl implements UserController {
             } catch (NotFoundException notFoundException) {
                 auditService.addEvent(new AuditItem(loginInfo.getUsername(), actionName, "", Constants.USER_INVALID_LOGIN_INFO, false));
                 return new ResponseEntity<>(Constants.USER_INVALID_LOGIN_INFO, HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        } catch (ServiceException serviceException) {
+            return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public ResponseEntity<?> logout(@RequestHeader(value = "token") String token) {
+        String actionName = "UserControllerImpl.logout";
+
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String userRoleForToken = sessionService.getUserRoleByToken(token);
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            try {
+                if (permissionService.isOperationAvailable(actionName, userRoleForToken)) {
+                    sessionService.deleteSession(usernameForToken);
+
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, Constants.USER_LOGOUT, true));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, Constants.NO_PERMISSION, false));
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+
+            } catch (ServiceException serviceException) {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, usernameForToken, serviceException.getMessage(), false));
+                return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);

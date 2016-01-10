@@ -470,6 +470,7 @@ INSERT INTO operation VALUES('UserControllerImpl.validateUserAccount');
 INSERT INTO operation VALUES('UserControllerImpl.resetPasswordRequest');
 INSERT INTO operation VALUES('UserControllerImpl.resetPassword');
 INSERT INTO operation VALUES('UserControllerImpl.changePassword');
+INSERT INTO operation VALUES('UserControllerImpl.logout');
 
 
 INSERT INTO operation VALUES('ModuleControllerImpl.createModule');
@@ -703,6 +704,10 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'administrator', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'professor', true);
 INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.changePassword', 'student', true);
+
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.logout', 'administrator', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.logout', 'professor', true);
+INSERT INTO permission (operationName, roleName, permission) VALUES('UserControllerImpl.logout', 'student', true);
 -- ###################################################=-UserControllerImpl END-=##############################################################################
 -- -------------------------------------------------------------------
 -- Inserts permissions END

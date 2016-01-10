@@ -18,6 +18,9 @@ public interface UserController {
             @RequestBody UserLoginInfo loginInfo);
 
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    ResponseEntity<?> logout(@RequestHeader(value = "token") String token);
+
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     ResponseEntity<?> signUp(
             @RequestBody UserSignUpInfo signUpInfo);

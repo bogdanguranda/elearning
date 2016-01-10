@@ -87,6 +87,7 @@ public class Constants {
     public static final String USER_PASSWORD_RESET_REQUEST = "User requested a password reset.";
     public static final String USER_VALIDATED_ACCOUNT = "User confirmed his email address.";
     public static final String USER_INVALID_LOGIN_INFO = "Invalid login info.";
+    public static final String USER_LOGOUT = "User logged out.";
 
 
     //----------------------------------ModuleController------------------------------------------------------------------------------------
