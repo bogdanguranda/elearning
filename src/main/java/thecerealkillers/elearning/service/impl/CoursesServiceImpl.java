@@ -131,4 +131,13 @@ public class CoursesServiceImpl implements CoursesService {
             throw new ServiceException(dao_exception.getMessage());
         }
     }
+
+    @Override
+    public List<String> getAttendedCourses(String user) throws ServiceException {
+        try {
+            return coursesDAO.getAttendedCourses(user);
+        } catch (DAOException ex) {
+            throw new ServiceException(ex.getMessage());
+        }
+    }
 }

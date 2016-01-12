@@ -333,16 +333,36 @@ public class CoursesControllerImpl implements CoursesController {
                     auditService.addEvent(new AuditItem(usernameForToken, actionName, title, Constants.NO_PERMISSION, false));
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                 }
-//            } catch (NotFoundException notFoundException) {
-//	auditService.addEvent(new AuditItem(usernameForToken, actionName, title, notFoundException.getMessage(), false));
-//                return new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
-
             } catch (ServiceException serviceException) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, title, serviceException.getMessage(), false));
                 return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/courses/{user}/titles", method = RequestMethod.GET)
+    public ResponseEntity<?> getAttendedCourses(@RequestHeader(value = "token") String token, @PathVariable("user") String user) {
+        String actionName = "CoursesControllerImpl.getAttendedCourses";
+        try {
+            if (!sessionService.isSessionActive(token)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String usernameForToken = sessionService.getUsernameByToken(token);
+
+            if (usernameForToken.equals(user)) {
+                List<String> attendedCourses = coursesService.getAttendedCourses(user);
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, user, Constants.COURSES_GET, true));
+                return new ResponseEntity<>(attendedCourses, HttpStatus.OK);
+            } else {
+                auditService.addEvent(new AuditItem(usernameForToken, actionName, user, Constants.NO_PERMISSION, false));
+                return new ResponseEntity<>(Constants.ONLY_USER_COURSES, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }

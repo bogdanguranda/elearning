@@ -38,4 +38,8 @@ public interface CoursesController {
     @RequestMapping(value = "/courses/{title}/users", method = RequestMethod.GET)
     ResponseEntity<?> getEnrolledUsers(@RequestHeader(value = "token") String token,
                                        @PathVariable("title") String title);
+
+    @RequestMapping(value = "/courses/{user}/titles", method = RequestMethod.GET)
+    ResponseEntity<?> getAttendedCourses(@RequestHeader(value = "token") String token,
+                                         @PathVariable("user") String user);
 }
