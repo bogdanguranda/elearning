@@ -438,6 +438,8 @@ INSERT INTO operation VALUES('CoursesControllerImpl.getCourse');
 INSERT INTO operation VALUES('CoursesControllerImpl.enrollUserToCourse');
 INSERT INTO operation VALUES('CoursesControllerImpl.unEnrollUserFromCourse');
 INSERT INTO operation VALUES('CoursesControllerImpl.getEnrolledUsers');
+INSERT INTO operation VALUES('CoursesControllerImpl.getAttendedCourses');
+
 
 INSERT INTO operation VALUES('GroupsControllerImpl.getGroups');
 
@@ -761,8 +763,8 @@ INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did
 INSERT INTO user VALUES('username4', 'firstName', 'lastName', 'email4', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
 INSERT INTO user_status VALUES ('username4', TRUE, DEFAULT, '4');
 INSERT INTO user_role VALUES ('username4', 'professor');
-INSERT INTO elearning_db.`group` VALUES ('csgroup');
-INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'csgroup');
+INSERT INTO elearning_db.`group` VALUES ('GROUP_CS Course');
+INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'GROUP_CS Course');
 INSERT INTO module VALUES ('First module CS', 'CS Course', 'best module ever');
 INSERT INTO module VALUES ('Second module CS', 'CS Course', 'best module ever');
 INSERT INTO module VALUES ('Third module CS', 'CS Course', 'best module ever');

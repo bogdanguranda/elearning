@@ -27,4 +27,6 @@ public interface CoursesService {
     void unEnrollUserFromCourse(String title, String username) throws ServiceException, NotFoundException;
 
     List<String> getEnrolled(String title) throws ServiceException;
+
+    List<String> getAttendedCourses(String user) throws ServiceException;
 }

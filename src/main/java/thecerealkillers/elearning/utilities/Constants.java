@@ -74,7 +74,7 @@ public class Constants {
     public static final String COURSES_GET = "Course was retrieved.";
     public static final String COURSES_DELETE = "Course was deleted.";
     public static final String COURSES_CREATE = "Course was created.";
-
+    public static final String ONLY_USER_COURSES = "You can get only your courses.";
 
     //----------------------------------UserController--------------------------------------------------------------------------------------
 

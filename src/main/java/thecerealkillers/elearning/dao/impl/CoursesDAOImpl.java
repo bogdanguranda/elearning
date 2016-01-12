@@ -1,19 +1,17 @@
 package thecerealkillers.elearning.dao.impl;
 
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import thecerealkillers.elearning.dao.CoursesDAO;
 import thecerealkillers.elearning.exceptions.DAOException;
 import thecerealkillers.elearning.model.Course;
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.jdbc.core.RowMapper;
-import org.apache.tomcat.jdbc.pool.DataSource;
-
-import java.sql.SQLException;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -223,6 +221,35 @@ public class CoursesDAOImpl implements CoursesDAO {
             return users;
         } catch (Exception exception) {
             throw new DAOException(exception.getMessage());
+        }
+    }
+
+    /**
+     * Gets a list with all courses where user is enrolled
+     *
+     * @param user
+     * @return
+     * @throws DAOException
+     */
+    @Override
+    public List<String> getAttendedCourses(String user) throws DAOException {
+        try {
+            String sql = "SELECT group_user.group FROM group_user WHERE username = :username;";
+            Map<String, String> namedParameters = Collections.singletonMap("username", user);
+
+            List<String> attendedCourses = namedParameterJdbcTemplate.query(sql, namedParameters, new RowMapper<String>() {
+                @Override
+                public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                    return resultSet.getString("group");
+                }
+            });
+
+            for (int count = 0; count < attendedCourses.size(); count++) {
+                attendedCourses.set(count, attendedCourses.get(count).substring(6));
+            }
+            return attendedCourses;
+        } catch (Exception ex) {
+            throw new DAOException(ex.getMessage());
         }
     }
 }

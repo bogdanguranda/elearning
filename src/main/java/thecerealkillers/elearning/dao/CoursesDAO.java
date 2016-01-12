@@ -37,7 +37,7 @@ public interface CoursesDAO {
      * Retrieves the course with title @title.
      *
      * @return The course with title @title.
-     * @throws DAOException if the course is inexistent / DB problems / etc.
+     * @throws DAOException if the course is innexistent / DB problems / etc.
      */
     Course get(String title) throws DAOException;
 
@@ -84,4 +84,12 @@ public interface CoursesDAO {
      * @throws DAOException
      */
     List<String> getEnrolled(String title) throws DAOException;
+
+    /**
+     * Gets a list with all courses where user is enrolled
+     * @param user
+     * @return
+     * @throws DAOException
+     */
+    List<String> getAttendedCourses(String user) throws DAOException;
 }
