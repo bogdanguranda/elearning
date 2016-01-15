@@ -113,7 +113,7 @@ public class UserValidator extends Validator {
     public static void validateUsername(String username) throws InvalidUsernameException {
         String feedback = "";
 
-        if (username.length() < 6)
+        if (username.length() < 3)
             feedback += InvalidUsernameException.USERNAME_TO_SHORT;
         if (!isAlphanumeric(username))
             feedback += InvalidUsernameException.USERNAME_FORBIDDEN_CHARACTER;
@@ -133,12 +133,12 @@ public class UserValidator extends Validator {
     public static void validatePassword(String password) throws InvalidPasswordException {
         String feedback = "";
 
-        if (password.length() < 7)
+        if (password.length() < 3)
             feedback += InvalidPasswordException.PASSWORD_TOO_SHORT;
-        if (!containsDigits(password))
-            feedback += InvalidPasswordException.PASSWORD_NOT_CONTAINS_DIGIT_CHARACTER;
-        if (!containsLowerCase(password) && !containsUpperCase(password))
-            feedback += InvalidPasswordException.PASSWORD_NOT_CONTAINS_ALPHABETIC_CHARACTER;
+//        if (!containsDigits(password))
+//            feedback += InvalidPasswordException.PASSWORD_NOT_CONTAINS_DIGIT_CHARACTER;
+//        if (!containsLowerCase(password) && !containsUpperCase(password))
+//            feedback += InvalidPasswordException.PASSWORD_NOT_CONTAINS_ALPHABETIC_CHARACTER;
 
         if (!"".equals(feedback))
             throw new InvalidPasswordException(feedback);

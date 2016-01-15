@@ -44,8 +44,8 @@ public class UserControllerImpl implements UserController {
 
 
     @Override
-         @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-         public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> authenticate(@RequestBody UserLoginInfo loginInfo) {
         String actionName = "UserControllerImpl.authenticate";
 
         try {
@@ -319,7 +319,7 @@ public class UserControllerImpl implements UserController {
             } catch (InvalidLoginInfoException invalidInfo) {
                 auditService.addEvent(new AuditItem(usernameForToken, actionName, "", invalidInfo.getMessage(), false));
                 return new ResponseEntity<>(invalidInfo.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-           }
+            }
         } catch (ServiceException serviceException) {
             return new ResponseEntity<>(serviceException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }

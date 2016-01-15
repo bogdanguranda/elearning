@@ -397,7 +397,6 @@ CREATE TABLE IF NOT EXISTS `elearning_db`.`audit` (
 ENGINE = InnoDB;
 
 
-
 -- ===================================================================
 -- !!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE START !!!!!!!!!!!!!!!!!!!!!!!
 
@@ -407,14 +406,6 @@ ENGINE = InnoDB;
 INSERT INTO role VALUE ('administrator');
 INSERT INTO role VALUE ('professor');
 INSERT INTO role VALUE ('student');
-
-
--- Adds admin user account
--- -------------------------------------------------------------------
-INSERT INTO user VALUES('CerealKillersAdmin1', 'cereal', 'killers', 'thecerealkillers.pc@gmail.com', 'af212b1d8d174716cc1da021b4c5a9c4f5f1b569c22ddb88660a9f242a58e77e43622af22b5c8178a51efaaf93b2bcb63719b5b5d85eb06e1de19610f5e86d3b', 'SYpspH4x6cwPtBf72UoB8Z4l13O49tfBYmGIcGhfgV5hAJGaBojqk3JnvvToo0u6e7PlFFqsOXyDsefrIWC9BRFnBBJrDbQcSHqDs3LiZGtOjmnL9z71He98bhsjYNxw');
-INSERT INTO user_status VALUES ('CerealKillersAdmin1', TRUE, DEFAULT, '');
-INSERT INTO user_role VALUE ('CerealKillersAdmin1', 'administrator');
-
 
 -- Inserts operations START
 -- -------------------------------------------------------------------
@@ -714,6 +705,30 @@ INSERT INTO permission (operationName, roleName, permission) VALUES('UserControl
 -- -------------------------------------------------------------------
 -- Inserts permissions END
 
+-- Adds admin user account
+-- -------------------------------------------------------------------
+INSERT INTO user VALUES('admin', 'Administrator', 'Administrator', 'thecerealkillers.pc@gmail.com', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec', '');
+INSERT INTO user_status VALUES ('admin', TRUE, DEFAULT, '');
+INSERT INTO user_role VALUE ('admin', 'administrator');
+
+INSERT INTO user VALUES('lucian', 'Lucian', 'Iacob', 'lucianiacob@gmail.com', 'efd4e8d764738b55e41e1fe19336f534477e715b88043803f449364691670219b8e9c2db105890a4bc377ec1196b1d8b3ee380a4b8ec3cbfc9f069bb06cab313', '');
+INSERT INTO user VALUES('daniel', 'Daniel', 'Iliesi', 'danieliliesi@gmail.com', 'f68a41e098cf7ecb8924645bfe335941beb068e7bebaf0bba26549c0693560df08cace69debbc59f6d2e30a328570dc331c1ec2f998a43cd0340b08065d4318a', '');
+INSERT INTO user VALUES('corvin', 'Corvin-Ciprian', 'Tiperciuc', 'cuvidk@yahoo.com', '5006723b1d50f5ad513ccccad426051b237ac50b0250ec22a08052084b03283dd83fbe875e89b42143975821bb203d0e88c4002772afbc4a09c2241962680ed1', '');
+INSERT INTO user VALUES('emanuel', 'Emanuel', 'Barac', 'baracemanuel@yahoo.com', '214be8cc3605acd9366b878e827da74105f408a3577315db63b3ea0cefac847cef65a29ee86f3708d39a89baf914a3a38654b1c09fddee64ca835213c42abaaf', '');
+INSERT INTO user VALUES('bianca', 'Bianca', 'Felecan', 'bianca.felecan@yahoo.com', 'a6b6fa1ea4adaa7acd47cc3641310936d0e2c77115033c798926dd08815e296e8e1d1b1e04a2334d66419e01c99b993df4ae19203d840594416f8b86434eabaa', '');
+INSERT INTO user VALUES('alexandru', 'Alexandru', 'Vancea', 'alexandruvancea@yahoo.com', '534a8adddb4c93bec4a7640c178f0c78bf2cf199bbc869b430a7dd48a78cbddc898112581425849b0bd2c9f8f77cac4b1f4ab16272d5c43a5467799963f36b29', '');
+INSERT INTO user_status VALUES ('lucian', TRUE, DEFAULT, '1');
+INSERT INTO user_status VALUES ('daniel', TRUE, DEFAULT, '2');
+INSERT INTO user_status VALUES ('corvin', TRUE, DEFAULT, '3');
+INSERT INTO user_status VALUES ('emanuel', TRUE, DEFAULT, '4');
+INSERT INTO user_status VALUES ('bianca', TRUE, DEFAULT, '5');
+INSERT INTO user_status VALUES ('alexandru', TRUE, DEFAULT, '6');
+INSERT INTO user_role VALUE ('lucian', 'student');
+INSERT INTO user_role VALUE ('daniel', 'student');
+INSERT INTO user_role VALUE ('corvin', 'student');
+INSERT INTO user_role VALUE ('emanuel', 'student');
+INSERT INTO user_role VALUE ('bianca', 'student');
+INSERT INTO user_role VALUE ('alexandru', 'professor');
 
 -- Inserts topic START
 -- -------------------------------------------------------------------
@@ -725,47 +740,49 @@ INSERT INTO topic VALUES ('Off Topic');
 -- -------------------------------------------------------------------
 -- Inserts topic END
 
+INSERT INTO thread VALUES ('Off Topic', 'Are panda bears nearly extinct?', 'corvin');
+INSERT INTO thread VALUES ('Off Topic', 'How did Napoleon die?', 'lucian');
+INSERT INTO thread VALUES ('Off Topic', 'Is Kung Fu really that good?', 'corvin');
+INSERT INTO thread VALUES ('Off Topic', 'Fun facts about French Bulldogs', 'corvin');
+INSERT INTO thread VALUES ('Off Topic', 'Help pls...', 'daniel');
 
--- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
--- ===================================================================
-
-
-
--- dev only start
-INSERT INTO user VALUES('username1', 'firstName', 'lastName', 'email1', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
-INSERT INTO user VALUES('username2', 'firstName', 'lastName', 'email2', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
-INSERT INTO user VALUES('username3', 'firstName', 'lastName', 'email3', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
-INSERT INTO user_status VALUES ('username1', TRUE, DEFAULT, '1');
-INSERT INTO user_status VALUES ('username2', TRUE, DEFAULT, '2');
-INSERT INTO user_status VALUES ('username3', TRUE, DEFAULT, '3');
-INSERT INTO user_role VALUE ('username1', 'professor');
-INSERT INTO user_role VALUE ('username2', 'student');
-INSERT INTO user_role VALUE ('username3', 'student');
-
-INSERT INTO thread VALUES ('General Discussion', 'What about panda bears?', 'username1');
-INSERT INTO thread VALUES ('General Discussion', 'How did Napoleon die?', 'username2');
-INSERT INTO thread VALUES ('General Discussion', 'Kung Fu figthing', 'username2');
-INSERT INTO thread VALUES ('General Discussion', 'Help pls...', 'username3');
-
-INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did Napoleon die?',
+INSERT INTO comment VALUES (DEFAULT, 'corvin', 'Off Topic', 'How did Napoleon die?',
                             'Some say he was poisoned on St. Elena island in the Pacific Ocean...', DEFAULT);
-INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did Napoleon die?',
+INSERT INTO comment VALUES (DEFAULT, 'corvin', 'Off Topic', 'How did Napoleon die?',
                             'There is also the option that he died of the bad climate.', DEFAULT);
-INSERT INTO comment VALUES (DEFAULT, 'username2', 'General Discussion', 'How did Napoleon die?',
+INSERT INTO comment VALUES (DEFAULT, 'emanuel', 'Off Topic', 'How did Napoleon die?',
                             'Most likely he was poisoned having in mind the fear that the english man had of him.', DEFAULT);
-INSERT INTO comment VALUES (DEFAULT, 'username3', 'General Discussion', 'How did Napoleon die?',
+INSERT INTO comment VALUES (DEFAULT, 'lucian', 'Off Topic', 'How did Napoleon die?',
                             'Most likely...', DEFAULT);
-INSERT INTO comment VALUES (DEFAULT, 'username1', 'General Discussion', 'How did Napoleon die?',
+INSERT INTO comment VALUES (DEFAULT, 'corvin', 'Off Topic', 'How did Napoleon die?',
                             'Yep :)', DEFAULT);
+
+INSERT INTO thread VALUES ('General Discussion', 'Forum rules', 'corvin');
+INSERT INTO thread VALUES ('General Discussion', 'Tips and tricks', 'lucian');
+
+INSERT INTO comment VALUES (DEFAULT, 'corvin', 'General Discussion', 'Forum rules',
+                            'Forum rules:\n1. Be patience with newcomers\n2. Don\'t swear.', DEFAULT);
+INSERT INTO comment VALUES (DEFAULT, 'lucian', 'General Discussion', 'Tips and tricks',
+                            'Tips and tricks:\n1. Use Chrome Browser for fast speed.', DEFAULT);
 -- dev only end
 
 -- Inserts course modules start
-INSERT INTO user VALUES('username4', 'firstName', 'lastName', 'email4', '9301a41d213c58c87a49f20d0c9f4f1eced3f67033897fbd9444e51431f00a11fc1c299a1d17bf09ad72183b9da124892ea489f721d6c7a1cb8f4186827f1adb', '');
-INSERT INTO user_status VALUES ('username4', TRUE, DEFAULT, '4');
-INSERT INTO user_role VALUES ('username4', 'professor');
-INSERT INTO elearning_db.`group` VALUES ('GROUP_CS Course');
-INSERT INTO course VALUES ('CS Course', 'Computer Science Stuff', 'Details...', 'username4', 'GROUP_CS Course');
-INSERT INTO module VALUES ('First module CS', 'CS Course', 'best module ever');
-INSERT INTO module VALUES ('Second module CS', 'CS Course', 'best module ever');
-INSERT INTO module VALUES ('Third module CS', 'CS Course', 'best module ever');
+INSERT INTO elearning_db.group VALUES ('GROUP_CS AC');
+INSERT INTO course VALUES ('Arhitectura Calculatoarelor', 'Limbajul de asamblare 8086', 'Un curs introductiv in istoria sistemelor de calcul, a componentei acestora avand ca studiu practic limbajul de asamblare 8086', 'alexandru', 'GROUP_CS AC');
+INSERT INTO module VALUES ('Arhitectura microprocesor 8086', 'Arhitectura Calculatoarelor', 'Introducere in arhitectura microprocesorului 8086');
+INSERT INTO module VALUES ('Elementele de baza ale limbajului 8086', 'Arhitectura Calculatoarelor', 'Intructiuni, registrii, adrese.');
+INSERT INTO module VALUES ('Instructiuni ale limbajului de asamblare 8086', 'Arhitectura Calculatoarelor', 'Instructiuni de baza: mov, lea, define, byte etc.');
+INSERT INTO module VALUES ('Intreruperi 8086', 'Arhitectura Calculatoarelor', 'Intreruperile de citire/scriere caractere/siruri de caractere, int 21h etc.');
+INSERT INTO module VALUES ('Implementarea apelului de subprograme', 'Arhitectura Calculatoarelor', 'Cum implementam apelul de subprograme ca in limbajele de nivel inalt.');
+INSERT INTO module VALUES ('Programarea multimodul', 'Arhitectura Calculatoarelor', 'Compilare separata, instructiunile de import/export.');
+
+INSERT INTO elearning_db.group VALUES ('GROUP_CS FLP');
+INSERT INTO course VALUES ('Fundamentele Limbajelor de Programare', 'Istoria dezvoltarii limbajelor de programare', 'Un curs ce-si propune sa prezinte istoria evolutiei limbajelor de programare de la inceputul anilor \'50 incoace.', 'alexandru', 'GROUP_CS FLP');
+INSERT INTO module VALUES ('FORTRAN', 'Fundamentele Limbajelor de Programare', 'Studiu de caz limbajul FORTRAN.');
+INSERT INTO module VALUES ('Ada', 'Fundamentele Limbajelor de Programare', 'Studiu de caz asupra limbajului Ada (denumire dupa numele primului programator).');
+INSERT INTO module VALUES ('Miranda', 'Fundamentele Limbajelor de Programare', 'Studiu de caz limbajul Miranda.');
+INSERT INTO module VALUES ('Lisp', 'Fundamentele Limbajelor de Programare', 'Studiu de caz un limbaj functional, limbajul Lisp.');
 --  Inserts course modules end
+
+-- !!!!!!!!!!!!!!!!!!!!!!!! DO NOT DELETE END !!!!!!!!!!!!!!!!!!!!!!!!
+-- ===================================================================

@@ -26,14 +26,14 @@
         <property name="minIdle" value="${minIdle}"/>
     </bean>
 
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <!-- 20MB -->
-        <property name="maxUploadSize" value="20971520"/>
-        <!-- 1MB -->
-        <property name="maxInMemorySize" value="1048576"/>
-    </bean>
+    <!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+        <!--&lt;!&ndash; 20MB &ndash;&gt;-->
+        <!--<property name="maxUploadSize" value="20971520"/>-->
+        <!--&lt;!&ndash; 1MB &ndash;&gt;-->
+        <!--<property name="maxInMemorySize" value="1048576"/>-->
+    <!--</bean>-->
 
-    <jdbc:initialize-database data-source="dataSource">
-        <jdbc:script location="classpath:setUp.sql"/>
-    </jdbc:initialize-database>
+    <!--<jdbc:initialize-database data-source="dataSource">-->
+        <!--<jdbc:script location="classpath:setUp.sql"/>-->
+    <!--</jdbc:initialize-database>-->
 </beans>
