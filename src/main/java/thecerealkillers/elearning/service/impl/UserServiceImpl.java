@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private SessionService sessionService;
 
 
-    private String siteUrl = "http://localhost:8080/";
+    private String siteUrl = "https://localhost:8080/";
     private String validationUrl = siteUrl + "users/confirmation/create/";
     private String changeUrl = siteUrl + "users/password/reset/";
     private int validationLinkExpTimeH = 24; // hours
